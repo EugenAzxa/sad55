@@ -612,3 +612,105 @@
   .breath-ring.is-running { animation: none; transform: scale(0.9); }
   .cal-day.is-click:hover { transform: none; }
 }
+
+/* ---------- install on a phone ---------- */
+
+.install-sec { padding-top: clamp(30px, 5vh, 56px); }
+
+.install-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: clamp(28px, 5vw, 60px);
+  align-items: start;
+  padding: clamp(26px, 4vw, 44px);
+  border-radius: var(--r-lg);
+  background: var(--soft);
+}
+
+.install-qr { text-align: center; }
+.install-qr img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: var(--r-md);
+  background: #fff;
+  padding: 14px;
+  box-shadow: var(--shadow-sm);
+  display: block;
+  image-rendering: pixelated;         /* keeps the modules crisp at any size */
+}
+.install-qr-cap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.install-qr-cap svg { width: 17px; height: 17px; flex: none; }
+
+.install-steps .h2 { margin: 8px 0 14px; }
+.install-lead { font-size: 0.98rem; line-height: 1.7; color: var(--ink-soft); max-width: 40rem; }
+
+.install-list {
+  counter-reset: ins;
+  list-style: none;
+  margin: 26px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.install-list li {
+  counter-increment: ins;
+  position: relative;
+  padding-left: 52px;
+}
+.install-list li::before {
+  content: counter(ins);
+  position: absolute;
+  left: 0;
+  top: -2px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--coral);
+  color: #fff;
+  font-size: 0.94rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.install-list b { display: block; font-size: 1rem; font-weight: 800; margin-bottom: 3px; }
+.install-list span { font-size: 0.9rem; color: var(--muted); line-height: 1.5; }
+.install-list .with-ic { display: inline-flex; align-items: center; gap: 8px; }
+.install-list .with-ic svg { width: 17px; height: 17px; flex: none; color: var(--violet); }
+.install-list code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.86rem;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--ink);
+}
+
+.install-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 26px;
+  padding: 14px 18px;
+  border-radius: var(--r-sm);
+  background: #fff;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+.install-note svg { width: 18px; height: 18px; flex: none; color: var(--violet); margin-top: 1px; }
+
+@media (max-width: 760px) {
+  .install-grid { grid-template-columns: 1fr; }
+  .install-qr { max-width: 240px; margin-inline: auto; }
+}
