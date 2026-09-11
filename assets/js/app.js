@@ -448,6 +448,216 @@
         : "Отметьте первый день, и здесь появится разница.";
   };
 
+  /* ---------- напоминания ----------
+     На iPhone уведомления работают только в приложении, добавленном на
+     домашний экран, и только через service worker. Пока приложение закрыто,
+     веб не может ничего запланировать без push-сервера, поэтому мы
+     показываем напоминание в момент открытия дневника. */
+
+  var swReg = null;
+
+  var notifSupported = function () {
+    return "serviceWorker" in navigator && "Notification" in window &&
+           typeof ServiceWorkerRegistration !== "undefined" &&
+           "showNotification" in ServiceWorkerRegistration.prototype;
+  };
+
+  var standalone = function () {
+    return (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) ||
+           window.navigator.standalone === true;
+  };
+
+  var isIOS = function () {
+    return /iP(hone|ad|od)/.test(navigator.userAgent) ||
+           (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  };
+
+  var notifCard = el("notif-card");
+  var notifState = el("notif-state");
+  var notifBtn = el("notif-enable");
+  var notifTest = el("notif-test");
+  var notifNote = el("notif-note");
+
+  var paintNotifUi = function () {
+    if (!notifCard) return;
+    var supported = notifSupported();
+
+    if (!supported) {
+      notifState.textContent = "Браузер не поддерживает";
+      notifNote.textContent = isIOS()
+        ? "На iPhone уведомления доступны только в приложении, добавленном на домашний экран. Добавьте дневник на экран «Домой» и откройте его с значка."
+        : "Этот браузер не умеет показывать уведомления с сайта.";
+      notifBtn.hidden = true;
+      notifTest.hidden = true;
+      return;
+    }
+
+    if (isIOS() && !standalone()) {
+      notifState.textContent = "Нужен значок на домашнем экране";
+      notifNote.textContent = "На iPhone уведомления работают только из приложения, добавленного на экран «Домой». Инструкция ниже на этой странице.";
+      notifBtn.hidden = true;
+      notifTest.hidden = true;
+      return;
+    }
+
+    var perm = Notification.permission;
+    if (perm === "granted") {
+      notifState.textContent = "Включены";
+      notifBtn.hidden = true;
+      notifTest.hidden = false;
+      notifNote.textContent = "Раз в день при открытии дневник покажет короткое сообщение поддержки, а в пятницу и субботу отдельное, и отметит пройденные этапы. Пока приложение закрыто, напоминания не приходят: для этого нужен сервер.";
+    } else if (perm === "denied") {
+      notifState.textContent = "Запрещены";
+      notifBtn.hidden = true;
+      notifTest.hidden = true;
+      notifNote.textContent = "Вы отклонили запрос. Разрешить снова можно в настройках браузера или телефона для этого сайта.";
+    } else {
+      notifState.textContent = "Выключены";
+      notifBtn.hidden = false;
+      notifTest.hidden = true;
+      notifNote.textContent = "Короткое сообщение раз в день, отдельные слова на пятницу и субботу и отметки о пройденных этапах. Всё считается на вашем телефоне.";
+    }
+  };
+
+  var notify = function (title, body, tag) {
+    if (!swReg || !notifSupported() || Notification.permission !== "granted") return;
+    try {
+      swReg.showNotification(title, {
+        body: body,
+        tag: tag || "amc",
+        icon: "assets/img/icon-192.png",
+        badge: "assets/img/icon-192.png",
+        lang: "ru",
+        data: { url: "./app.html" }
+      });
+    } catch (e) {}
+  };
+
+  /* Тексты напоминаний. Пятница и суббота вынесены отдельно: это дни,
+     когда срываются чаще всего. */
+  var NOTES = {
+    any: [
+      ["Сегодня новый день", "И он начинается с чистого листа. Всё будет хорошо. Просто не пейте сегодня."],
+      ["Ещё один трезвый день", "Вы уже знаете, что справляетесь. Сегодня будет так же."],
+      ["Один день за раз", "Не нужно обещать себе всю жизнь. Достаточно сегодняшнего дня."],
+      ["Вы держитесь", "Каждый прожитый день делает следующий чуть легче."],
+      ["Если потянет", "Тяга держится минут пятнадцать и уходит. Вы пережидали её не раз."]
+    ],
+    evening: [
+      ["Вечер самый сложный", "Займите руки: чай, душ, прогулка, книга. Через час станет легче."],
+      ["День почти прошёл", "Осталось немного. Лягте пораньше, и утром счётчик станет больше."]
+    ],
+    fri: [
+      ["Сегодня пятница", "Самый частый день срыва. Не ходите туда, где наливают. Лучше книга, прогулка или ранний сон."],
+      ["Пятничный вечер", "Если позовут, ответ готов: «Я не пью». Объяснять ничего не нужно."],
+      ["Пятница проверяет", "Один вечер не стоит всех ваших дней подряд. Останьтесь дома."]
+    ],
+    sat: [
+      ["Суббота", "Выходной не повод. Побудьте дома, почитайте, выспитесь. Завтра скажете себе спасибо."],
+      ["Сегодня суббота", "Тусовка подождёт. Ваши дни подряд дороже одного вечера."],
+      ["Суббота без бара", "Сходите погулять, посмотрите фильм, откройте книгу. Это тоже вечер."]
+    ],
+    sun: [
+      ["Воскресенье", "Неделя позади, и вы прошли её трезвым. Это уже результат."]
+    ],
+    mon: [
+      ["Новая неделя", "Хорошее время начать заново, если сорвались. И продолжить, если нет."]
+    ]
+  };
+
+  /* какой набор подходит этому дню и часу */
+  var pickNote = function () {
+    var n = new Date(), dow = n.getDay(), h = n.getHours(), pool;
+    if (dow === 5 && h >= 15) pool = NOTES.fri;
+    else if (dow === 6 && h >= 12) pool = NOTES.sat;
+    else if (dow === 0) pool = NOTES.sun;
+    else if (dow === 1) pool = NOTES.mon;
+    else if (h >= 18) pool = NOTES.evening;
+    else pool = NOTES.any;
+
+    state.noteIx = state.noteIx || {};
+    var key = pool === NOTES.fri ? "fri" : pool === NOTES.sat ? "sat"
+            : pool === NOTES.sun ? "sun" : pool === NOTES.mon ? "mon"
+            : pool === NOTES.evening ? "evening" : "any";
+    var i = (typeof state.noteIx[key] === "number" ? state.noteIx[key] + 1 : 0) % pool.length;
+    state.noteIx[key] = i;
+    return pool[i];
+  };
+
+  /* что показать при открытии: новая отметка или незаполненный день */
+  var checkReminders = function () {
+    if (!state || Notification.permission !== "granted") return;
+    state.seen = state.seen || {};
+    var fired = false;
+
+    /* пройденная отметка важнее всего остального */
+    Object.keys(KINDS).forEach(function (kind) {
+      if (fired || !state[kind] || !state[kind].on) return;
+      var d = streak(kind);
+      var list = MILESTONES[kind];
+      for (var i = list.length - 1; i >= 0; i--) {
+        if (d >= list[i][0]) {
+          var key = kind + ":" + list[i][0];
+          if (!state.seen[key]) {
+            state.seen[key] = true;
+            save();
+            notify(KINDS[kind].title + ": " + list[i][1],
+                   list[i][2] + " Уже " + d + " " + plural(d, "день", "дня", "дней") + " подряд.",
+                   "ms-" + key);
+            fired = true;
+          }
+          break;
+        }
+      }
+    });
+    if (fired) return;
+
+    /* иначе одно поддерживающее сообщение, не чаще раза в день */
+    var day = iso(today());
+    if (state.seen["note:" + day]) return;
+    state.seen["note:" + day] = true;
+
+    var m = pickNote();
+    var body = m[1];
+    var d2 = (state.alcohol && state.alcohol.on) ? streak("alcohol")
+           : (state.tobacco && state.tobacco.on) ? streak("tobacco") : 0;
+    if (d2 > 0) body += " Ваш счёт: " + d2 + " " + plural(d2, "день", "дня", "дней") + ".";
+    save();
+    notify(m[0], body, "daily-" + day);
+  };
+
+  if (notifCard) {
+    paintNotifUi();
+    if (notifBtn) {
+      notifBtn.addEventListener("click", function () {
+        /* разрешение запрашивается только по нажатию, иначе браузеры его игнорируют */
+        Notification.requestPermission().then(function (p) {
+          paintNotifUi();
+          if (p === "granted") {
+            notify("Напоминания включены", "Дневник будет отмечать ваши этапы.", "hello");
+          }
+        });
+      });
+    }
+    if (notifTest) {
+      notifTest.addEventListener("click", function () {
+        var m = pickNote();
+        save();
+        notify(m[0], m[1], "demo");
+      });
+    }
+  }
+
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("sw.js").then(function (reg) {
+        swReg = reg;
+        paintNotifUi();
+        setTimeout(checkReminders, 1200);
+      }).catch(function () {});
+    });
+  }
+
   /* ---------- вкладки ---------- */
 
   var tabs = el("ios-tabs");

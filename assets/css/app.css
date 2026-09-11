@@ -25,6 +25,10 @@
 .app-warn b { display: block; color: var(--ink); margin-bottom: 3px; }
 .app-warn a { font-weight: 800; color: var(--red); text-decoration: underline; text-underline-offset: 3px; }
 
+/* author display rules outrank the UA sheet's [hidden] { display: none },
+   so anything given display:block/flex ignores the hidden attribute */
+[hidden] { display: none !important; }
+
 /* ---------- the phone ---------- */
 
 .phone-stage {
@@ -714,3 +718,23 @@
   .install-grid { grid-template-columns: 1fr; }
   .install-qr { max-width: 240px; margin-inline: auto; }
 }
+
+/* ---------- reminders ---------- */
+
+.notif-card { margin-top: 14px; }
+.notif-head { display: flex; gap: 13px; align-items: flex-start; }
+.notif-ic {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 12px;
+  background: rgba(245, 85, 63, 0.12);
+  color: var(--coral);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.notif-ic svg { width: 20px; height: 20px; }
+.notif-head h3 { margin-bottom: 2px; }
+.notif-head p { font-size: 0.85rem; font-weight: 700; color: var(--ink-soft); }
+.notif-card .ios-hint { margin-top: 12px; }
