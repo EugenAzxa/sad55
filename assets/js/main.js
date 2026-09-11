@@ -288,12 +288,51 @@
       if (e.key === "Escape" && modal.classList.contains("open")) closeModal();
     });
 
+    /* ---- заявка ----
+       Укажите здесь адрес, куда отправлять заявки (Formspree, своя функция и т.п.).
+       Пока он пустой, форма честно не обещает звонок, а просит позвонить самим. */
+    var CALLBACK_ENDPOINT = "";
+
     var form = document.getElementById("callback-form");
     if (form) {
       form.addEventListener("submit", function (e) {
         e.preventDefault();
-        modal.querySelector(".modal-form").style.display = "none";
-        document.getElementById("modal-success").style.display = "block";
+        var agree = document.getElementById("cb-agree");
+        if (agree && !agree.checked) return;
+
+        var showDone = function (sent) {
+          var t = document.getElementById("cb-ok-title");
+          var x = document.getElementById("cb-ok-text");
+          if (t) t.textContent = sent ? "Заявка принята" : "Позвоните нам, пожалуйста";
+          if (x) {
+            x.textContent = sent
+              ? "Мы перезвоним вам в ближайшее время. Если вопрос срочный, звоните сами, линия работает круглосуточно."
+              : "Форма пока не подключена к оператору, поэтому мы не сможем вам перезвонить. Позвоните напрямую, врач ответит круглосуточно и анонимно.";
+          }
+          modal.querySelector(".modal-form").style.display = "none";
+          document.getElementById("modal-success").style.display = "block";
+        };
+
+        if (!CALLBACK_ENDPOINT) {
+          if (window.console) {
+            console.warn("[АМЦ] Заявка никуда не отправлена: CALLBACK_ENDPOINT не задан в assets/js/main.js");
+          }
+          showDone(false);
+          return;
+        }
+
+        var btn = form.querySelector('[type="submit"]');
+        if (btn) { btn.disabled = true; btn.textContent = "Отправляем..."; }
+        fetch(CALLBACK_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify({
+            name: (document.getElementById("cb-name") || {}).value || "",
+            phone: (document.getElementById("cb-phone") || {}).value || "",
+            page: location.pathname
+          })
+        }).then(function (r) { showDone(r.ok); })
+          .catch(function () { showDone(false); });
       });
     }
   }
@@ -385,6 +424,44 @@
     /* the CTA hands over to the callback form, so close this one first */
     var dmCta = docModal.querySelector(".dm-cta");
     if (dmCta) dmCta.addEventListener("click", closeDoc);
+  }
+
+  /* the 30-years headline drifts as the band crosses the viewport */
+  var yearsTrack = document.getElementById("years-track");
+  if (yearsTrack && !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches)) {
+    var band = yearsTrack.closest(".years-band");
+    var ticking = false;
+    var drift = function () {
+      var r = band.getBoundingClientRect();
+      var span = window.innerHeight + r.height;
+      if (r.bottom < 0 || r.top > window.innerHeight) { ticking = false; return; }
+      /* 0 when the band enters from below, 1 when it has fully passed */
+      var p = (window.innerHeight - r.top) / span;
+      yearsTrack.style.setProperty("--shift", (-p * 260).toFixed(1) + "px");
+      ticking = false;
+    };
+    var onScrollBand = function () {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(drift);
+    };
+    window.addEventListener("scroll", onScrollBand, { passive: true });
+    window.addEventListener("resize", onScrollBand, { passive: true });
+    drift();
+  }
+
+  /* video: swap the cover for the real player only when asked */
+  var vidBtn = document.getElementById("video-play");
+  if (vidBtn) {
+    vidBtn.addEventListener("click", function () {
+      var id = vidBtn.getAttribute("data-video");
+      var frame = document.createElement("iframe");
+      frame.src = "https://www.youtube-nocookie.com/embed/" + id + "?autoplay=1&rel=0";
+      frame.title = "Олег Владимирович о работе центра";
+      frame.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+      frame.setAttribute("allowfullscreen", "");
+      vidBtn.replaceWith(frame);
+    });
   }
 
   /* footer year */

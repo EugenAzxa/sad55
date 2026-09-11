@@ -20,9 +20,10 @@
     </a>
     <nav class="nav" aria-label="Основное меню">
       <a href="index.html#about">О центре</a>
+      <a href="history.html">История</a>
       <a href="index.html#doctors">Врачи</a>
       <a href="index.html#reviews">Отзывы</a>
-      <a href="price-and-services.html">Услуги и цены</a>
+      <a href="price-and-services.html">Цены</a>
       <a href="smoke.html" class="active">Бросить курить</a>
       <a href="screen-time.html" class="active">Экран</a>
       <a href="app.html">Дневник</a>
@@ -83,6 +84,7 @@
   <a href="index.html#contacts">Контакты</a>
   <a href="app.html">Дневник трезвости</a>
   <a href="screen-time.html" class="active">Экранное время</a>
+  <a href="history.html">История центра</a>
   <button type="button" class="mm-a11y" data-a11y-open><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>Версия для слабовидящих</button>
   <div class="mm-phones">
     <a class="btn btn-primary" href="tel:+78123144482">(812) 314-44-82</a>
@@ -251,14 +253,22 @@
           <label for="cb-phone">Номер телефона</label>
           <input id="cb-phone" name="phone" type="tel" placeholder="+7 (___) ___-__-__" required autocomplete="tel">
         </div>
+        <label class="cb-consent">
+          <input type="checkbox" id="cb-agree" required>
+          <span class="cb-box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span>
+          <span>Я согласен на обработку персональных данных в соответствии с <a href="privacy.html" target="_blank" rel="noopener">политикой конфиденциальности</a></span>
+        </label>
         <button class="btn btn-primary btn-lg" type="submit" style="width:100%">Жду звонка</button>
       </form>
-      <p class="modal-note">Нажимая кнопку, вы соглашаетесь на обработку персональных данных</p>
     </div>
     <div class="modal-success" id="modal-success">
       <span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
-      <h3>Заявка принята!</h3>
-      <p class="sub" style="margin-top:8px">Мы перезвоним вам в ближайшее время. Если вопрос срочный, звоните: <a href="tel:+78123144482" style="font-weight:800;color:var(--coral-deep)">(812) 314-44-82</a></p>
+      <h3 id="cb-ok-title">Заявка принята</h3>
+      <p class="sub" id="cb-ok-text" style="margin-top:8px">Мы перезвоним вам в ближайшее время.</p>
+      <a class="btn btn-primary btn-lg" href="tel:+78123144482" style="width:100%;justify-content:center;margin-top:18px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
+        Позвонить сейчас: (812) 314-44-82
+      </a>
     </div>
   </div>
 </div>
@@ -279,7 +289,9 @@
           <li><a href="price-and-services.html">Услуги и цены</a></li>
           <li><a href="smoke.html">Бросить курить</a></li>
           <li><a href="app.html">Дневник трезвости</a></li>
+          <li><a href="history.html">История центра</a></li>
           <li><a href="screen-time.html">Экранное время</a></li>
+          <li><a href="privacy.html">Политика конфиденциальности</a></li>
           <li><a href="index.html#contacts">Контакты</a></li>
         </ul>
       </div>
@@ -301,41 +313,10 @@
   </div>
 </footer>
 
-<div class="modal" id="callback-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-  <div class="modal-backdrop" data-close-modal></div>
-  <div class="modal-card">
-    <button class="modal-close" data-close-modal aria-label="Закрыть">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-    </button>
-    <div class="modal-form">
-      <h3 id="modal-title">Перезвоним за 5 минут</h3>
-      <p class="sub">Оставьте номер телефона, врач свяжется с вами. Обращение полностью анонимно.</p>
-      <form id="callback-form">
-        <div class="field">
-          <label for="cb-name">Ваше имя</label>
-          <input id="cb-name" name="name" type="text" placeholder="Как к вам обращаться" autocomplete="name">
-        </div>
-        <div class="field">
-          <label for="cb-phone">Номер телефона</label>
-          <input id="cb-phone" name="phone" type="tel" placeholder="+7 (___) ___-__-__" required autocomplete="tel">
-        </div>
-        <button class="btn btn-primary btn-lg" type="submit" style="width:100%">Жду звонка</button>
-      </form>
-      <p class="modal-note">Нажимая кнопку, вы соглашаетесь на обработку персональных данных</p>
-    </div>
-    <div class="modal-success" id="modal-success">
-      <span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
-      <h3>Заявка принята!</h3>
-      <p class="sub" style="margin-top:8px">Мы перезвоним вам в ближайшее время. Если вопрос срочный, звоните: <a href="tel:+78123144482" style="font-weight:800;color:var(--coral-deep)">(812) 314-44-82</a></p>
-    </div>
-  </div>
-</div>
-
 <a class="call-fab" href="tel:+78123144482" aria-label="Позвонить в клинику">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
 </a>
 
-<script src="assets/js/main.js"></script>
 </body>
 </html>
 
