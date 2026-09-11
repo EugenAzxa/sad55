@@ -1539,9 +1539,9 @@ html.a11y .nav { gap: 0; }
 .hist-photo img { width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; object-position: center 40%; display: block; }
 .hist-photo figcaption { padding: 14px 18px; font-size: 0.84rem; color: var(--muted); background: #fff; }
 
-.hist-founder { display: grid; grid-template-columns: 340px 1fr; gap: clamp(26px, 4vw, 48px); align-items: start; }
+.hist-founder { display: grid; grid-template-columns: 330px 1fr; gap: clamp(26px, 4vw, 48px); align-items: start; }
 .hist-founder-photo { border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-md); }
-.hist-founder-photo img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; object-position: top; display: block; }
+.hist-founder-photo img { width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; object-position: center 22%; display: block; }
 .hist-founder-text p { font-size: 0.98rem; line-height: 1.75; color: var(--ink-soft); margin-bottom: 14px; }
 
 .hist-stats { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 26px; }
