@@ -10,8 +10,333 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
+  <script>
+    (function () {
+      var replay = /[?&]intro(=|&|$)/.test(location.search);
+      var skip = false;
+      try { skip = !replay && sessionStorage.getItem("amc-intro") === "1"; } catch (e) {}
+      if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) skip = true;
+      document.documentElement.className += skip ? " intro-off" : " intro-lock";
+      if (!skip) setTimeout(function () {
+        document.documentElement.classList.remove("intro-lock");
+      }, 9000);
+    })();
+  </script>
 </head>
 <body>
+
+<!-- ================= WELCOME INTRO ================= -->
+<div class="intro" id="intro" role="dialog" aria-label="Заставка сайта">
+<svg class="intro-scene" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="i-sky-a" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0a0807"/><stop offset="0.5" stop-color="#13100d"/>
+      <stop offset="0.82" stop-color="#1f1811"/><stop offset="1" stop-color="#2b2016"/>
+    </linearGradient>
+    <linearGradient id="i-sky-b" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0f0c0a"/><stop offset="0.42" stop-color="#2e1d13"/>
+      <stop offset="0.7" stop-color="#7a3a1e"/><stop offset="0.88" stop-color="#f5553f"/>
+      <stop offset="1" stop-color="#ffc87a"/>
+    </linearGradient>
+    <linearGradient id="i-sea-a" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#241a14"/><stop offset="0.3" stop-color="#151009"/>
+      <stop offset="1" stop-color="#090706"/>
+    </linearGradient>
+    <linearGradient id="i-sea-b" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b8622a"/><stop offset="0.07" stop-color="#8a4720"/>
+      <stop offset="0.24" stop-color="#3e2616"/><stop offset="0.6" stop-color="#1d150f"/>
+      <stop offset="1" stop-color="#0b0908"/>
+    </linearGradient>
+    <radialGradient id="i-glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffe9c4" stop-opacity="0.9"/>
+      <stop offset="0.36" stop-color="#f5553f" stop-opacity="0.34"/>
+      <stop offset="1" stop-color="#f5553f" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="i-sun" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff4de"/><stop offset="0.55" stop-color="#ffc87a"/>
+      <stop offset="1" stop-color="#f5553f"/>
+    </linearGradient>
+    <linearGradient id="i-sail" x1="0.1" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#f1f5fc"/><stop offset="0.5" stop-color="#ffcbbb"/>
+      <stop offset="1" stop-color="#f5553f"/>
+    </linearGradient>
+    <linearGradient id="i-sail2" x1="1" y1="0" x2="0.2" y2="1">
+      <stop offset="0" stop-color="#f1f5fc"/><stop offset="1" stop-color="#f5553f"/>
+    </linearGradient>
+    <linearGradient id="i-horiz" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f5553f" stop-opacity="0"/><stop offset="0.38" stop-color="#c8722e" stop-opacity="0.28"/>
+      <stop offset="0.5" stop-color="#ffd9a0" stop-opacity="0.55"/><stop offset="0.62" stop-color="#c8722e" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#f5553f" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="i-vig" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#050404" stop-opacity="0.88"/>
+      <stop offset="0.34" stop-color="#050404" stop-opacity="0.3"/>
+      <stop offset="0.58" stop-color="#050404" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- what gets left behind: pale bodies on deep water so they read at a glance -->
+    <g id="i-bot-up">
+      <ellipse cx="0" cy="5" rx="23" ry="5" fill="#050404" opacity="0.6"/>
+      <path d="M-6,-52 L6,-52 L6,-33 C6,-28 16,-21 16,-10 L16,3 C16,6 9,7 0,7 C-9,7 -16,6 -16,3 L-16,-10 C-16,-21 -6,-28 -6,-33 Z" fill="#8a5c25"/>
+      <path d="M-6,-52 L0,-52 L0,-33 C0,-27 -8,-22 -11,-12 L-16,-8 C-15,-20 -6,-28 -6,-33 Z" fill="#b8813a"/>
+      <rect x="-7.5" y="-57" width="15" height="6" rx="2.5" fill="#f5553f"/>
+      <rect x="-16" y="-8" width="32" height="13" fill="#e0d3b6" opacity="0.9"/>
+      <rect x="-16" y="-8" width="32" height="3" fill="#f5553f" opacity="0.85"/>
+    </g>
+    <g id="i-bot-lie">
+      <ellipse cx="2" cy="8" rx="42" ry="5" fill="#050404" opacity="0.6"/>
+      <path d="M-38,-5 L-21,-5 C-16,-5 -12,-10 -6,-12 L22,-12 C31,-12 36,-7 36,1 C36,9 31,14 22,14 L-6,14 C-12,12 -16,7 -21,7 L-38,7 C-41,7 -41,-5 -38,-5 Z" fill="#3f5f42"/>
+      <path d="M-38,-5 L-21,-5 C-16,-5 -12,-10 -6,-12 L22,-12 C30,-12 35,-8 35.8,-2 L-40,-2 C-41,-3.5 -40,-5 -38,-5 Z" fill="#5c8060"/>
+      <rect x="-44" y="-5" width="8" height="12" rx="2.5" fill="#f5553f"/>
+      <rect x="-2" y="-9" width="24" height="20" fill="#ddd0b2"/>
+      <rect x="-2" y="-9" width="24" height="4" fill="#e20016" opacity="0.85"/>
+    </g>
+    <g id="i-bot-wine">
+      <ellipse cx="0" cy="7" rx="36" ry="5" fill="#050404" opacity="0.6"/>
+      <path d="M-33,-4 L-16,-4 C-12,-4 -9,-9 -4,-11 L17,-11 C25,-11 30,-6 30,1 C30,8 25,13 17,13 L-4,13 C-9,11 -12,6 -16,6 L-33,6 C-36,6 -36,-4 -33,-4 Z" fill="#4a3018"/>
+      <path d="M-33,-4 L-16,-4 C-12,-4 -9,-9 -4,-11 L17,-11 C24,-11 29,-7 29.8,-1 L-35,-1 C-36,-2.5 -35,-4 -33,-4 Z" fill="#6d4a26"/>
+      <rect x="-39" y="-4" width="7" height="10" rx="2.4" fill="#e20016"/>
+      <rect x="-1" y="-8" width="20" height="17" fill="#ddd0b2" opacity="0.88"/>
+    </g>
+    <g id="i-cig">
+      <ellipse cx="0" cy="7" rx="26" ry="4" fill="#050404" opacity="0.55"/>
+      <rect x="-26" y="-6" width="38" height="12" rx="5.5" fill="#ded7c8"/>
+      <rect x="6" y="-6" width="18" height="12" rx="5.5" fill="#c79a55"/>
+      <path d="M-26,0 a5.5,5.5 0 0 1 5.5,-5.5 l4,0 l0,11 l-4,0 a5.5,5.5 0 0 1 -5.5,-5.5 Z" fill="#2a2118"/>
+      <rect x="-20" y="-6" width="26" height="3.4" rx="1.7" fill="#f3ece0"/>
+    </g>
+    <g id="i-pack">
+      <ellipse cx="0" cy="11" rx="27" ry="5" fill="#050404" opacity="0.6"/>
+      <path d="M-20,10 L-23,-16 L-4,-24 L22,-17 L23,8 Z" fill="#ded7c8"/>
+      <path d="M-23,-16 L-4,-24 L22,-17 L3,-9 Z" fill="#c9d3e6"/>
+      <path d="M-21,-3 L22,-4 L22,4 L-20,5 Z" fill="#e20016"/>
+      <path d="M-4,-23 L19,-16.5" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
+    </g>
+    <g id="i-can">
+      <ellipse cx="0" cy="9" rx="25" ry="4" fill="#050404" opacity="0.6"/>
+      <path d="M-22,7 C-25,-3 -20,-12 -11,-13 L14,-14 C23,-13 26,-4 23,7 Z" fill="#7a6a4a"/>
+      <path d="M-11,-13 L14,-14 L15,-8 L-10,-7 Z" fill="#a8946c"/>
+      <path d="M-19,-1 L21,-2 L21,4 L-19,5 Z" fill="#f5553f" opacity="0.9"/>
+    </g>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#i-sky-a)"/>
+  <rect class="i-sky-b" width="1600" height="900" fill="url(#i-sky-b)" opacity="0"/>
+  <g class="i-stars">
+    <circle cx="1125" cy="119" r="1.6" fill="#ffe9c4" opacity="0.67"/>
+    <circle cx="1269" cy="302" r="1.6" fill="#ffe9c4" opacity="0.53"/>
+    <circle cx="242" cy="164" r="1.0" fill="#ffe9c4" opacity="0.60"/>
+    <circle cx="1042" cy="98" r="1.9" fill="#ffe9c4" opacity="0.46"/>
+    <circle cx="563" cy="168" r="2.2" fill="#ffe9c4" opacity="0.53"/>
+    <circle cx="1121" cy="24" r="2.2" fill="#ffe9c4" opacity="0.63"/>
+    <circle cx="749" cy="185" r="1.6" fill="#ffe9c4" opacity="0.47"/>
+    <circle cx="865" cy="44" r="2.0" fill="#ffe9c4" opacity="0.32"/>
+    <circle cx="1559" cy="162" r="1.8" fill="#ffe9c4" opacity="0.79"/>
+    <circle cx="1078" cy="104" r="1.1" fill="#ffe9c4" opacity="0.36"/>
+    <circle cx="834" cy="54" r="1.7" fill="#ffe9c4" opacity="0.31"/>
+    <circle cx="772" cy="295" r="1.5" fill="#ffe9c4" opacity="0.54"/>
+    <circle cx="1557" cy="320" r="1.5" fill="#ffe9c4" opacity="0.53"/>
+    <circle cx="1057" cy="62" r="2.1" fill="#ffe9c4" opacity="0.40"/>
+    <circle cx="1529" cy="84" r="1.1" fill="#ffe9c4" opacity="0.37"/>
+    <circle cx="1043" cy="273" r="1.2" fill="#ffe9c4" opacity="0.34"/>
+    <circle cx="290" cy="268" r="1.4" fill="#ffe9c4" opacity="0.77"/>
+    <circle cx="824" cy="191" r="1.2" fill="#ffe9c4" opacity="0.38"/>
+    <circle cx="377" cy="292" r="1.5" fill="#ffe9c4" opacity="0.67"/>
+    <circle cx="49" cy="91" r="2.1" fill="#ffe9c4" opacity="0.38"/>
+  </g>
+  <g class="i-sun">
+    <ellipse cx="800" cy="498" rx="520" ry="360" fill="url(#i-glow)"/>
+    <circle cx="800" cy="482" r="82" fill="url(#i-sun)"/>
+  </g>
+  <rect y="498" width="1600" height="402" fill="url(#i-sea-a)"/>
+  <rect class="i-sea-b" y="498" width="1600" height="402" fill="url(#i-sea-b)" opacity="0"/>
+  <rect class="i-horizon" y="496" width="1600" height="3" fill="url(#i-horiz)"/>
+  <g class="i-reflect">
+    <ellipse cx="811" cy="508" rx="14" ry="2.7" fill="#ffb257" opacity="0.300"/>
+    <ellipse cx="819" cy="524" rx="23" ry="1.7" fill="#ffb257" opacity="0.288"/>
+    <ellipse cx="815" cy="541" rx="32" ry="2.5" fill="#ffb257" opacity="0.275"/>
+    <ellipse cx="782" cy="553" rx="35" ry="1.7" fill="#ffb257" opacity="0.266"/>
+    <ellipse cx="804" cy="568" rx="48" ry="2.8" fill="#ffb257" opacity="0.255"/>
+    <ellipse cx="783" cy="585" rx="47" ry="2.8" fill="#ffb257" opacity="0.242"/>
+    <ellipse cx="784" cy="599" rx="80" ry="3.0" fill="#ffb257" opacity="0.232"/>
+    <ellipse cx="814" cy="612" rx="83" ry="2.4" fill="#ffb257" opacity="0.222"/>
+    <ellipse cx="812" cy="628" rx="103" ry="2.6" fill="#ffb257" opacity="0.210"/>
+    <ellipse cx="805" cy="647" rx="108" ry="3.4" fill="#ffb257" opacity="0.196"/>
+    <ellipse cx="784" cy="663" rx="97" ry="2.5" fill="#ffb257" opacity="0.184"/>
+    <ellipse cx="816" cy="682" rx="137" ry="2.3" fill="#ffb257" opacity="0.170"/>
+    <ellipse cx="781" cy="693" rx="143" ry="1.8" fill="#ffb257" opacity="0.161"/>
+    <ellipse cx="820" cy="712" rx="118" ry="3.0" fill="#ffb257" opacity="0.147"/>
+    <ellipse cx="814" cy="730" rx="101" ry="1.8" fill="#ffb257" opacity="0.133"/>
+    <ellipse cx="793" cy="742" rx="106" ry="2.5" fill="#ffb257" opacity="0.124"/>
+    <ellipse cx="782" cy="756" rx="134" ry="2.2" fill="#ffb257" opacity="0.114"/>
+    <ellipse cx="802" cy="768" rx="117" ry="2.6" fill="#ffb257" opacity="0.105"/>
+    <ellipse cx="791" cy="784" rx="207" ry="3.3" fill="#ffb257" opacity="0.093"/>
+    <ellipse cx="814" cy="797" rx="215" ry="3.4" fill="#ffb257" opacity="0.083"/>
+    <ellipse cx="788" cy="813" rx="231" ry="1.9" fill="#ffb257" opacity="0.071"/>
+    <ellipse cx="813" cy="825" rx="138" ry="2.3" fill="#ffb257" opacity="0.062"/>
+    <ellipse cx="807" cy="836" rx="232" ry="2.7" fill="#ffb257" opacity="0.054"/>
+    <ellipse cx="806" cy="854" rx="210" ry="2.7" fill="#ffb257" opacity="0.041"/>
+    <ellipse cx="803" cy="872" rx="243" ry="2.6" fill="#ffb257" opacity="0.027"/>
+  </g>
+  <g class="i-w-far"><path d="M-520,556 C-374.4,546 -145.6,566 0,556 C145.6,546 374.4,566 520,556 C665.6,546 894.4,566 1040,556 C1185.6,546 1414.4,566 1560,556 C1705.6,546 1934.4,566 2080,556 C2225.6,546 2454.4,566 2600,556 C2745.6,546 2974.4,566 3120,556 L3120,980 L-520,980 Z" fill="#0c0908" opacity="0.26"/><path d="M-520,556 C-374.4,546 -145.6,566 0,556 C145.6,546 374.4,566 520,556 C665.6,546 894.4,566 1040,556 C1185.6,546 1414.4,566 1560,556 C1705.6,546 1934.4,566 2080,556 C2225.6,546 2454.4,566 2600,556 C2745.6,546 2974.4,566 3120,556 " fill="none" stroke="#ffd9a8" stroke-width="2" opacity="0.10"/></g>
+  <g class="i-w-mid"><path d="M-400,636 C-288,622 -112,650 0,636 C112,622 288,650 400,636 C512,622 688,650 800,636 C912,622 1088,650 1200,636 C1312,622 1488,650 1600,636 C1712,622 1888,650 2000,636 C2112,622 2288,650 2400,636 L2400,980 L-400,980 Z" fill="#0c0908" opacity="0.32"/><path d="M-400,636 C-288,622 -112,650 0,636 C112,622 288,650 400,636 C512,622 688,650 800,636 C912,622 1088,650 1200,636 C1312,622 1488,650 1600,636 C1712,622 1888,650 2000,636 C2112,622 2288,650 2400,636 " fill="none" stroke="#ffd9a8" stroke-width="2" opacity="0.12"/></g>
+  <g class="i-debris-far">
+    <g transform="translate(-90,648) scale(0.84)"><use href="#i-can" transform="rotate(9.3)"/></g>
+    <g transform="translate(28,679) scale(0.88)"><use href="#i-cig" transform="rotate(-2.5)"/></g>
+    <g transform="translate(166,645) scale(0.69)"><use href="#i-cig" transform="rotate(8.3)"/></g>
+    <g transform="translate(295,647) scale(0.78)"><use href="#i-cig" transform="rotate(0.5)"/></g>
+    <g transform="translate(415,668) scale(0.81)"><use href="#i-cig" transform="rotate(2.1)"/></g>
+    <g transform="translate(548,670) scale(0.85)"><use href="#i-cig" transform="rotate(-4.0)"/></g>
+    <g transform="translate(656,649) scale(0.77)"><use href="#i-bot-up" transform="rotate(10.1)"/></g>
+    <g transform="translate(757,645) scale(0.85)"><use href="#i-cig" transform="rotate(-11.1)"/></g>
+    <g transform="translate(879,639) scale(0.79)"><use href="#i-cig" transform="rotate(-7.4)"/></g>
+    <g transform="translate(984,650) scale(0.73)"><use href="#i-bot-up" transform="rotate(4.2)"/></g>
+    <g transform="translate(1086,673) scale(0.80)"><use href="#i-cig" transform="rotate(-8.9)"/></g>
+    <g transform="translate(1224,640) scale(0.74)"><use href="#i-cig" transform="rotate(9.6)"/></g>
+    <g transform="translate(1313,659) scale(0.83)"><use href="#i-cig" transform="rotate(10.1)"/></g>
+    <g transform="translate(1424,667) scale(0.96)"><use href="#i-cig" transform="rotate(-12.6)"/></g>
+    <g transform="translate(1554,670) scale(0.78)"><use href="#i-cig" transform="rotate(2.0)"/></g>
+    <g transform="translate(1660,646) scale(0.73)"><use href="#i-bot-wine" transform="rotate(7.2)"/></g>
+    <g transform="translate(1861,660) scale(0.69)"><use href="#i-cig" transform="rotate(-12.8)"/></g>
+    <g transform="translate(2121,666) scale(0.78)"><use href="#i-bot-wine" transform="rotate(11.4)"/></g>
+  </g>
+
+  <g class="i-boat-scale">
+   <g class="i-boat-in">
+    <g transform="translate(770,700) scale(0.75)">
+     <g class="i-boat">
+      <path d="M16,-266 L156,-62" stroke="#101010" stroke-width="2.6" opacity="0.8"/>
+      <path d="M16,-266 L-136,-44" stroke="#101010" stroke-width="2.6" opacity="0.8"/>
+      <path d="M18,-238 L152,-64 L52,-96 C58,-148 36,-200 18,-238 Z" fill="url(#i-sail2)"/>
+      <path d="M18,-264 C-24,-206 -64,-126 -102,-56 L18,-66 Z" fill="url(#i-sail)"/>
+      <path d="M18,-264 C-24,-206 -64,-126 -102,-56" fill="none" stroke="#f5553f" stroke-width="3" opacity="0.55"/>
+      <rect x="13" y="-270" width="7" height="212" rx="3.5" fill="#101010"/>
+      <path d="M-104,-60 L20,-68 L20,-52 L-104,-50 Z" fill="#101010"/>
+      <path d="M16,-270 L-36,-256 L16,-244 Z" fill="#e20016"/>
+
+      <path d="M-140,-40 L162,-62 C166,-36 158,-10 138,6 C128,16 116,28 100,28 L-92,28 C-116,28 -134,4 -140,-40 Z" fill="#101010"/>
+      <path d="M-138,-30 L161,-52 L159,-38 L-135,-17 Z" fill="#f5553f"/>
+      <path d="M-140,-40 L162,-62 L161,-53 L-138,-32 Z" fill="#f1f5fc" opacity="0.8"/>
+      <path d="M120,-54 L162,-62 C166,-36 158,-10 138,6 C133,11 128,16 122,20 Z" fill="#f5553f" opacity="0.16"/>
+
+      <!-- captain: upright, both hands on the wheel -->
+      <g transform="translate(-62,-46)">
+        <path d="M-9,0 L-8,-34 L0,-34 L0,0 Z" fill="#101010"/>
+        <path d="M5,0 L4,-34 L12,-34 L12,0 Z" fill="#101010"/>
+        <path d="M-14,-32 C-17,-52 -15,-70 -11,-76 L13,-76 C17,-68 18,-50 15,-32 Z" fill="#101010"/>
+        <path d="M11,-72 C18,-68 22,-61 22,-52" fill="none" stroke="#101010" stroke-width="9" stroke-linecap="round"/>
+        <path d="M9,-63 C16,-60 20,-55 21,-48" fill="none" stroke="#101010" stroke-width="8.5" stroke-linecap="round"/>
+        <rect x="-2" y="-86" width="10" height="12" fill="#101010"/>
+        <circle cx="3" cy="-92" r="11" fill="#101010"/>
+        <path d="M-9,-100 C-8,-109 14,-109 15,-100 Z" fill="#101010"/>
+        <path d="M-11,-99.5 L19,-102 L19,-96.5 L-11,-95 Z" fill="#101010"/>
+        <path d="M-9,-100 C-8,-109 14,-109 15,-100" fill="none" stroke="#ffd9a8" stroke-width="2.2" stroke-linecap="round" opacity="0.6"/>
+        <path d="M-11,-99.5 L19,-102" fill="none" stroke="#ffd9a8" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+        <path d="M13,-76 C17,-68 18,-50 15,-32" fill="none" stroke="#ffd9a8" stroke-width="2.4" stroke-linecap="round" opacity="0.6"/>
+        <path d="M11.5,-32 L11.5,-3" fill="none" stroke="#ffd9a8" stroke-width="2.2" stroke-linecap="round" opacity="0.45"/>
+      </g>
+      <rect x="-24" y="-72" width="9" height="30" rx="4" fill="#101010"/>
+      <g transform="translate(-19,-96)"><g class="i-wheel">
+        <circle r="24" fill="none" stroke="#101010" stroke-width="5.5"/>
+        <path d="M5.0,0.0 L31.0,0.0" stroke="#101010" stroke-width="3.6" stroke-linecap="round"/>
+        <path d="M3.5,3.5 L21.9,21.9" stroke="#101010" stroke-width="3.6" stroke-linecap="round"/>
+        <path d="M0.0,5.0 L0.0,31.0" stroke="#101010" stroke-width="3.6" stroke-linecap="round"/>
+        <path d="M-3.5,3.5 L-21.9,21.9" stroke="#101010" stroke-width="3.6" stroke-linecap="round"/>
+        <path d="M-5.0,0.0 L-31.0,0.0" stroke="#101010" stroke-width="3.6" stroke-linecap="round"/>
+        <path d="M-3.5,-3.5 L-21.9,-21.9" stroke="#101010" stroke-width="3.6" stroke-linecap="round"/>
+        <path d="M-0.0,-5.0 L-0.0,-31.0" stroke="#101010" stroke-width="3.6" stroke-linecap="round"/>
+        <path d="M3.5,-3.5 L21.9,-21.9" stroke="#101010" stroke-width="3.6" stroke-linecap="round"/>
+        <circle r="6" fill="#101010"/>
+        <path d="M24,0 A24,24 0 0 1 0,24" fill="none" stroke="#ffd9a8" stroke-width="3.2" opacity="0.6" stroke-linecap="round"/>
+      </g></g>
+     </g>
+    </g>
+   </g>
+  <g class="i-wake" transform="translate(770,700) scale(0.75)">
+    <path d="M-150,5 C-90,-3 -40,-3 20,3 C90,10 150,7 196,-1 C170,19 120,25 40,25 C-70,25 -120,17 -150,5 Z" fill="#ffd9a8" opacity="0.12"/>
+    <path d="M178,-1 C197,-10 214,-12 227,-10 C214,5 196,13 177,13 Z" fill="#ffd9a8" opacity="0.26"/>
+    <ellipse cx="-190" cy="12" rx="130" ry="5" fill="#ffd9a8" opacity="0.08"/>
+    <ellipse cx="-380" cy="20" rx="180" ry="4" fill="#ffd9a8" opacity="0.05"/>
+  </g>
+  </g>
+  <g class="i-w-near"><path d="M-300,726 C-216,708 -84,744 0,726 C84,708 216,744 300,726 C384,708 516,744 600,726 C684,708 816,744 900,726 C984,708 1116,744 1200,726 C1284,708 1416,744 1500,726 C1584,708 1716,744 1800,726 C1884,708 2016,744 2100,726 C2184,708 2316,744 2400,726 L2400,980 L-300,980 Z" fill="#0c0908" opacity="0.4"/><path d="M-300,726 C-216,708 -84,744 0,726 C84,708 216,744 300,726 C384,708 516,744 600,726 C684,708 816,744 900,726 C984,708 1116,744 1200,726 C1284,708 1416,744 1500,726 C1584,708 1716,744 1800,726 C1884,708 2016,744 2100,726 C2184,708 2316,744 2400,726 " fill="none" stroke="#ffd9a8" stroke-width="2.4" opacity="0.14"/></g>
+  <g class="i-debris-near">
+    <g transform="translate(-90,744) scale(2.04)"><use href="#i-bot-lie" transform="rotate(-9.7)"/></g>
+    <g transform="translate(62,801) scale(1.90)"><use href="#i-bot-lie" transform="rotate(-5.6)"/></g>
+    <g transform="translate(233,731) scale(2.08)"><use href="#i-can" transform="rotate(0.1)"/></g>
+    <g transform="translate(371,758) scale(1.71)"><use href="#i-bot-lie" transform="rotate(2.0)"/></g>
+    <g transform="translate(530,726) scale(2.08)"><use href="#i-bot-up" transform="rotate(-12.3)"/></g>
+    <g transform="translate(707,724) scale(1.97)"><use href="#i-bot-up" transform="rotate(-4.6)"/></g>
+    <g transform="translate(850,724) scale(1.84)"><use href="#i-bot-lie" transform="rotate(-11.3)"/></g>
+    <g transform="translate(989,784) scale(1.66)"><use href="#i-bot-up" transform="rotate(6.4)"/></g>
+    <g transform="translate(1127,783) scale(2.00)"><use href="#i-bot-wine" transform="rotate(-9.6)"/></g>
+    <g transform="translate(1275,746) scale(2.09)"><use href="#i-bot-up" transform="rotate(-12.5)"/></g>
+    <g transform="translate(1431,797) scale(1.99)"><use href="#i-can" transform="rotate(-11.1)"/></g>
+    <g transform="translate(1561,758) scale(1.69)"><use href="#i-bot-lie" transform="rotate(-4.7)"/></g>
+    <g transform="translate(1689,777) scale(1.76)"><use href="#i-can" transform="rotate(2.3)"/></g>
+    <g transform="translate(1840,800) scale(1.99)"><use href="#i-pack" transform="rotate(-8.3)"/></g>
+    <g transform="translate(2025,801) scale(2.14)"><use href="#i-pack" transform="rotate(4.3)"/></g>
+    <g transform="translate(2261,783) scale(1.88)"><use href="#i-bot-up" transform="rotate(-2.8)"/></g>
+    <g transform="translate(2480,723) scale(1.94)"><use href="#i-bot-lie" transform="rotate(-3.7)"/></g>
+    <g transform="translate(2709,763) scale(1.59)"><use href="#i-bot-up" transform="rotate(-12.3)"/></g>
+    <g transform="translate(2973,780) scale(1.50)"><use href="#i-cig" transform="rotate(-8.3)"/></g>
+  </g>
+  <g class="i-w-front"><path d="M-230,812 C-165.6,799 -64.4,825 0,812 C64.4,799 165.6,825 230,812 C294.4,799 395.6,825 460,812 C524.4,799 625.6,825 690,812 C754.4,799 855.6,825 920,812 C984.4,799 1085.6,825 1150,812 C1214.4,799 1315.6,825 1380,812 C1444.4,799 1545.6,825 1610,812 C1674.4,799 1775.6,825 1840,812 C1904.4,799 2005.6,825 2070,812 L2070,980 L-230,980 Z" fill="#070505" opacity="0.55"/><path d="M-230,812 C-165.6,799 -64.4,825 0,812 C64.4,799 165.6,825 230,812 C294.4,799 395.6,825 460,812 C524.4,799 625.6,825 690,812 C754.4,799 855.6,825 920,812 C984.4,799 1085.6,825 1150,812 C1214.4,799 1315.6,825 1380,812 C1444.4,799 1545.6,825 1610,812 C1674.4,799 1775.6,825 1840,812 C1904.4,799 2005.6,825 2070,812 " fill="none" stroke="#ffd9a8" stroke-width="2.2" opacity="0.12"/></g>
+  <g class="i-foam">
+    <ellipse cx="1116" cy="804" rx="19.1" ry="3.1" fill="#ffd9a8" opacity="0.04"/>
+    <ellipse cx="556" cy="840" rx="12.3" ry="2.0" fill="#ffd9a8" opacity="0.09"/>
+    <ellipse cx="1435" cy="870" rx="13.5" ry="2.2" fill="#ffd9a8" opacity="0.08"/>
+    <ellipse cx="323" cy="840" rx="9.9" ry="1.6" fill="#ffd9a8" opacity="0.08"/>
+    <ellipse cx="436" cy="832" rx="13.0" ry="2.1" fill="#ffd9a8" opacity="0.07"/>
+    <ellipse cx="882" cy="749" rx="11.1" ry="1.8" fill="#ffd9a8" opacity="0.07"/>
+    <ellipse cx="1249" cy="802" rx="6.2" ry="1.0" fill="#ffd9a8" opacity="0.07"/>
+    <ellipse cx="579" cy="822" rx="18.4" ry="2.9" fill="#ffd9a8" opacity="0.09"/>
+    <ellipse cx="933" cy="826" rx="12.7" ry="2.0" fill="#ffd9a8" opacity="0.06"/>
+    <ellipse cx="1254" cy="765" rx="14.2" ry="2.3" fill="#ffd9a8" opacity="0.08"/>
+    <ellipse cx="204" cy="763" rx="16.5" ry="2.6" fill="#ffd9a8" opacity="0.08"/>
+    <ellipse cx="1395" cy="767" rx="11.7" ry="1.9" fill="#ffd9a8" opacity="0.08"/>
+    <ellipse cx="60" cy="777" rx="11.7" ry="1.9" fill="#ffd9a8" opacity="0.08"/>
+    <ellipse cx="1226" cy="867" rx="8.3" ry="1.3" fill="#ffd9a8" opacity="0.06"/>
+    <ellipse cx="1062" cy="872" rx="6.7" ry="1.1" fill="#ffd9a8" opacity="0.07"/>
+    <ellipse cx="1481" cy="848" rx="9.5" ry="1.5" fill="#ffd9a8" opacity="0.07"/>
+    <ellipse cx="-35" cy="751" rx="17.0" ry="2.7" fill="#ffd9a8" opacity="0.07"/>
+    <ellipse cx="77" cy="859" rx="16.9" ry="2.7" fill="#ffd9a8" opacity="0.07"/>
+    <ellipse cx="604" cy="756" rx="19.0" ry="3.0" fill="#ffd9a8" opacity="0.09"/>
+    <ellipse cx="1230" cy="827" rx="19.6" ry="3.1" fill="#ffd9a8" opacity="0.05"/>
+    <ellipse cx="613" cy="832" rx="15.8" ry="2.5" fill="#ffd9a8" opacity="0.05"/>
+    <ellipse cx="1259" cy="812" rx="14.2" ry="2.3" fill="#ffd9a8" opacity="0.08"/>
+    <ellipse cx="7" cy="755" rx="10.2" ry="1.6" fill="#ffd9a8" opacity="0.09"/>
+    <ellipse cx="93" cy="761" rx="7.6" ry="1.2" fill="#ffd9a8" opacity="0.07"/>
+  </g>
+  <rect width="1600" height="900" fill="url(#i-vig)"/>
+</svg>
+  <div class="intro-copy">
+    <p class="intro-beat1">Серьёзное лечение алкогольных проблем и табакокурения</p>
+    <div class="intro-beat2">
+      <span class="intro-eyebrow">Академический Медицинский Центр</span>
+      <p class="intro-title">Курс на трезвость</p>
+      <p class="intro-sub">Более 30 лет помогаем выйти из зависимости. Анонимно, круглосуточно, с 1992 года.</p>
+    </div>
+  </div>
+  <button class="intro-skip" type="button" id="intro-skip">
+    Пропустить
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg>
+  </button>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <!-- ================= HEADER ================= -->
 <header class="header" id="header">
@@ -25,11 +350,14 @@
       <a href="#reviews">Отзывы</a>
       <a href="price-and-services.html">Услуги и цены</a>
       <a href="smoke.html">Бросить курить</a>
+      <a href="screen-time.html">Экран</a>
+      <a href="app.html">Дневник</a>
       <a href="#contacts">Контакты</a>
     </nav>
     <div class="header-cta">
-      <button class="a11y-btn" id="a11y-toggle" title="Версия для слабовидящих" aria-label="Версия для слабовидящих: крупный шрифт и повышенный контраст">
+      <button class="a11y-btn" id="a11y-toggle" aria-pressed="false" title="Версия для слабовидящих" aria-label="Версия для слабовидящих: крупный шрифт, контраст и озвучивание">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span class="a11y-btn-text">Версия для слабовидящих</span>
       </button>
       <div class="header-phone">
         <a href="tel:+78123144482">(812) 314-44-82</a>
@@ -46,6 +374,32 @@
   </div>
 </header>
 
+<div class="a11y-bar" id="a11y-bar" hidden>
+  <div class="container a11y-bar-in">
+    <span class="a11y-bar-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>Версия для слабовидящих</span>
+
+    <div class="a11y-set" role="group" aria-label="Размер шрифта">
+      <span class="a11y-set-label">Шрифт</span>
+      <button type="button" class="a11y-f" data-font="1" aria-pressed="false" aria-label="Обычный размер шрифта">А</button>
+      <button type="button" class="a11y-f a11y-f-mid" data-font="2" aria-pressed="false" aria-label="Крупный шрифт">А</button>
+      <button type="button" class="a11y-f a11y-f-big" data-font="3" aria-pressed="false" aria-label="Очень крупный шрифт">А</button>
+    </div>
+
+    <div class="a11y-set" id="a11y-speech" role="group" aria-label="Озвучивание страницы">
+      <button type="button" class="a11y-act" id="a11y-speak">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg>
+        <span id="a11y-speak-text">Озвучить страницу</span>
+      </button>
+      <button type="button" class="a11y-act" id="a11y-stop" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+        Остановить
+      </button>
+    </div>
+
+    <button type="button" class="a11y-exit" id="a11y-off">Обычная версия</button>
+  </div>
+</div>
+
 <div class="mobile-menu" id="mobile-menu">
   <a href="#about">О центре</a>
   <a href="#doctors">Врачи</a>
@@ -53,6 +407,9 @@
   <a href="price-and-services.html">Услуги и цены</a>
   <a href="smoke.html">Бросить курить</a>
   <a href="#contacts">Контакты</a>
+  <a href="app.html">Дневник трезвости</a>
+  <a href="screen-time.html">Экранное время</a>
+  <button type="button" class="mm-a11y" data-a11y-open><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>Версия для слабовидящих</button>
   <div class="mm-phones">
     <a class="btn btn-primary" href="tel:+78123144482">(812) 314-44-82</a>
     <a class="btn btn-ghost" href="tel:+78123107024">(812) 310-70-24</a>
@@ -186,36 +543,81 @@
       <p class="lead" style="margin-inline:auto">Опытные специалисты, выпускники Военно-Медицинской Академии</p>
     </div>
     <div class="doc-grid">
-      <article class="doc-card reveal">
-        <div class="doc-photo"><img src="assets/img/doctor-ganzha.jpg" alt="Ганжа Олег Владимирович" loading="lazy"></div>
+      <article class="doc-card reveal" data-doc="ganzha" data-name="Ганжа Олег Владимирович" data-anim="assets/img/doctor-ganzha-anim.webp" data-poster="assets/img/doctor-ganzha-poster.jpg">
+        <div class="doc-photo"><img src="assets/img/doctor-ganzha.jpg" alt="Ганжа Олег Владимирович" loading="lazy" width="800" height="600"></div>
         <div class="doc-body">
           <span class="doc-role">Основатель центра</span>
           <h3>Ганжа Олег Владимирович</h3>
           <div class="doc-spec">Ведущий психиатр-нарколог, психотерапевт. Стаж 30 лет.</div>
           <p>Направления: лечение алкоголизма и коморбидных психических расстройств, симптомоцентрированная, личностноцентрированная и социоцентрированная психотерапия.</p>
-        </div>
+                  <button class="doc-open" type="button">
+            Подробнее о враче
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+          <div class="doc-full" hidden>
+            <h4>Направления работы</h4>
+            <ul class="dm-list">
+              <li>Лечение алкоголизма и коморбидных психических расстройств</li>
+              <li>Симптомоцентрированная психотерапия</li>
+              <li>Личностноцентрированная психотерапия</li>
+              <li>Социоцентрированная психотерапия</li>
+            </ul>
+            <div class="dm-facts">
+              <div class="dm-fact"><b>30 лет</b><span>клинической практики</span></div>
+              <div class="dm-fact"><b>с 1992</b><span>работает центр</span></div>
+            </div>
+          </div>
+</div>
       </article>
-      <article class="doc-card reveal d1">
-        <div class="doc-photo">
-          <div class="doc-avatar"><span class="circle" style="background:linear-gradient(135deg,#671cfd,#9257ff)">НГ</span></div>
-        </div>
+      <article class="doc-card reveal d1" data-doc="nemchaninov" data-name="Немчанинов Глеб Григорьевич" data-anim="assets/img/doctor-nemchaninov-anim.webp" data-poster="assets/img/doctor-nemchaninov-poster.jpg">
+        <div class="doc-photo"><img src="assets/img/doctor-nemchaninov.jpg" alt="Немчанинов Глеб Григорьевич" loading="lazy" width="800" height="600"></div>
         <div class="doc-body">
           <span class="doc-role">Главный врач</span>
           <h3>Немчанинов Глеб Григорьевич</h3>
           <div class="doc-spec">Психиатр-нарколог, психиатр, психотерапевт.</div>
           <p>Направления: интегративная психотерапия, гештальт-психотерапия, позитивная психотерапия, психосинтез у больных алкоголизмом.</p>
-        </div>
+                  <button class="doc-open" type="button">
+            Подробнее о враче
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+          <div class="doc-full" hidden>
+            <h4>Направления работы</h4>
+            <ul class="dm-list">
+              <li>Интегративная психотерапия</li>
+              <li>Гештальт-психотерапия</li>
+              <li>Позитивная психотерапия</li>
+              <li>Психосинтез у больных алкоголизмом</li>
+            </ul>
+            <div class="dm-facts">
+              <div class="dm-fact"><b>20 лет</b><span>в центре</span></div>
+              <div class="dm-fact"><b>с 1992</b><span>работает центр</span></div>
+            </div>
+          </div>
+</div>
       </article>
-      <article class="doc-card reveal d2">
-        <div class="doc-photo">
-          <div class="doc-avatar"><span class="circle" style="background:linear-gradient(135deg,#f5553f,#e03a24)">СА</span></div>
-        </div>
+      <article class="doc-card reveal d2" data-doc="sokolov" data-name="Соколов Андрей Владимирович" data-anim="assets/img/doctor-sokolov-anim.webp" data-poster="assets/img/doctor-sokolov-poster.jpg">
+        <div class="doc-photo"><img src="assets/img/doctor-sokolov.jpg" alt="Соколов Андрей Владимирович" loading="lazy" width="800" height="600"></div>
         <div class="doc-body">
           <span class="doc-role">Зам. главного врача</span>
           <h3>Соколов Андрей Владимирович</h3>
           <div class="doc-spec">Ведущий терапевт, невролог клиники.</div>
           <p>Направления: неврологические и терапевтические расстройства у больных алкоголизмом.</p>
-        </div>
+                  <button class="doc-open" type="button">
+            Подробнее о враче
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+          <div class="doc-full" hidden>
+            <h4>Направления работы</h4>
+            <ul class="dm-list">
+              <li>Неврологические расстройства у больных алкоголизмом</li>
+              <li>Терапевтические расстройства у больных алкоголизмом</li>
+            </ul>
+            <div class="dm-facts">
+              <div class="dm-fact"><b>20 лет</b><span>в центре</span></div>
+              <div class="dm-fact"><b>с 1992</b><span>работает центр</span></div>
+            </div>
+          </div>
+</div>
       </article>
     </div>
     <div class="doc-more reveal">
@@ -450,6 +852,8 @@
           <li><a href="#reviews">Отзывы</a></li>
           <li><a href="price-and-services.html">Услуги и цены</a></li>
           <li><a href="smoke.html">Бросить курить</a></li>
+          <li><a href="app.html">Дневник трезвости</a></li>
+          <li><a href="screen-time.html">Экранное время</a></li>
           <li><a href="#contacts">Контакты</a></li>
         </ul>
       </div>
@@ -462,6 +866,7 @@
         </ul>
       </div>
     </div>
+    <button type="button" class="footer-a11y" data-a11y-open><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>Версия для слабовидящих</button>
     <div class="footer-bottom">
       <span>&copy; 1992 - <span id="year">2026</span> Санкт-Петербург, ООО «Академическая Служба»</span>
       <span>О нас в соответствии с Приказом №956н</span>
@@ -471,6 +876,26 @@
 </footer>
 
 <!-- ================= MODAL ================= -->
+<div class="modal doc-modal" id="doctor-modal" role="dialog" aria-modal="true" aria-labelledby="dm-name">
+  <div class="modal-backdrop" data-close-doc></div>
+  <div class="modal-card dm-card">
+    <button class="modal-close" type="button" data-close-doc aria-label="Закрыть">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+    <div class="dm-media" aria-hidden="true"></div>
+    <div class="dm-content">
+      <span class="doc-role" id="dm-role"></span>
+      <h3 id="dm-name"></h3>
+      <div class="dm-spec" id="dm-spec"></div>
+      <div class="dm-body"></div>
+      <button class="btn btn-primary dm-cta" type="button" data-open-modal>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
+        Записаться на консультацию
+      </button>
+    </div>
+  </div>
+</div>
+
 <div class="modal" id="callback-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
   <div class="modal-backdrop" data-close-modal></div>
   <div class="modal-card">

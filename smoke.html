@@ -24,11 +24,14 @@
       <a href="index.html#reviews">Отзывы</a>
       <a href="price-and-services.html">Услуги и цены</a>
       <a href="smoke.html" class="active">Бросить курить</a>
+      <a href="screen-time.html">Экран</a>
+      <a href="app.html">Дневник</a>
       <a href="index.html#contacts">Контакты</a>
     </nav>
     <div class="header-cta">
-      <button class="a11y-btn" id="a11y-toggle" title="Версия для слабовидящих" aria-label="Версия для слабовидящих: крупный шрифт и повышенный контраст">
+      <button class="a11y-btn" id="a11y-toggle" aria-pressed="false" title="Версия для слабовидящих" aria-label="Версия для слабовидящих: крупный шрифт, контраст и озвучивание">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span class="a11y-btn-text">Версия для слабовидящих</span>
       </button>
       <div class="header-phone">
         <a href="tel:+78123144482">(812) 314-44-82</a>
@@ -45,6 +48,32 @@
   </div>
 </header>
 
+<div class="a11y-bar" id="a11y-bar" hidden>
+  <div class="container a11y-bar-in">
+    <span class="a11y-bar-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>Версия для слабовидящих</span>
+
+    <div class="a11y-set" role="group" aria-label="Размер шрифта">
+      <span class="a11y-set-label">Шрифт</span>
+      <button type="button" class="a11y-f" data-font="1" aria-pressed="false" aria-label="Обычный размер шрифта">А</button>
+      <button type="button" class="a11y-f a11y-f-mid" data-font="2" aria-pressed="false" aria-label="Крупный шрифт">А</button>
+      <button type="button" class="a11y-f a11y-f-big" data-font="3" aria-pressed="false" aria-label="Очень крупный шрифт">А</button>
+    </div>
+
+    <div class="a11y-set" id="a11y-speech" role="group" aria-label="Озвучивание страницы">
+      <button type="button" class="a11y-act" id="a11y-speak">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg>
+        <span id="a11y-speak-text">Озвучить страницу</span>
+      </button>
+      <button type="button" class="a11y-act" id="a11y-stop" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+        Остановить
+      </button>
+    </div>
+
+    <button type="button" class="a11y-exit" id="a11y-off">Обычная версия</button>
+  </div>
+</div>
+
 <div class="mobile-menu" id="mobile-menu">
   <a href="index.html#about">О центре</a>
   <a href="index.html#doctors">Врачи</a>
@@ -52,6 +81,9 @@
   <a href="price-and-services.html">Услуги и цены</a>
   <a href="smoke.html">Бросить курить</a>
   <a href="index.html#contacts">Контакты</a>
+  <a href="app.html">Дневник трезвости</a>
+  <a href="screen-time.html">Экранное время</a>
+  <button type="button" class="mm-a11y" data-a11y-open><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>Версия для слабовидящих</button>
   <div class="mm-phones">
     <a class="btn btn-primary" href="tel:+78123144482">(812) 314-44-82</a>
     <a class="btn btn-ghost" href="tel:+78123107024">(812) 310-70-24</a>
@@ -253,6 +285,8 @@
           <li><a href="index.html#reviews">Отзывы</a></li>
           <li><a href="price-and-services.html">Услуги и цены</a></li>
           <li><a href="smoke.html">Бросить курить</a></li>
+          <li><a href="app.html">Дневник трезвости</a></li>
+          <li><a href="screen-time.html">Экранное время</a></li>
           <li><a href="index.html#contacts">Контакты</a></li>
         </ul>
       </div>
@@ -265,6 +299,7 @@
         </ul>
       </div>
     </div>
+    <button type="button" class="footer-a11y" data-a11y-open><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>Версия для слабовидящих</button>
     <div class="footer-bottom">
       <span>&copy; 1992 - <span id="year">2026</span> Санкт-Петербург, ООО «Академическая Служба»</span>
       <span>О нас в соответствии с Приказом №956н</span>

@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Экранное время и бесконечная лента | Академический Медицинский Центр</title>
+  <meta name="description" content="Как бесконечная лента соцсетей влияет на сон, внимание, настроение и отношения, почему остановиться трудно и пять шагов, которые действительно сокращают экранное время.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header class="header" id="header">
+  <div class="container header-in">
+    <a class="logo" href="index.html" aria-label="АМЦ, на главную">
+      <img src="assets/logo.svg" alt="Академический Медицинский Центр" width="192" height="44">
+    </a>
+    <nav class="nav" aria-label="Основное меню">
+      <a href="index.html#about">О центре</a>
+      <a href="index.html#doctors">Врачи</a>
+      <a href="index.html#reviews">Отзывы</a>
+      <a href="price-and-services.html">Услуги и цены</a>
+      <a href="smoke.html" class="active">Бросить курить</a>
+      <a href="screen-time.html" class="active">Экран</a>
+      <a href="app.html">Дневник</a>
+      <a href="index.html#contacts">Контакты</a>
+    </nav>
+    <div class="header-cta">
+      <button class="a11y-btn" id="a11y-toggle" aria-pressed="false" title="Версия для слабовидящих" aria-label="Версия для слабовидящих: крупный шрифт, контраст и озвучивание">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span class="a11y-btn-text">Версия для слабовидящих</span>
+      </button>
+      <div class="header-phone">
+        <a href="tel:+78123144482">(812) 314-44-82</a>
+        <span>круглосуточно, анонимно</span>
+      </div>
+      <button class="btn btn-primary" data-open-modal>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
+        Перезвонить мне
+      </button>
+      <button class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="a11y-bar" id="a11y-bar" hidden>
+  <div class="container a11y-bar-in">
+    <span class="a11y-bar-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>Версия для слабовидящих</span>
+
+    <div class="a11y-set" role="group" aria-label="Размер шрифта">
+      <span class="a11y-set-label">Шрифт</span>
+      <button type="button" class="a11y-f" data-font="1" aria-pressed="false" aria-label="Обычный размер шрифта">А</button>
+      <button type="button" class="a11y-f a11y-f-mid" data-font="2" aria-pressed="false" aria-label="Крупный шрифт">А</button>
+      <button type="button" class="a11y-f a11y-f-big" data-font="3" aria-pressed="false" aria-label="Очень крупный шрифт">А</button>
+    </div>
+
+    <div class="a11y-set" id="a11y-speech" role="group" aria-label="Озвучивание страницы">
+      <button type="button" class="a11y-act" id="a11y-speak">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg>
+        <span id="a11y-speak-text">Озвучить страницу</span>
+      </button>
+      <button type="button" class="a11y-act" id="a11y-stop" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+        Остановить
+      </button>
+    </div>
+
+    <button type="button" class="a11y-exit" id="a11y-off">Обычная версия</button>
+  </div>
+</div>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href="index.html#about">О центре</a>
+  <a href="index.html#doctors">Врачи</a>
+  <a href="index.html#reviews">Отзывы</a>
+  <a href="price-and-services.html">Услуги и цены</a>
+  <a href="smoke.html">Бросить курить</a>
+  <a href="index.html#contacts">Контакты</a>
+  <a href="app.html">Дневник трезвости</a>
+  <a href="screen-time.html" class="active">Экранное время</a>
+  <button type="button" class="mm-a11y" data-a11y-open><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>Версия для слабовидящих</button>
+  <div class="mm-phones">
+    <a class="btn btn-primary" href="tel:+78123144482">(812) 314-44-82</a>
+    <a class="btn btn-ghost" href="tel:+78123107024">(812) 310-70-24</a>
+  </div>
+</div>
+
+<main>
+
+<section class="page-hero">
+  <div class="container">
+    <span class="eyebrow">Экранное время</span>
+    <h1 class="display">Пока вы листаете <span class="accent">ленту</span></h1>
+    <p class="lead">Три часа в телефоне каждый день - это сорок пять полных суток в году. Не вечеров, а суток. Разбираем, куда уходит это время и что с этим делать.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary btn-lg" href="app.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M11 18h2"/></svg>
+        Считать своё время
+      </a>
+      <a class="btn btn-ghost btn-lg" href="#help">Что помогает</a>
+    </div>
+  </div>
+</section>
+
+<section class="section scr-math-sec">
+  <div class="container">
+    <div class="scr-math">
+      <div><b>3 часа</b><span>в день в телефоне</span></div>
+      <div class="scr-math-eq" aria-hidden="true">=</div>
+      <div><b>21 час</b><span>в неделю</span></div>
+      <div class="scr-math-eq" aria-hidden="true">=</div>
+      <div class="is-big"><b>45 суток</b><span>в год</span></div>
+    </div>
+    <p class="scr-math-note">Столько времени уходит при среднем экранном времени в три часа. Посмотрите в настройках телефона, сколько выходит у вас.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow">Последствия</span>
+      <h2 class="h2">Как это отражается на жизни</h2>
+      <p class="lead" style="margin-inline:auto">Ниже то, что исследователи устойчиво связывают с большим экранным временем. Это связи, а не приговор: у каждого своя картина.</p>
+    </div>
+    <div class="why-grid">
+      <article class="why-card reveal">
+        <span class="why-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span>
+        <h3>Сон уходит первым</h3>
+        <p>Телефон перед сном отодвигает засыпание: мешает и свет экрана, и то, что лента держит голову включённой. Люди, которые листают в кровати, засыпают позже и спят меньше. Недосып бьёт по настроению и самоконтролю уже на следующий день.</p>
+      </article>
+      <article class="why-card reveal d1">
+        <span class="why-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg></span>
+        <h3>Внимание дробится</h3>
+        <p>Каждое переключение на телефон стоит не тридцати секунд, а времени на возвращение в задачу. Когда таких переключений десятки за день, час работы даёт результат получаса, и накапливается ощущение, что день прошёл впустую.</p>
+      </article>
+      <article class="why-card reveal d2">
+        <span class="why-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01M15 9h.01"/><circle cx="12" cy="12" r="10"/></svg></span>
+        <h3>Настроение ползёт вниз</h3>
+        <p>В ленте видно чужие лучшие дни, а сравниваешь их со своими обычными. Пассивное листание без общения чаще связывают с подавленностью, а бесконечные плохие новости на ночь - с тревогой и тем самым сном, который уже нарушен.</p>
+      </article>
+      <article class="why-card reveal d3">
+        <span class="why-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg></span>
+        <h3>Близкие рядом, но не с вами</h3>
+        <p>Телефон в руке во время разговора считывается собеседником как «мне неинтересно», даже если это не так. Дети считывают это особенно точно. Вечер вроде проведён вместе, а ощущения общения не осталось ни у кого.</p>
+      </article>
+      <article class="why-card reveal d4">
+        <span class="why-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg></span>
+        <h3>Скука становится невыносимой</h3>
+        <p>Если каждую паузу закрывать лентой, пропадает навык просто ждать. Очередь, дорога, пятнадцать минут тишины начинают раздражать. А ведь именно в этих паузах обычно приходят решения и отдыхает голова.</p>
+      </article>
+      <article class="why-card reveal d5">
+        <span class="why-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></span>
+        <h3>Время исчезает незаметно</h3>
+        <p>Никто не планирует провести в телефоне три часа. Они набираются по пять и десять минут, и в конце дня их невозможно вспомнить. Это единственная трата, которую мы совершаем, не заметив самой траты.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section soft-sec">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow">Почему так трудно остановиться</span>
+      <h2 class="h2">Дело не только в силе воли</h2>
+      <p class="lead" style="margin-inline:auto">Ленту проектировали люди, чья работа - удержать вас подольше. Знать их приёмы полезно: то, что видно, перестаёт действовать так сильно.</p>
+    </div>
+    <div class="scr-mech">
+      <div class="scr-mech-item">
+        <b>Лента без дна</b>
+        <span>У книги есть последняя страница, у ленты нет. Пока не появится причина остановиться, вы не остановитесь, потому что естественной точки выхода просто не предусмотрено.</span>
+      </div>
+      <div class="scr-mech-item">
+        <b>Награда наугад</b>
+        <span>Иногда в ленте попадается что-то действительно интересное, а иногда нет. Непредсказуемость затягивает сильнее, чем гарантированный результат: на этом же построены игровые автоматы.</span>
+      </div>
+      <div class="scr-mech-item">
+        <b>Видео само включается</b>
+        <span>Решение смотреть дальше принимается за вас. Чтобы прекратить, нужно действие, а чтобы продолжить, не нужно ничего.</span>
+      </div>
+      <div class="scr-mech-item">
+        <b>Красная точка</b>
+        <span>Уведомление создаёт маленькое незакрытое дело. Мозг плохо переносит незакрытые дела и возвращает вас к телефону, даже когда там ничего важного.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="help">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow">Что делать</span>
+      <h2 class="h2">Пять шагов, которые работают</h2>
+      <p class="lead" style="margin-inline:auto">Не про отказ от телефона. Про то, чтобы вернуть себе решение, когда и зачем его брать.</p>
+    </div>
+    <ol class="scr-steps">
+      <li><b>Уберите телефон из спальни</b><span>Купите обычный будильник. Это одно действие снимает и вечернее листание, и утреннее, с которого начинается день по чужому сценарию.</span></li>
+      <li><b>Отключите уведомления соцсетей</b><span>Оставьте звонки и сообщения от людей. Всё остальное подождёт, пока вы сами решите посмотреть.</span></li>
+      <li><b>Сделайте экран чёрно-белым</b><span>В настройках есть режим оттенков серого. Без ярких цветов лента заметно теряет притягательность, и это чувствуется в первый же вечер.</span></li>
+      <li><b>Уберите иконки с первого экрана</b><span>Пусть вход занимает три действия вместо одного. Этих трёх секунд обычно хватает, чтобы вспомнить, зачем вы взяли телефон.</span></li>
+      <li><b>Назначьте часы без телефона</b><span>Первый час после пробуждения и час перед сном. Начните с одного из двух, второй добавите позже.</span></li>
+    </ol>
+
+    <div class="scr-cta">
+      <div>
+        <h3>Считайте своё время в дневнике</h3>
+        <p>В демо-приложении центра есть раздел «Экран»: дневная цель, отметка за сегодня, график за неделю и подсчёт часов, которые вернулись к вам.</p>
+      </div>
+      <a class="btn btn-primary btn-lg" href="app.html">Открыть дневник</a>
+    </div>
+  </div>
+</section>
+
+<section class="section soft-sec">
+  <div class="container">
+    <div class="scr-doc">
+      <span class="scr-doc-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c-4.97-2.61-8-6.19-8-10V5l8-3 8 3v6c0 3.81-3.03 7.39-8 10Z"/></svg></span>
+      <div>
+        <h2 class="h2">Когда стоит поговорить с врачом</h2>
+        <p>Само по себе время в телефоне не болезнь, и мы не лечим «зависимость от соцсетей». Но если вы замечаете, что не спите из-за ленты, что тревога после новостей не проходит, что телефон вытесняет работу и близких, а попытки сократить срываются, - за этим часто стоит что-то ещё: тревожное расстройство, бессонница, депрессия. С этим имеет смысл разобраться со специалистом.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-lg" data-open-modal>Перезвонить мне</button>
+          <a class="btn btn-ghost btn-lg" href="tel:+78123144482">(812) 314-44-82</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<div class="modal" id="callback-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-backdrop" data-close-modal></div>
+  <div class="modal-card">
+    <button class="modal-close" data-close-modal aria-label="Закрыть">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+    <div class="modal-form">
+      <h3 id="modal-title">Перезвоним за 5 минут</h3>
+      <p class="sub">Оставьте номер телефона, врач свяжется с вами. Обращение полностью анонимно.</p>
+      <form id="callback-form">
+        <div class="field">
+          <label for="cb-name">Ваше имя</label>
+          <input id="cb-name" name="name" type="text" placeholder="Как к вам обращаться" autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="cb-phone">Номер телефона</label>
+          <input id="cb-phone" name="phone" type="tel" placeholder="+7 (___) ___-__-__" required autocomplete="tel">
+        </div>
+        <button class="btn btn-primary btn-lg" type="submit" style="width:100%">Жду звонка</button>
+      </form>
+      <p class="modal-note">Нажимая кнопку, вы соглашаетесь на обработку персональных данных</p>
+    </div>
+    <div class="modal-success" id="modal-success">
+      <span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+      <h3>Заявка принята!</h3>
+      <p class="sub" style="margin-top:8px">Мы перезвоним вам в ближайшее время. Если вопрос срочный, звоните: <a href="tel:+78123144482" style="font-weight:800;color:var(--coral-deep)">(812) 314-44-82</a></p>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="f-logo" href="index.html"><img src="assets/logo.svg" alt="АМЦ"></a>
+        <p>Академический Медицинский Центр: лечение алкоголизма, выведение из запоя, помощь при никотиновой и других зависимостях. Санкт-Петербург.</p>
+      </div>
+      <div>
+        <h4>Навигация</h4>
+        <ul>
+          <li><a href="index.html#about">О центре</a></li>
+          <li><a href="index.html#doctors">Врачи</a></li>
+          <li><a href="index.html#reviews">Отзывы</a></li>
+          <li><a href="price-and-services.html">Услуги и цены</a></li>
+          <li><a href="smoke.html">Бросить курить</a></li>
+          <li><a href="app.html">Дневник трезвости</a></li>
+          <li><a href="screen-time.html">Экранное время</a></li>
+          <li><a href="index.html#contacts">Контакты</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Контакты</h4>
+        <ul>
+          <li><a href="tel:+78123144482">(812) 314-44-82</a></li>
+          <li><a href="tel:+78123107024">(812) 310-70-24</a></li>
+          <li><a href="index.html#contacts">ул. Садовая д. 56 / Вознесенский пр. д. 45</a></li>
+        </ul>
+      </div>
+    </div>
+    <button type="button" class="footer-a11y" data-a11y-open><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>Версия для слабовидящих</button>
+    <div class="footer-bottom">
+      <span>&copy; 1992 - <span id="year">2026</span> Санкт-Петербург, ООО «Академическая Служба»</span>
+      <span>О нас в соответствии с Приказом №956н</span>
+    </div>
+    <div class="footer-warn">Имеются противопоказания. Необходима консультация специалиста.</div>
+  </div>
+</footer>
+
+<div class="modal" id="callback-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-backdrop" data-close-modal></div>
+  <div class="modal-card">
+    <button class="modal-close" data-close-modal aria-label="Закрыть">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+    <div class="modal-form">
+      <h3 id="modal-title">Перезвоним за 5 минут</h3>
+      <p class="sub">Оставьте номер телефона, врач свяжется с вами. Обращение полностью анонимно.</p>
+      <form id="callback-form">
+        <div class="field">
+          <label for="cb-name">Ваше имя</label>
+          <input id="cb-name" name="name" type="text" placeholder="Как к вам обращаться" autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="cb-phone">Номер телефона</label>
+          <input id="cb-phone" name="phone" type="tel" placeholder="+7 (___) ___-__-__" required autocomplete="tel">
+        </div>
+        <button class="btn btn-primary btn-lg" type="submit" style="width:100%">Жду звонка</button>
+      </form>
+      <p class="modal-note">Нажимая кнопку, вы соглашаетесь на обработку персональных данных</p>
+    </div>
+    <div class="modal-success" id="modal-success">
+      <span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+      <h3>Заявка принята!</h3>
+      <p class="sub" style="margin-top:8px">Мы перезвоним вам в ближайшее время. Если вопрос срочный, звоните: <a href="tel:+78123144482" style="font-weight:800;color:var(--coral-deep)">(812) 314-44-82</a></p>
+    </div>
+  </div>
+</div>
+
+<a class="call-fab" href="tel:+78123144482" aria-label="Позвонить в клинику">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
+</a>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>
