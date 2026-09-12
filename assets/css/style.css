@@ -1743,7 +1743,7 @@ html.a11y .nav { gap: 0; }
   .doc-grid { grid-template-columns: 1fr; max-width: 480px; margin-inline: auto; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .about-grid, .contact-grid { grid-template-columns: 1fr; }
-  .about-photo { max-width: 520px; aspect-ratio: 4/3.4; }
+  .about-photo { max-width: 520px; aspect-ratio: 4 / 4.4; }   /* portrait source: a landscape frame cut the patient out */
   .price-grid { grid-template-columns: 1fr; max-width: 480px; margin-inline: auto; }
   .rev-grid { grid-template-columns: 1fr; }
   .cta-band { grid-template-columns: 1fr; }
