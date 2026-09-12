@@ -654,9 +654,9 @@ html.a11y .nav { gap: 0; }
   border-radius: var(--r-lg);
   overflow: hidden;
   box-shadow: var(--shadow-md);
-  aspect-ratio: 4 / 4.6;
+  aspect-ratio: 4 / 3.5;   /* the clinic shot is 3:2, so a tall frame cut two of the three figures */
 }
-.about-photo img { width: 100%; height: 100%; object-fit: cover; }
+.about-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 55%; }
 
 .about-badge {
   position: absolute;
