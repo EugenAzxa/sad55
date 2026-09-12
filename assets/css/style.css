@@ -26,6 +26,10 @@
   --r-lg: 28px;
   --header-h: 76px;
   --bar-h: 0px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
   --font: "Raleway", "Segoe UI", system-ui, -apple-system, sans-serif;
 }
 
@@ -167,7 +171,12 @@ h1, h2, h3, h4 { line-height: 1.15; font-weight: 800; letter-spacing: -0.015em; 
   position: fixed;
   inset: 0 0 auto 0;
   z-index: 100;
-  height: var(--header-h);
+  /* on a notched iPhone the page runs under the status bar, so the bar's own
+     height is added on top and the content is pushed clear of it */
+  height: calc(var(--header-h) + var(--safe-top));
+  padding-top: var(--safe-top);
+  padding-left: var(--safe-left);
+  padding-right: var(--safe-right);
   display: flex;
   align-items: center;
   background: rgba(255, 255, 255, 0.82);
@@ -284,7 +293,7 @@ html.a11y .nav { gap: 0; }
 
 .a11y-bar {
   position: fixed;
-  inset: var(--header-h) 0 auto 0;
+  inset: calc(var(--header-h) + var(--safe-top)) 0 auto 0;
   z-index: 99;
   background: var(--ink);
   color: #fff;
@@ -392,15 +401,19 @@ html.a11y .nav { gap: 0; }
 /* mobile menu */
 .mobile-menu {
   position: fixed;
-  inset: calc(var(--header-h) + var(--bar-h)) 0 auto 0;
+  inset: calc(var(--header-h) + var(--bar-h) + var(--safe-top)) 0 auto 0;
   z-index: 99;
   background: #fff;
   border-bottom: 1px solid var(--line);
   box-shadow: var(--shadow-md);
-  padding: 10px 4% 26px;
+  padding: 10px 4% calc(26px + var(--safe-bottom));
   display: none;
   flex-direction: column;
   gap: 2px;
+  max-height: calc(100vh - var(--header-h) - var(--bar-h) - var(--safe-top));
+  max-height: calc(100dvh - var(--header-h) - var(--bar-h) - var(--safe-top));
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .mobile-menu.open { display: flex; }
 .mobile-menu a {
@@ -420,7 +433,7 @@ html.a11y .nav { gap: 0; }
 
 .hero {
   position: relative;
-  padding: calc(var(--header-h) + var(--bar-h) + clamp(44px, 8vh, 90px)) 0 clamp(50px, 8vh, 100px);
+  padding: calc(var(--header-h) + var(--bar-h) + var(--safe-top) + clamp(44px, 8vh, 90px)) 0 clamp(50px, 8vh, 100px);
   overflow: hidden;
 }
 
@@ -1683,8 +1696,8 @@ html.a11y .nav { gap: 0; }
 
 .call-fab {
   position: fixed;
-  right: 18px;
-  bottom: 18px;
+  right: calc(18px + var(--safe-right));
+  bottom: calc(18px + var(--safe-bottom));
   z-index: 90;
   width: 58px;
   height: 58px;
@@ -1720,7 +1733,7 @@ html.a11y .nav { gap: 0; }
 /* ---------- page hero (inner pages) ---------- */
 
 .page-hero {
-  padding: calc(var(--header-h) + var(--bar-h) + clamp(40px, 7vh, 80px)) 0 clamp(36px, 6vh, 70px);
+  padding: calc(var(--header-h) + var(--bar-h) + var(--safe-top) + clamp(40px, 7vh, 80px)) 0 clamp(36px, 6vh, 70px);
   position: relative;
   overflow: hidden;
 }
