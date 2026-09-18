@@ -1808,31 +1808,98 @@ html.intro-off .intro { display: none; }
   transition: transform 1.1s cubic-bezier(0.4, 0, 0.7, 1);
 }
 
-/* --- motion is deliberately sparse: the field slides, the boat rides it, the sun comes up.
-       everything else holds still (see UX rule: animate 1-2 key elements per view) --- */
+/* --- choreography: many small motions with long periods, so the scene feels
+       alive without ever getting busy. Amplitudes stay tiny on purpose. --- */
 
+/* the water never stops moving, but barely */
+@keyframes i-drift-far   { to { transform: translateX(-520px); } }
+@keyframes i-drift-mid   { to { transform: translateX(-400px); } }
+@keyframes i-drift-near  { to { transform: translateX(-300px); } }
+@keyframes i-drift-front { to { transform: translateX(-230px); } }
+
+.i-w-far   { animation: i-drift-far   46s linear infinite; }
+.i-w-mid   { animation: i-drift-mid   30s linear infinite; }
+.i-w-near  { animation: i-drift-near  20s linear infinite; }
+.i-w-front { animation: i-drift-front 13s linear infinite; }
+.i-foam    { animation: i-drift-front 13s linear infinite; }
+
+/* the field slides past, then never comes back */
 @keyframes i-clear-far  { to { transform: translateX(-2800px); } }
 @keyframes i-clear-near { to { transform: translateX(-3350px); } }
 
 .i-debris-far  { animation: i-clear-far  3.2s 1.5s cubic-bezier(0.45, 0, 0.72, 0.95) forwards; }
 .i-debris-near { animation: i-clear-near 3.2s 1.5s cubic-bezier(0.45, 0, 0.72, 0.95) forwards; }
 
-@keyframes i-rock {
-  0%, 100% { transform: translateY(-3px) rotate(-1deg); }
-  50%      { transform: translateY(3px)  rotate(1.1deg); }
+/* each bottle rides its own little swell, out of phase with its neighbours */
+@keyframes i-bob {
+  0%, 100% { transform: translateY(-2.5px) rotate(-1.4deg); }
+  50%      { transform: translateY(2.5px)  rotate(1.6deg); }
 }
-.i-boat { animation: i-rock 6.5s ease-in-out infinite; }
+.i-bob { animation-name: i-bob; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
 
+/* the boat: heave and pitch run on different periods, which is what makes it
+   read as water rather than a metronome */
 @keyframes i-boat-in {
   from { opacity: 0; transform: translateY(60px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.i-boat-in { animation: i-boat-in 1.1s cubic-bezier(0.22, 0.8, 0.3, 1) both; }
+@keyframes i-heave {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-5px); }
+}
+@keyframes i-pitch {
+  0%, 100% { transform: rotate(-0.9deg); }
+  50%      { transform: rotate(1.1deg); }
+}
+.i-boat-in {
+  animation:
+    i-boat-in 1.1s cubic-bezier(0.22, 0.8, 0.3, 1) both,
+    i-heave 7s 1.1s ease-in-out infinite;
+}
+.i-boat { animation: i-pitch 9.5s ease-in-out infinite; }
+
+/* hands steady on the wheel, small corrections only */
+@keyframes i-wheel {
+  0%, 100% { transform: rotate(-5deg); }
+  50%      { transform: rotate(4deg); }
+}
+.i-wheel { animation: i-wheel 8s ease-in-out infinite; }
+
+@keyframes i-wake-pulse { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
+.i-wake { animation: i-wake-pulse 5s ease-in-out infinite; }
 
 /* base scale keeps the whole boat inside the portrait crop; wider screens get it back */
 .i-boat-scale { transform-origin: 770px 700px; transform: scale(1); }
 @media (min-width: 720px)  { .i-boat-scale { transform: translateX(-120px) scale(1.4); } }
 @media (min-width: 1100px) { .i-boat-scale { transform: translateX(-190px) scale(1.6); } }
+
+/* a few stars breathe until the dawn washes them out */
+@keyframes i-tw { 0%, 100% { opacity: 0.25; } 50% { opacity: 0.9; } }
+.i-tw { animation-name: i-tw; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+
+/* gulls cross once the sun is up: one pass, gone before the copy settles */
+@keyframes i-gull-a {
+  0%   { transform: translate(-80px, 470px) scale(1.15); }
+  100% { transform: translate(1720px, 430px) scale(1.15); }
+}
+@keyframes i-gull-b {
+  0%   { transform: translate(-150px, 495px) scale(0.85); }
+  100% { transform: translate(1700px, 465px) scale(0.85); }
+}
+@keyframes i-gull-c {
+  0%   { transform: translate(-60px, 452px) scale(0.65); }
+  100% { transform: translate(1690px, 488px) scale(0.65); }
+}
+.i-gull-a { animation: i-gull-a 6.5s 3.4s linear both; }
+.i-gull-b { animation: i-gull-b 7.5s 3.9s linear both; }
+.i-gull-c { animation: i-gull-c 8s 4.5s linear both; }
+
+@keyframes i-flap {
+  0%, 100% { transform: scaleY(1); }
+  50%      { transform: scaleY(0.35) translateY(1.5px); }
+}
+.i-flap { animation: i-flap 0.5s ease-in-out infinite; }
+.i-flap path { transform-box: fill-box; transform-origin: center; }
 
 /* --- dawn: the one other thing that moves --- */
 
@@ -1848,6 +1915,13 @@ html.intro-off .intro { display: none; }
   to   { opacity: 1; transform: translateY(0); }
 }
 .i-sun { animation: i-sun-rise 3s 2.4s cubic-bezier(0.16, 0.8, 0.3, 1) both; }
+
+@keyframes i-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.045); } }
+.i-sun ellipse { transform-origin: 800px 498px; animation: i-breathe 9s 3s ease-in-out infinite; }
+
+@keyframes i-shimmer { 0%, 100% { opacity: 1; } 50% { opacity: 0.72; } }
+.i-reflect ellipse:nth-child(3n) { animation: i-shimmer 4.6s ease-in-out infinite; }
+.i-reflect ellipse:nth-child(3n+1) { animation: i-shimmer 5.8s -2s ease-in-out infinite; }
 
 /* --- copy: the problem, then the way out --- */
 
@@ -1914,8 +1988,14 @@ html.intro-off .intro { display: none; }
   to   { opacity: 1; transform: translateY(0); }
 }
 .intro-eyebrow { animation: i-copy-in 0.95s 4.6s cubic-bezier(0.22, 0.8, 0.3, 1) both; }
-.intro-title   { animation: i-copy-in 0.95s 4.75s cubic-bezier(0.22, 0.8, 0.3, 1) both; }
-.intro-sub     { animation: i-copy-in 0.95s 4.9s cubic-bezier(0.22, 0.8, 0.3, 1) both; }
+.intro-title   { overflow: hidden; animation: i-fade-in 0.4s 4.7s ease both; }
+.intro-title .rise {
+  display: inline-block;
+  transform: translateY(112%);
+  animation: i-rise 1s 4.72s cubic-bezier(0.16, 0.9, 0.3, 1) forwards;
+}
+@keyframes i-rise { to { transform: translateY(0); } }
+.intro-sub     { animation: i-copy-in 0.95s 5.05s cubic-bezier(0.22, 0.8, 0.3, 1) both; }
 
 /* --- skip --- */
 
