@@ -508,7 +508,8 @@ html.a11y .nav { gap: 0; }
   aspect-ratio: 4 / 3.4;
   position: relative;
 }
-.hero-photo img { width: 100%; height: 100%; object-fit: cover; }
+.hero-photo img,
+.hero-photo video { width: 100%; height: 100%; object-fit: cover; display: block; }
 .hero-photo::after {
   content: "";
   position: absolute;

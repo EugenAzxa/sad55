@@ -464,6 +464,16 @@
     });
   }
 
+  /* hero clip: honour reduced motion by holding on the poster frame */
+  var heroVideo = document.getElementById("hero-video");
+  if (heroVideo && window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    heroVideo.removeAttribute("autoplay");
+    heroVideo.autoplay = false;
+    heroVideo.loop = false;
+    try { heroVideo.pause(); heroVideo.currentTime = 0; } catch (e) {}
+  }
+
   /* footer year */
   var year = document.getElementById("year");
   if (year) year.textContent = new Date().getFullYear().toString();

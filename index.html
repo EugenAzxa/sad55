@@ -458,7 +458,13 @@
     </div>
     <div class="hero-visual reveal">
       <div class="hero-photo">
-        <img src="assets/img/clinic-0659.jpg" alt="Кабинет Академического Медицинского Центра" fetchpriority="high">
+        <video id="hero-video" class="hero-video" autoplay muted loop playsinline preload="metadata"
+               poster="assets/img/hero-clinic-poster.jpg"
+               aria-label="Врач Академического Медицинского Центра на приёме с пациентом">
+          <source src="assets/img/hero-clinic.webm" type="video/webm">
+          <source src="assets/img/hero-clinic.mp4" type="video/mp4">
+          <img src="assets/img/hero-clinic-poster.jpg" alt="Врач Академического Медицинского Центра на приёме с пациентом" fetchpriority="high">
+        </video>
       </div>
       <div class="float-card fc-1">
         <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c-4.97-2.61-8-6.19-8-10V5l8-3 8 3v6c0 3.81-3.03 7.39-8 10Z"/></svg></span>
