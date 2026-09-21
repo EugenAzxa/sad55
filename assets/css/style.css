@@ -598,6 +598,12 @@ html.a11y .nav { gap: 0; }
 .ef-b { animation: ef-drift-b 27s ease-in-out infinite; }
 .ef-c { animation: ef-drift-c 21s ease-in-out infinite; }
 
+/* inner page banners are a third the height of the home hero, so the marks
+   are scaled down and the third one dropped rather than crowding the band */
+.page-hero .ef-a { width: 19rem; top: -5rem; left: -6rem; opacity: 0.045; }
+.page-hero .ef-b { width: 12rem; bottom: -3.5rem; right: -2rem; opacity: 0.04; }
+.page-hero .ef-c { display: none; }
+
 @media (max-width: 760px) {
   .ef-a { width: 22rem; top: -4rem; left: -7rem; }
   .ef-b { width: 14rem; bottom: -3rem; right: -3rem; }
