@@ -555,6 +555,59 @@ html.a11y .nav { gap: 0; }
   50% { transform: translateY(-10px); }
 }
 
+/* ---------- floating emblem watermark ---------- */
+
+/* Three copies of the centre's emblem drifting behind the hero. Kept very
+   faint on purpose: it should register as texture, not as a logo someone
+   left on the page. The hero already clips overflow. */
+.emblem-float {
+  position: absolute;
+  display: block;
+  aspect-ratio: 80 / 62;
+  color: var(--coral);
+  pointer-events: none;
+  will-change: transform;
+  /* masked rather than inlined three times: the emblem is one cached 12 KB
+     file, and the mask lets each copy take its own brand colour */
+  background: currentColor;
+  -webkit-mask: url("../emblem.svg") center / contain no-repeat;
+  mask: url("../emblem.svg") center / contain no-repeat;
+}
+
+/* placed so one copy reads as the whole emblem and the others only hint at it,
+   and none sit behind the hero photo where they would be wasted */
+.ef-a { width: 30rem; top: -9rem; left: -11rem; opacity: 0.05; }
+.ef-b { width: 17rem; bottom: -2.5rem; right: -2rem; opacity: 0.045; color: var(--violet); }
+.ef-c { width: 9rem; bottom: 12%; left: 3%; opacity: 0.04; }
+
+@keyframes ef-drift-a {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50%      { transform: translate3d(2.2rem, 1.6rem, 0) rotate(7deg); }
+}
+@keyframes ef-drift-b {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50%      { transform: translate3d(-1.8rem, -2.2rem, 0) rotate(-9deg); }
+}
+@keyframes ef-drift-c {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50%      { transform: translate3d(1.4rem, -1.2rem, 0) rotate(12deg); }
+}
+
+/* long, mismatched periods so the three never fall into step */
+.ef-a { animation: ef-drift-a 34s ease-in-out infinite; }
+.ef-b { animation: ef-drift-b 27s ease-in-out infinite; }
+.ef-c { animation: ef-drift-c 21s ease-in-out infinite; }
+
+@media (max-width: 760px) {
+  .ef-a { width: 22rem; top: -4rem; left: -7rem; }
+  .ef-b { width: 14rem; bottom: -3rem; right: -3rem; }
+  .ef-c { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ef-a, .ef-b, .ef-c { animation: none; }
+}
+
 /* ---------- stats ---------- */
 
 .stats { padding: 8px 0 clamp(40px, 7vh, 80px); }
