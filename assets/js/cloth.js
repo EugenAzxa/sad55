@@ -102,7 +102,14 @@ var FRAG = [
 var BLEED = 48;
 
 var CSS = '.cloth-host{position:relative}' +
+          /* A canvas is a replaced element: with width:auto and all four
+             insets set it lays out at its INTRINSIC size - the backing
+             store, which is CSS px x dpr - instead of stretching to the
+             insets. On a retina screen that renders the fabric at double
+             size, spilling across the rest of the page. Pin both axes. */
           '.cloth-canvas{position:absolute;inset:-' + BLEED + 'px;' +
+            'width:calc(100% + ' + (BLEED * 2) + 'px);' +
+            'height:calc(100% + ' + (BLEED * 2) + 'px);' +
             'display:block;pointer-events:none}' +
           /* the source markup stays in the DOM for screen readers and as the
              fallback, and is only hidden once the fabric really rendered */
@@ -722,6 +729,11 @@ function domPainter(host, o) {
       var sc = cs.webkitTextStrokeColor
             || cs.getPropertyValue('-webkit-text-stroke-color') || cs.color;
       var fills = !CLEAR.test(cs.color);
+      /* the Range rects below measure the TRANSFORMED text the browser laid
+         out, but nodeValue is the raw source. Draw an uppercase eyebrow from
+         its lowercase source and the glyphs come out short of their own
+         measured slots, leaving gaps. */
+      var tt = cs.textTransform;
       ctx.lineWidth = sw;
       ctx.strokeStyle = sc;
       /* canvas letterSpacing is ignored where unsupported, and the per-word
@@ -744,8 +756,12 @@ function domPainter(host, o) {
         /* text sits centred in its line box, so back out the leading */
         var y = r.top - hb.top + (r.height - fSize) / 2 + ascent;
         var x = r.left - hb.left;
-        if (fills) ctx.fillText(mm[0], x, y);
-        if (sw > 0 && !CLEAR.test(sc)) ctx.strokeText(mm[0], x, y);
+        var word = mm[0];
+        if (tt === 'uppercase') word = word.toUpperCase();
+        else if (tt === 'lowercase') word = word.toLowerCase();
+        else if (tt === 'capitalize') word = word.charAt(0).toUpperCase() + word.slice(1);
+        if (fills) ctx.fillText(word, x, y);
+        if (sw > 0 && !CLEAR.test(sc)) ctx.strokeText(word, x, y);
       }
     }
     try { ctx.letterSpacing = '0px'; } catch (e) {}
