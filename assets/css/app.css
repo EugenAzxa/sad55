@@ -137,7 +137,7 @@
   color: var(--coral);
   text-align: center;
 }
-.ios-call { font-size: 1.02rem; font-weight: 800; }
+.ios-call { font-size: 1.02rem; font-weight: 800; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
 
 .ios-tabs {
   flex: none;

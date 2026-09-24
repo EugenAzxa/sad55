@@ -1521,6 +1521,10 @@ html.a11y .nav { gap: 0; }
    so on touch screens they get real vertical room instead. */
 
 @media (max-width: 900px) {
+  /* phone numbers and the 956н link are inline text at ~20px; on touch they
+     need the 44px minimum like every other control */
+  .doc-text a[href^="tel:"] { display: inline-flex; align-items: center; min-height: 44px; }
+  .f-956 { display: inline-flex; align-items: center; min-height: 44px; }
   .footer ul { gap: 0; }
   .footer ul a {
     display: flex;
