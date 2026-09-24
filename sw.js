@@ -3,7 +3,7 @@
    registration.showNotification in an installed web app), and opening the
    diary without a connection. */
 
-var VERSION = "amc-v1";
+var VERSION = "amc-v2";
 var SHELL = [
   "./app.html",
   "./assets/css/style.css",
@@ -58,7 +58,25 @@ self.addEventListener("fetch", function (e) {
     return;
   }
 
-  /* assets are content-stable, so cache first and refresh in the background */
+  /* Stylesheets and scripts are the two things that actually change while the
+     site is being worked on, and serving them stale meant a fix only appeared
+     on the visit AFTER the one that fetched it. Network first, cache only as
+     the offline fallback. */
+  if (/\.(css|js)$/i.test(url.pathname)) {
+    e.respondWith(
+      fetch(req).then(function (res) {
+        if (res && res.status === 200) {
+          var copy = res.clone();
+          caches.open(VERSION).then(function (c) { c.put(req, copy); });
+        }
+        return res;
+      }).catch(function () { return caches.match(req); })
+    );
+    return;
+  }
+
+  /* images and media do not change under the same name: cache first and
+     refresh in the background */
   e.respondWith(
     caches.match(req).then(function (hit) {
       var net = fetch(req).then(function (res) {
