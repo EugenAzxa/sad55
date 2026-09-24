@@ -474,6 +474,61 @@
     try { heroVideo.pause(); heroVideo.currentTime = 0; } catch (e) {}
   }
 
+  /* glass selection indicator in the nav.
+     The pill is the indicator: it springs to whatever you point at and settles
+     back on the current page. A clipped copy of the labels rides with it, so
+     the label under the glass reads white instead of dark. */
+  var navEl = document.querySelector("nav.nav[data-glass]");
+  if (navEl) {
+    var links = [].slice.call(navEl.querySelectorAll("a"));
+    if (links.length) {
+      var pill = document.createElement("span");
+      pill.className = "nav-pill";
+      navEl.appendChild(pill);
+
+      /* the refracted copy: same labels, same box, highlight colour */
+      var hl = document.createElement("div");
+      hl.className = "nav-hl";
+      hl.setAttribute("aria-hidden", "true");
+      links.forEach(function (a) {
+        var t = document.createElement("span");
+        t.textContent = a.textContent;
+        hl.appendChild(t);
+      });
+      navEl.appendChild(hl);
+
+      var current = links.filter(function (a) { return a.classList.contains("active"); })[0] || null;
+
+      var moveTo = function (a) {
+        if (!a) {
+          navEl.classList.remove("is-lit");
+          return;
+        }
+        var l = a.offsetLeft, w = a.offsetWidth;
+        navEl.style.setProperty("--pill-x", l + "px");
+        navEl.style.setProperty("--pill-w", w + "px");
+        navEl.style.setProperty("--clip-l", l + "px");
+        navEl.style.setProperty("--clip-r", (l + w) + "px");
+        navEl.classList.add("is-lit");
+      };
+
+      /* settle on the current page, once layout and webfonts have settled */
+      var settle = function () { moveTo(current); };
+      settle();
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(settle);
+      window.addEventListener("resize", settle, { passive: true });
+
+      links.forEach(function (a) {
+        a.addEventListener("mouseenter", function () { moveTo(a); });
+        a.addEventListener("focus", function () { moveTo(a); });
+      });
+      navEl.addEventListener("mouseleave", settle);
+      navEl.addEventListener("focusout", function (e) {
+        if (!navEl.contains(e.relatedTarget)) settle();
+      });
+    }
+  }
+
   /* footer year */
   var year = document.getElementById("year");
   if (year) year.textContent = new Date().getFullYear().toString();

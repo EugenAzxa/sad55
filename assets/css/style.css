@@ -216,8 +216,72 @@ h1, h2, h3, h4 { line-height: 1.15; font-weight: 800; letter-spacing: -0.015em; 
   transition: background 0.18s ease, color 0.18s ease;
 }
 
-.nav a:hover { background: var(--soft); color: var(--ink); }
 .nav a.active { color: var(--coral-deep); }
+
+/* ---------- glass selection indicator ----------
+   The pill IS the indicator. A second copy of the labels sits on top in the
+   highlight colour, clipped to exactly the pill, so whichever label the glass
+   is over reads light instead of dark. Both the pill and the clip move on the
+   same spring, so they stay locked together. */
+
+.nav[data-glass] { position: relative; }
+
+.nav-pill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  height: 100%;
+  border-radius: 999px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate3d(var(--pill-x, 0), 0, 0);
+  width: var(--pill-w, 0px);
+  background: linear-gradient(135deg, rgba(245, 85, 63, 0.92), rgba(224, 58, 36, 0.92));
+  box-shadow:
+    0 1px 1px rgba(255, 255, 255, 0.5) inset,
+    0 -1px 2px rgba(16, 16, 16, 0.12) inset,
+    0 6px 18px -6px rgba(245, 85, 63, 0.55);
+  backdrop-filter: blur(6px) saturate(140%);
+  -webkit-backdrop-filter: blur(6px) saturate(140%);
+  transition:
+    transform 0.52s cubic-bezier(0.34, 1.42, 0.5, 1),
+    width     0.52s cubic-bezier(0.34, 1.42, 0.5, 1),
+    opacity   0.22s ease;
+}
+.nav[data-glass].is-lit .nav-pill { opacity: 1; }
+
+/* the refracted copy: same text, highlight colour, visible only through the glass */
+.nav-hl {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  gap: 4px;
+  pointer-events: none;
+  color: #fff;
+  clip-path: inset(0 calc(100% - var(--clip-r, 0px)) 0 var(--clip-l, 0px) round 999px);
+  transition: clip-path 0.52s cubic-bezier(0.34, 1.42, 0.5, 1);
+}
+.nav-hl span {
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  white-space: nowrap;
+  color: #fff;
+}
+.nav[data-glass] a { position: relative; z-index: 1; background: none; }
+.nav[data-glass] a:hover { background: none; color: var(--ink-soft); }
+.nav[data-glass] a.active { color: var(--coral-deep); }
+
+/* no JS, no glass: keep the original hover */
+.nav:not([data-glass]) a:hover { background: var(--soft); color: var(--ink); }
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-pill { transition: opacity 0.2s ease; }
+  .nav-hl { transition: none; }
+}
 
 .header-cta { display: flex; align-items: center; gap: 14px; flex: none; }
 
