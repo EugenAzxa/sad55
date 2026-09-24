@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Яндекс
+User-agent: Yandex
+Allow: /
+Crawl-delay: 0.5
+
+User-agent: Googlebot
+Allow: /
+
+Sitemap: https://sad56.spb.ru/sitemap.xml
