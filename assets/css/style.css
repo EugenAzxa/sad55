@@ -1471,6 +1471,16 @@ html.a11y .nav { gap: 0; }
 .footer ul a { font-size: 0.92rem; transition: color 0.18s ease; }
 .footer ul a:hover { color: #fff; }
 
+/* licence and registration numbers, so a patient does not have to open the
+   956n page to see who they are dealing with */
+.footer-legal {
+  padding-top: 10px;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.38);
+  max-width: 78ch;
+}
+
 .footer-bottom {
   padding-top: 26px;
   display: flex;

@@ -1,12 +1,100 @@
+# Академический Медицинский Центр - sad56.spb.ru
+# Сайт открыт для всех: обычных поисковиков и ИИ-ассистентов.
+# Ниже агенты перечислены явно, чтобы намерение читалось однозначно.
+
 User-agent: *
 Allow: /
 
-# Яндекс
+# ---- классический поиск ----
 User-agent: Yandex
 Allow: /
 Crawl-delay: 0.5
 
+User-agent: YandexBot
+Allow: /
+
 User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Mail.RU_Bot
+Allow: /
+
+# ---- ИИ-ассистенты и их поисковые роботы ----
+# OpenAI: обучение, поиск в ChatGPT, переходы по ссылке пользователя
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+# Google Gemini и ответы ИИ в выдаче. Googlebot этого НЕ покрывает,
+# за ИИ-использование отвечает отдельный агент.
+User-agent: Google-Extended
+Allow: /
+
+# Anthropic Claude
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+# Common Crawl - на его корпусе учится множество моделей,
+# в том числе DeepSeek, у которого своего робота нет
+User-agent: CCBot
+Allow: /
+
+# Apple Intelligence и Siri
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Meta AI
+User-agent: meta-externalagent
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+# Amazon Alexa
+User-agent: Amazonbot
+Allow: /
+
+# прочие
+User-agent: MistralAI-User
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: DuckAssistBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: YouBot
 Allow: /
 
 Sitemap: https://sad56.spb.ru/sitemap.xml
