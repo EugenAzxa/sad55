@@ -3,3 +3,4 @@
 brag-output*/
 
 .ftp-credentials
+.deploy-state.json
