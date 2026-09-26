@@ -80,6 +80,10 @@ def local_files():
     return out
 
 
+class LoginFailed(Exception):
+    pass
+
+
 class Sftp(object):
     """Сессия sftp на псевдотерминале.
 
@@ -99,13 +103,16 @@ class Sftp(object):
                                '%s@%s' % (user, host)])
             os._exit(127)
         head = self._until(re.compile(rb'(?i)password[^\r\n]*:\s*$'), PROMPT)
-        if PROMPT not in head:
-            os.write(self.fd, password.encode() + b'\n')
-            head = self._until(PROMPT)
+        try:
+            if PROMPT not in head:
+                os.write(self.fd, password.encode() + b'\n')
+                head = self._until(PROMPT)
+        except OSError:
+            # sftp уже умер: канал оборвался раньше, чем спросили пароль
+            head = b''
         if PROMPT not in head:
             self.close()
-            sys.exit('Не пускает на сервер. Проверь пароль, и включён ли SSH-доступ '
-                     'в панели (он гаснет сам через 24 часа).')
+            raise LoginFailed()
 
     def _until(self, *stops):
         buf = b''
@@ -176,7 +183,20 @@ def main():
 
     c = creds()
     root = c['remote'].rstrip('/')
-    s = Sftp(c['host'], c['user'], c['password'], c.get('port', '22'))
+    # Канал до хостинга идёт через VPN и иногда рвётся прямо на входе,
+    # хотя со второй попытки всё проходит. Три захода, потом сдаёмся.
+    s = None
+    for attempt in range(1, 4):
+        try:
+            s = Sftp(c['host'], c['user'], c['password'], c.get('port', '22'))
+            break
+        except LoginFailed:
+            if attempt < 3:
+                print('Не вошёл с попытки %d, пробую ещё раз...' % attempt)
+                time.sleep(3)
+    if s is None:
+        sys.exit('Не пускает на сервер. Проверь пароль, и включён ли SSH-доступ '
+                 'в панели (он гаснет сам через 24 часа).')
 
     # Убедиться, что папка та самая, ПРЕЖДЕ чем что-то писать. Промах здесь
     # означает файлы сайта, рассыпанные мимо цели, или того хуже - поверх
