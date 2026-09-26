@@ -3,7 +3,7 @@
    registration.showNotification in an installed web app), and opening the
    diary without a connection. */
 
-var VERSION = "amc-v2";
+var VERSION = "amc-v3";
 var SHELL = [
   "./app.html",
   "./assets/css/style.css",

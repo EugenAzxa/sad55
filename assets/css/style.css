@@ -1557,6 +1557,38 @@ html.a11y .nav { gap: 0; }
 .modal-card h3 { font-size: 1.4rem; margin-bottom: 8px; }
 .modal-card .sub { color: var(--muted); font-size: 0.92rem; margin-bottom: 22px; }
 
+/* окно контактов: формы обратного звонка на сайте нет, и собирать номера
+   мы не хотим - 152-ФЗ требует хранить их в базе на территории России, а
+   ради двух полей заводить всё это незачем. Пусть звонят сами. */
+.call-big {
+  width: 100%;
+  justify-content: center;
+  font-size: 1.12rem;
+  letter-spacing: 0.01em;
+}
+.modal-contacts {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.modal-contacts li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.modal-contacts svg {
+  width: 17px;
+  height: 17px;
+  flex: none;
+  margin-top: 2px;
+  color: var(--coral);
+}
+
 .field { margin-bottom: 16px; }
 .field label { display: block; font-size: 0.82rem; font-weight: 700; margin-bottom: 7px; }
 .field input {
@@ -1576,19 +1608,6 @@ html.a11y .nav { gap: 0; }
 
 .modal-note { font-size: 0.76rem; color: var(--muted); margin-top: 14px; text-align: center; }
 
-.modal-success { text-align: center; padding: 20px 0 8px; display: none; }
-.modal-success .ok {
-  width: 64px;
-  height: 64px;
-  margin: 0 auto 18px;
-  border-radius: 50%;
-  background: rgba(34, 170, 90, 0.12);
-  color: #1d9e54;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.modal-success .ok svg { width: 30px; height: 30px; }
 
 /* ---------- touch targets on phones ----------
    footer links sit at 17px tall by default, well under the 44px minimum,
@@ -1866,35 +1885,6 @@ html.a11y .nav { gap: 0; }
 
 /* ---------- consent checkbox ---------- */
 
-.cb-consent {
-  display: flex;
-  align-items: flex-start;
-  gap: 11px;
-  margin: 4px 0 18px;
-  font-size: 0.8rem;
-  line-height: 1.45;
-  color: var(--muted);
-  cursor: pointer;
-}
-.cb-consent input { position: absolute; opacity: 0; width: 0; height: 0; }
-.cb-box {
-  width: 20px;
-  height: 20px;
-  flex: none;
-  margin-top: 1px;
-  border-radius: 6px;
-  border: 1.8px solid var(--line);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  transition: background 0.16s, border-color 0.16s;
-}
-.cb-box svg { width: 12px; height: 12px; opacity: 0; transition: opacity 0.14s; }
-.cb-consent input:checked + .cb-box { background: var(--coral); border-color: var(--coral); }
-.cb-consent input:checked + .cb-box svg { opacity: 1; }
-.cb-consent input:focus-visible + .cb-box { outline: 3px solid var(--violet); outline-offset: 2px; }
-.cb-consent a { color: var(--coral); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
 
 /* ---------- floating call (mobile) ---------- */
 

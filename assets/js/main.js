@@ -262,7 +262,7 @@
     });
   });
 
-  /* callback modal */
+  /* окно с телефоном клиники */
   var modal = document.getElementById("callback-modal");
   if (modal) {
     var lastFocus = null;
@@ -270,8 +270,10 @@
       lastFocus = document.activeElement;
       modal.classList.add("open");
       document.body.style.overflow = "hidden";
-      var input = modal.querySelector("input");
-      if (input) setTimeout(function () { input.focus(); }, 60);
+      /* полей тут больше нет, так что фокус уходит на саму кнопку звонка:
+         тому, кто ходит по сайту с клавиатуры, дальше жать некуда */
+      var first = modal.querySelector('a[href^="tel:"]');
+      if (first) setTimeout(function () { first.focus(); }, 60);
     };
     var closeModal = function () {
       modal.classList.remove("open");
@@ -287,54 +289,6 @@
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape" && modal.classList.contains("open")) closeModal();
     });
-
-    /* ---- заявка ----
-       Укажите здесь адрес, куда отправлять заявки (Formspree, своя функция и т.п.).
-       Пока он пустой, форма честно не обещает звонок, а просит позвонить самим. */
-    var CALLBACK_ENDPOINT = "";
-
-    var form = document.getElementById("callback-form");
-    if (form) {
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
-        var agree = document.getElementById("cb-agree");
-        if (agree && !agree.checked) return;
-
-        var showDone = function (sent) {
-          var t = document.getElementById("cb-ok-title");
-          var x = document.getElementById("cb-ok-text");
-          if (t) t.textContent = sent ? "Заявка принята" : "Позвоните нам, пожалуйста";
-          if (x) {
-            x.textContent = sent
-              ? "Мы перезвоним вам в ближайшее время. Если вопрос срочный, звоните сами, линия работает круглосуточно."
-              : "Форма пока не подключена к оператору, поэтому мы не сможем вам перезвонить. Позвоните напрямую, врач ответит круглосуточно и анонимно.";
-          }
-          modal.querySelector(".modal-form").style.display = "none";
-          document.getElementById("modal-success").style.display = "block";
-        };
-
-        if (!CALLBACK_ENDPOINT) {
-          if (window.console) {
-            console.warn("[АМЦ] Заявка никуда не отправлена: CALLBACK_ENDPOINT не задан в assets/js/main.js");
-          }
-          showDone(false);
-          return;
-        }
-
-        var btn = form.querySelector('[type="submit"]');
-        if (btn) { btn.disabled = true; btn.textContent = "Отправляем..."; }
-        fetch(CALLBACK_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "Accept": "application/json" },
-          body: JSON.stringify({
-            name: (document.getElementById("cb-name") || {}).value || "",
-            phone: (document.getElementById("cb-phone") || {}).value || "",
-            page: location.pathname
-          })
-        }).then(function (r) { showDone(r.ok); })
-          .catch(function () { showDone(false); });
-      });
-    }
   }
 
   /* welcome intro: boat to sobriety */

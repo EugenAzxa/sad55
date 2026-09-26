@@ -12,7 +12,7 @@ Modern redesign concept of sad56.ru (Академический Медицинс
 
 - Pure HTML + CSS + vanilla JS, no build step
 - Raleway (Google Fonts), brand colors: coral `#f5553f`, emblem red `#e20016`, violet `#671cfd`, ink `#101010`, soft `#f1f5fc`
-- Scroll-reveal via IntersectionObserver, accessible FAQ accordion, callback modal, a11y mode (larger text) with localStorage persistence
+- Scroll-reveal via IntersectionObserver, accessible FAQ accordion, contact modal, a11y mode (larger text) with localStorage persistence
 - `prefers-reduced-motion` respected, semantic markup, keyboard-friendly focus states
 
 ## Run locally
@@ -28,4 +28,4 @@ python3 -m http.server 8080
 ## Notes
 
 - Doctor and clinic photos are from the original site (Wayback Machine archive).
-- The callback form is front-end only (demo success state); wire it to a backend or service before production use.
+- There is no form anywhere on the site, by design: collecting a Russian visitor's phone number pulls in 152-FZ (data must live in a database inside Russia), a consent flow and a Roskomnadzor filing. The CTAs open a modal with the clinic's number instead.

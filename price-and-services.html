@@ -77,7 +77,7 @@
       </div>
       <button class="btn btn-primary" data-open-modal>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
-        Перезвонить мне
+        Позвонить
       </button>
       <button class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
@@ -277,7 +277,7 @@
         <p>Позвоните нам: врач бесплатно проконсультирует, назначит обследование и поможет подобрать методику. Круглосуточно и анонимно.</p>
       </div>
       <div class="cta-actions">
-        <button class="btn btn-primary btn-lg" data-open-modal>Перезвонить мне</button>
+        <button class="btn btn-primary btn-lg" data-open-modal>Позвонить</button>
         <a class="btn btn-ghost btn-lg" href="tel:+78123144482" style="background:transparent;color:#fff;border-color:rgba(255,255,255,0.3)">(812) 314-44-82</a>
       </div>
     </div>
@@ -336,33 +336,22 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
     </button>
     <div class="modal-form">
-      <h3 id="modal-title">Перезвоним за 5 минут</h3>
-      <p class="sub">Оставьте номер телефона, врач свяжется с вами. Обращение полностью анонимно.</p>
-      <form id="callback-form">
-        <div class="field">
-          <label for="cb-name">Ваше имя</label>
-          <input id="cb-name" name="name" type="text" placeholder="Как к вам обращаться" autocomplete="name">
-        </div>
-        <div class="field">
-          <label for="cb-phone">Номер телефона</label>
-          <input id="cb-phone" name="phone" type="tel" placeholder="+7 (___) ___-__-__" required autocomplete="tel">
-        </div>
-        <label class="cb-consent">
-          <input type="checkbox" id="cb-agree" required>
-          <span class="cb-box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span>
-          <span>Я согласен на обработку персональных данных в соответствии с <a href="privacy.html" target="_blank" rel="noopener">политикой конфиденциальности</a></span>
-        </label>
-        <button class="btn btn-primary btn-lg" type="submit" style="width:100%">Жду звонка</button>
-      </form>
-    </div>
-    <div class="modal-success" id="modal-success">
-      <span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
-      <h3 id="cb-ok-title">Заявка принята</h3>
-      <p class="sub" id="cb-ok-text" style="margin-top:8px">Мы перезвоним вам в ближайшее время.</p>
-      <a class="btn btn-primary btn-lg" href="tel:+78123144482" style="width:100%;justify-content:center;margin-top:18px">
+      <h3 id="modal-title">Позвоните нам</h3>
+      <p class="sub">Врач ответит сам, круглосуточно и анонимно. Ничего заполнять не нужно, данные о себе оставлять тоже не нужно.</p>
+      <a class="btn btn-primary btn-lg call-big" href="tel:+78123144482">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
-        Позвонить сейчас: (812) 314-44-82
+        (812) 314-44-82
       </a>
+      <ul class="modal-contacts">
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <span>Круглосуточно, без выходных</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>Санкт-Петербург, ул. Садовая, 56 / Вознесенский пр., 45</span>
+        </li>
+      </ul>
     </div>
   </div>
 </div>
