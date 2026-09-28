@@ -715,7 +715,10 @@
 .install-note svg { width: 18px; height: 18px; flex: none; color: var(--violet); margin-top: 1px; }
 
 @media (max-width: 760px) {
-  .install-grid { grid-template-columns: 1fr; }
+  /* minmax(0, ...) rather than 1fr: a plain 1fr column cannot shrink below its
+     longest word, which on a 320px phone pushed the steps 9px off-screen */
+  .install-grid { grid-template-columns: minmax(0, 1fr); }
+  .install-steps { min-width: 0; overflow-wrap: break-word; }
   .install-qr { max-width: 240px; margin-inline: auto; }
 }
 

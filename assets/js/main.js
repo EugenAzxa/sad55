@@ -26,6 +26,42 @@
     });
   }
 
+  /* Fit the header to the screen it is actually on. The CSS breakpoints were
+     tuned against Mac font metrics; the same nav set in Windows fonts, or at a
+     browser zoom of 90%, runs wider and pushes the call button off the right
+     edge. So measure: start from the full header and fold it one step at a
+     time (a11y label, phone block, nav) until nothing overflows. */
+  var hin = header && header.querySelector(".header-in");
+  if (hin) {
+    var STEPS = ["hdr-s1", "hdr-s2", "hdr-s3"];
+    var fitHeader = function () {
+      hin.classList.remove.apply(hin.classList, STEPS);
+      for (var i = 0; i < STEPS.length && hin.scrollWidth > hin.clientWidth + 1; i++) {
+        hin.classList.add(STEPS[i]);
+      }
+      /* back to the full nav: a menu left open from the burger would hang there */
+      if (menu && burger && getComputedStyle(burger).display === "none") {
+        menu.classList.remove("open");
+        burger.setAttribute("aria-expanded", "false");
+      }
+    };
+    var fitQueued = false;
+    var queueFit = function () {
+      if (fitQueued) return;
+      fitQueued = true;
+      requestAnimationFrame(function () { fitQueued = false; fitHeader(); });
+    };
+    fitHeader();
+    window.addEventListener("resize", queueFit);
+    /* the webfont arrives after first paint and is wider than the fallback */
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitHeader);
+    /* large-print mode grows the type without changing the window size */
+    if (window.MutationObserver) {
+      new MutationObserver(queueFit).observe(document.documentElement,
+        { attributes: true, attributeFilter: ["class"] });
+    }
+  }
+
   /* accessibility mode: larger text, higher contrast, and the page read aloud in Russian */
   var root = document.documentElement;
   var a11yBtn = document.getElementById("a11y-toggle");

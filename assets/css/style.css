@@ -138,6 +138,14 @@ h1, h2, h3, h4 { line-height: 1.15; font-weight: 800; letter-spacing: -0.015em; 
 
 .btn svg { width: 18px; height: 18px; flex: none; }
 
+/* On a 320-360px phone a long label ("Посмотреть полный прайс-лист") set on one
+   line is wider than the screen and drags the whole page sideways. Let button
+   text wrap there and never let a button outgrow its column. */
+@media (max-width: 560px) {
+  .btn { white-space: normal; text-align: center; line-height: 1.25; max-width: 100%; }
+  .btn-lg { padding: 16px 24px; }
+}
+
 .btn-primary {
   background: linear-gradient(135deg, var(--coral) 0%, var(--coral-deep) 100%);
   color: #fff;
@@ -1938,12 +1946,31 @@ html.a11y .nav { gap: 0; }
   .header-phone { display: none; }
 }
 
-/* the nav carries 8 items now, so the burger takes over earlier and the phone block
-   steps aside in the band where the full nav still fits but the header does not */
+/* the nav carries 9 items, so the burger takes over earlier and the phone block
+   steps aside in the band where the full nav still fits but the header does not.
+   These widths are only the no-JS floor: text renders wider on Windows than on a
+   Mac, so main.js also measures the header and folds it further if it still
+   does not fit (the hdr-s1..s3 classes below). */
 @media (max-width: 1349px) {
   .nav { display: none; }
   .burger { display: inline-flex; }
   .header-phone { display: none; }
+  .header-cta { margin-left: auto; }
+}
+
+/* Folded by main.js step by step until the header fits: first the a11y label,
+   then the phone block, then the whole nav goes behind the burger. */
+.header-in.hdr-s1 .a11y-btn-text { display: none; }
+.header-in.hdr-s1 .a11y-btn { width: 44px; padding: 0; }
+.header-in.hdr-s2 .header-phone { display: none; }
+.header-in.hdr-s3 .nav { display: none; }
+.header-in.hdr-s3 .burger { display: inline-flex; }
+.header-in.hdr-s3 .header-cta { margin-left: auto; }
+
+/* Content grids fold much later than the header. They used to go single-column
+   together with the nav at 1349px, which gave every 1280 and 1366 laptop the
+   phone layout: one narrow column with an empty half-screen beside it. */
+@media (max-width: 1100px) {
   .hero-grid { grid-template-columns: 1fr; }
   .hero-visual { max-width: 560px; }
   .why-grid { grid-template-columns: repeat(2, 1fr); }
