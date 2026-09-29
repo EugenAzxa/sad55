@@ -14,13 +14,16 @@ history.html при каждой сборке, так что правка мен
 
 Разметка статьи:
     ---                      шапка: slug, title, description, topic, status,
-    ...                      published, updated, reviewer, image, related, old
+    ...                      published, updated, reviewer, image, related, old,
+    ---                      seo_title (для <title>), tags (метки через запятую)
     ---
     ## Заголовок             раздел (попадает в оглавление)
     ### Подзаголовок
     - пункт / 1. пункт       списки
     **жирный**, [текст](price-and-services.html), [текст](blog:slug)
     ::: warn Заголовок       цветная врезка (warn, note), закрывается :::
+    ::: short                «Коротко»: 3-4 пункта, встаёт над оглавлением; из него же
+                             abstract в разметке (его цитируют Алиса и ИИ-поисковики)
     ::: questions            вопросы к врачу, видны только в черновике
     {{price:Группа|Услуга}}  цена из price-and-services.html (Группа|Услуга|Время
                              для строк с часами)
@@ -191,6 +194,7 @@ def parse_source(path):
         die("%s: у одобренной статьи нужна дата published" % path)
     meta["related"] = [x.strip() for x in meta.get("related", "").split(",") if x.strip()]
     meta["old"] = [x.strip() for x in meta.get("old", "").split(",") if x.strip()]
+    meta["tags"] = [x.strip() for x in meta.get("tags", "").split(",") if x.strip()]
     meta["reviewer"] = meta.get("reviewer", "nemchaninov")
     meta["body"] = m.group(2)
     return meta
@@ -251,8 +255,9 @@ def slugify_heading(t, used):
 
 
 def render_body(src, ctx):
-    """Returns (html, toc, questions, words)."""
+    """Returns (html, toc, questions, words, short_html, short_text)."""
     out, toc, questions, used = [], [], [], set()
+    short_html, short_text = "", ""
     para, lst, lst_kind = [], [], None
     block = None          # (kind, title, lines)
 
@@ -281,7 +286,12 @@ def render_body(src, ctx):
                 if kind == "questions":
                     questions.extend(l[2:].strip() for l in blines if l.startswith("- "))
                     continue
-                inner, _, _, _ = render_body("\n".join(blines), ctx)
+                inner = render_body("\n".join(blines), ctx)[0]
+                if kind == "short":
+                    short_html = ('<aside class="callout callout-short"><div class="callout-h">%s<b>Коротко</b></div>%s</aside>'
+                                  % (ICON_NOTE, inner))
+                    short_text = " ".join(re.sub(r"<[^>]+>", "", inner).split())
+                    continue
                 icon = ICON_WARN if kind == "warn" else ICON_NOTE
                 head = '<div class="callout-h">%s<b>%s</b></div>' % (icon, inline(title, ctx)) if title else ""
                 out.append('<aside class="callout callout-%s">%s%s</aside>' % (kind, head, inner))
@@ -291,7 +301,7 @@ def render_body(src, ctx):
         if line.startswith(":::"):
             flush_para(); flush_list()
             kind, _, title = line[3:].strip().partition(" ")
-            if kind not in ("warn", "note", "questions"):
+            if kind not in ("warn", "note", "questions", "short"):
                 die("неизвестная врезка ::: %s" % kind)
             block = (kind, title.strip(), [])
             continue
@@ -331,7 +341,18 @@ def render_body(src, ctx):
     flush_para(); flush_list()
     body = "\n".join(out)
     words = len(re.findall(r"\w+", re.sub(r"<[^>]+>", " ", body)))
-    return body, toc, questions, words
+    return body, toc, questions, words, short_html, short_text
+
+
+def tag_slug(t):
+    return slugify_heading(t, set())
+
+
+def tag_chips(tags, prefix):
+    if not tags:
+        return ""
+    return '<div class="post-tags">%s</div>' % "".join(
+        '<a href="%sblog.html#tag-%s">#%s</a>' % (prefix, tag_slug(t), esc(t)) for t in tags)
 
 
 # ---------- shared chrome from history.html ----------
@@ -452,7 +473,7 @@ def call_card():
 def article_page(a, ctx, chrome):
     top, bottom = chrome
     prefix, draft = ctx.prefix, ctx.mode == "draft"
-    body, toc, questions, words = render_body(a["body"], ctx)
+    body, toc, questions, words, short_html, short_text = render_body(a["body"], ctx)
     minutes = max(1, round(words / 180))
     url = SITE + "blog/%s.html" % a["slug"]
     image = a.get("image") or "assets/img/og-cover.jpg"
@@ -467,6 +488,10 @@ def article_page(a, ctx, chrome):
                   "inLanguage": "ru", "wordCount": words,
                   "author": person_ld(AUTHOR), "publisher": CLINIC_LD,
                   "mainEntityOfPage": url, "articleSection": a["topic"]}
+    if a["tags"]:
+        article_ld["keywords"] = ", ".join(a["tags"])
+    if short_text:
+        article_ld["abstract"] = short_text
     if a.get("published"):
         article_ld["datePublished"] = a["published"]
         article_ld["dateModified"] = updated
@@ -518,7 +543,7 @@ def article_page(a, ctx, chrome):
   </div>
 </section>""".format(cards="".join(related))
 
-    title_tag = "%s | Блог АМЦ" % a["title"]
+    title_tag = a.get("seo_title") or "%s | Блог АМЦ" % a["title"]
     page = [head(title_tag, a["description"], url, prefix, image, jsonld, noindex=draft, og_type="article")]
     page.append(relink(mark_active(top, "blog.html"), prefix))
     page.append("""<main>
@@ -542,10 +567,12 @@ def article_page(a, ctx, chrome):
 <section class="section post-section">
   <div class="container post-narrow">
     {draft}
+    {short}
     {toc}
     <article class="prose">
 {body}
     </article>
+    {tags}
     <p class="post-disclaimer">Статья носит справочный характер и не заменяет консультацию врача. Имеются противопоказания. Необходима консультация специалиста.</p>
     {cta}
     <div class="post-people">
@@ -561,12 +588,34 @@ def article_page(a, ctx, chrome):
 """.format(p=prefix, topic=esc(a["topic"]), h1=esc(a.get("h1") or a["title"]), desc=esc(a["description"]),
            photo=author["photo"], aname=esc(author["name"]), ajob=esc(author["job"]),
            when=when, mins=minutes, mword=plural(minutes, "минута", "минуты", "минут"),
-           draft=draft_html, toc=toc_html, body=body, cta=call_card(),
+           draft=draft_html, toc=toc_html, short=short_html, tags=tag_chips(a["tags"], prefix), body=body, cta=call_card(),
            author=person_card(AUTHOR, prefix, "Автор статьи",
                               '\n    <a class="person-more" href="%sindex.html#doctors">Все врачи центра %s</a>' % (prefix, ICON_ARROW)),
            review=review_html, related=related_html))
     page.append(foot(prefix, relink(bottom, prefix)))
     return "".join(page), words
+
+
+FILTER_JS = """<script>
+(function () {
+  var cards = document.querySelectorAll(".blog-grid .post-card");
+  var chips = document.querySelectorAll(".blog-filter a");
+  function apply() {
+    var tag = location.hash.indexOf("#tag-") === 0 ? location.hash.slice(5) : "";
+    cards.forEach(function (c) {
+      c.hidden = !!tag && (" " + c.getAttribute("data-tags") + " ").indexOf(" " + tag + " ") < 0;
+    });
+    chips.forEach(function (a) { a.classList.toggle("on", a.getAttribute("data-tag") === tag); });
+  }
+  chips.forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      if (!a.getAttribute("data-tag")) { e.preventDefault(); history.replaceState(null, "", location.pathname); apply(); }
+    });
+  });
+  window.addEventListener("hashchange", apply);
+  apply();
+})();
+</script>"""
 
 
 def list_page(items, ctx, chrome, draft=False):
@@ -578,14 +627,24 @@ def list_page(items, ctx, chrome, draft=False):
     for a in items:
         href = ctx.article_href(a["slug"])
         when = ru_date(a["published"]) if a.get("published") else "черновик"
-        cards.append("""<a class="post-card" href="{h}">
+        cards.append("""<a class="post-card" href="{h}" data-tags="{tg}">
   <span class="post-topic">{topic}</span>
   <h3>{t}</h3>
   <p>{d}</p>
   <span class="post-card-foot"><img src="{p}{photo}" alt="" width="32" height="32" loading="lazy">{name}<i>{when}</i></span>
 </a>""".format(h=esc(href), topic=esc(a["topic"]), t=esc(a["title"]), d=esc(a["description"]),
-               p=prefix, photo=author["photo"], name=esc(author["short"]), when=when))
-    grid = '<div class="blog-grid">%s</div>' % "".join(cards) if cards else \
+               p=prefix, photo=author["photo"], name=esc(author["short"]), when=when,
+               tg=" ".join(tag_slug(t) for t in a["tags"])))
+    counts = {}
+    for a in items:
+        for t in a["tags"]:
+            counts[t] = counts.get(t, 0) + 1
+    chips = ""
+    if len(counts) > 1:
+        chips = '<div class="post-tags blog-filter" role="group" aria-label="Темы"><a href="#" data-tag="" class="on">Все статьи</a>%s</div>' % "".join(
+            '<a href="#tag-%s" data-tag="%s">#%s</a>' % (tag_slug(t), tag_slug(t), esc(t))
+            for t in sorted(counts, key=lambda t: (-counts[t], t)))
+    grid = chips + '<div class="blog-grid">%s</div>' % "".join(cards) + FILTER_JS if cards else \
         '<p class="blog-empty">Первые статьи сейчас на проверке у врачей и скоро появятся здесь.</p>'
 
     ld_items = [{"@type": "ListItem", "position": n + 1, "url": SITE + "blog/%s.html" % a["slug"],
@@ -672,6 +731,33 @@ def update_llms(approved):
     replace_block(os.path.join(ROOT, "llms.txt"), "<!-- blog:start -->", "<!-- blog:end -->", text)
 
 
+# ---------- 301 map for the old sad56.ru ----------
+
+def write_redirects(articles):
+    """notes/redirects-sad56ru.htaccess: for the day the old WordPress site is replaced.
+    Old articles already rewritten point to their new page, the rest to blog.html."""
+    urls = os.path.join(ROOT, "notes", "old-articles", "urls.txt")
+    if not os.path.exists(urls):
+        return
+    target = {}
+    for a in articles.values():
+        for old in a["old"]:
+            target[old] = SITE + "blog/%s.html" % a["slug"] if a["status"] == "approved" else None
+    lines = ["# 301 со старого sad56.ru на sad56.spb.ru. Собрано blog.py, руками не править.",
+             "# Положить в .htaccess старого сайта, когда sad56.ru переедет. Пока НЕ использовать.",
+             "RewriteEngine On"]
+    for u in open(urls, encoding="utf-8"):
+        path = u.strip().replace("https://sad56.ru", "")
+        if not path:
+            continue
+        slug = path.strip("/").split("/")[-1]
+        dest = target.get(slug) or SITE + "blog.html"
+        if not target.get(slug) and path != "/articles/":
+            lines.append("# новой статьи пока нет")   # Apache allows comments only on their own line
+        lines.append("RewriteRule ^%s?$ %s [R=301,L]" % (re.escape(path.lstrip("/")).replace("\\/", "/"), dest))
+    write(os.path.join(ROOT, "notes", "redirects-sad56ru.htaccess"), "\n".join(lines) + "\n")
+
+
 # ---------- main ----------
 
 def write(path, text):
@@ -720,6 +806,7 @@ def main():
           list_page(sorted(drafts, key=lambda a: a["slug"]), draft_ctx, chrome, draft=True))
     update_sitemap(approved)
     update_llms(approved)
+    write_redirects(articles)
     print("\n".join(report))
     print("опубликовано %d, черновиков %d" % (len(approved), len(drafts)))
 
