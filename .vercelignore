@@ -1,3 +1,7 @@
 brag-output*/
 node_modules/
 .vercel/
+drafts/
+blog-src/
+notes/
+blog.py
