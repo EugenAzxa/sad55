@@ -9,7 +9,7 @@ zip -rq "$OUT" . \
   -x '.git/*' '.git' \
      '.vercel/*' '.vercel' \
      '.gitignore' '.vercelignore' \
-     'brag-output/*' '_probe/*' \
+     'brag-output/*' '_probe/*' 'notes/*' 'CLAUDE.md' \
      'README.md' 'deploy-sweb.sh' 'make-zip.sh' 'deploy.py' 'logs.py' '.deploy-state.json' '.logs/*' '.ftp-credentials' \
      '.DS_Store' '*/.DS_Store'
 echo "$OUT"

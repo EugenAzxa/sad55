@@ -37,9 +37,9 @@ CREDS = os.path.join(HERE, '.ftp-credentials')
 
 # то же, что исключает make-zip.sh: на сервер уезжает только то,
 # что сайт реально отдаёт посетителю
-SKIP_DIRS = {'.git', '.vercel', 'brag-output', '_probe', '__pycache__', '.tmb'}
+SKIP_DIRS = {'.git', '.vercel', 'brag-output', '_probe', '__pycache__', '.tmb', 'notes', '.logs'}
 SKIP_FILES = {'.gitignore', '.vercelignore', '.DS_Store', '.ftp-credentials',
-              'README.md', 'deploy-sweb.sh', 'make-zip.sh', 'deploy.py', 'logs.py',
+              'README.md', 'CLAUDE.md', 'deploy-sweb.sh', 'make-zip.sh', 'deploy.py', 'logs.py',
               '.deploy-state.json'}
 
 PROMPT = b'sftp>'
