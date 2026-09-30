@@ -6,7 +6,7 @@ description: Что такое Эспераль и другие препарат
 topic: Кодирование
 status: approved
 published: 2026-09-29
-reviewer: nemchaninov
+reviewer: none
 related: kodirovanie-ot-alkogolya, vyvod-iz-zapoya-na-domu
 old: lechenie-alkogolizma-esperal
 tags: Кодирование, Эспераль, Лечение алкоголизма

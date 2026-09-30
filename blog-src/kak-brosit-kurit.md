@@ -6,7 +6,7 @@ description: Почему бросить курить трудно даже пр
 topic: Курение
 status: approved
 published: 2026-09-29
-reviewer: nemchaninov
+reviewer: none
 related: telefon-pered-snom
 old: narkologicheskaya-pomoshh-pri-kurenii, tabakokurenie-nikotinovaya-zavisimost
 tags: Курение, Вейп и IQOS

@@ -6,7 +6,7 @@ description: Какие методы кодирования от алкогол�
 topic: Кодирование
 status: approved
 published: 2026-09-29
-reviewer: nemchaninov
+reviewer: none
 related: esperal, vyvod-iz-zapoya-na-domu
 old: zakodirovatsya-ot-alkogolya
 tags: Кодирование, Лечение алкоголизма, Гипноз

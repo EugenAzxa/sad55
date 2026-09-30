@@ -6,7 +6,7 @@ description: Как проходит вывод из запоя на дому в
 topic: Запой
 status: approved
 published: 2026-09-29
-reviewer: nemchaninov
+reviewer: none
 related: kodirovanie-ot-alkogolya, esperal
 old: vyvedenie-iz-zapoya, vyvedenie-iz-zapoya-2, vyvedenie-iz-zapoya-vazhnoe, vyvedenie-iz-zapoya-slozhnyj-proczess, narkolog-na-dom, narkolog-na-dom-svoevremennaya-pomoshh, narkolog-na-dom-effektivnaya-pomoshh
 tags: Запой, Нарколог на дом, Капельница от запоя

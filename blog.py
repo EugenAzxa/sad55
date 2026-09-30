@@ -45,6 +45,17 @@ MONTHS = ["января", "февраля", "марта", "апреля", "ма�
           "августа", "сентября", "октября", "ноября", "декабря"]
 
 PEOPLE = {
+    "press": {
+        "name": "Академический Медицинский Центр",
+        "short": "Пресс-служба АМЦ",
+        "job": "Пресс-служба",
+        "bio": "Наркологическая клиника в Санкт-Петербурге, работает с 1992 года. Центр вырос из "
+               "отделения неврозов Военно-медицинской академии им. С. М. Кирова. Амбулаторное лечение "
+               "алкогольной и никотиновой зависимости, вывод из запоя, кодирование. Лицензия "
+               "№ 78-01-002677 от 06.04.2012.",
+        "photo": "assets/img/author-amc.svg",
+        "more": ("history.html", "О центре"),
+    },
     "sokolov": {
         "name": "Соколов Андрей Владимирович",
         "short": "Андрей Владимирович Соколов",
@@ -66,7 +77,7 @@ PEOPLE = {
         "photo": "assets/img/author-nemchaninov.jpg",
     },
 }
-AUTHOR = "sokolov"
+AUTHOR = "press"   # статьи выходят от пресс-службы (решение пользователя 30.09.2026)
 
 ICON_PHONE = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
               'stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 '
@@ -195,7 +206,7 @@ def parse_source(path):
     meta["related"] = [x.strip() for x in meta.get("related", "").split(",") if x.strip()]
     meta["old"] = [x.strip() for x in meta.get("old", "").split(",") if x.strip()]
     meta["tags"] = [x.strip() for x in meta.get("tags", "").split(",") if x.strip()]
-    meta["reviewer"] = meta.get("reviewer", "nemchaninov")
+    meta["reviewer"] = meta.get("reviewer", "none")
     meta["body"] = m.group(2)
     return meta
 
@@ -434,6 +445,8 @@ def crumbs_ld(items):
 
 
 def person_ld(key, prefix_url=SITE):
+    if key == "press":
+        return CLINIC_LD
     p = PEOPLE[key]
     return {"@type": "Person", "name": p["name"], "jobTitle": p["job"],
             "image": prefix_url + p["photo"], "url": SITE + "index.html#doctors",
@@ -590,7 +603,9 @@ def article_page(a, ctx, chrome):
            when=when, mins=minutes, mword=plural(minutes, "минута", "минуты", "минут"),
            draft=draft_html, toc=toc_html, short=short_html, tags=tag_chips(a["tags"], prefix), body=body, cta=call_card(),
            author=person_card(AUTHOR, prefix, "Автор статьи",
-                              '\n    <a class="person-more" href="%sindex.html#doctors">Все врачи центра %s</a>' % (prefix, ICON_ARROW)),
+                              '\n    <a class="person-more" href="%s%s">%s %s</a>' % (
+                                  prefix, author.get("more", ("index.html#doctors",))[0],
+                                  author.get("more", (None, "Все врачи центра"))[1], ICON_ARROW)),
            review=review_html, related=related_html))
     page.append(foot(prefix, relink(bottom, prefix)))
     return "".join(page), words
@@ -654,9 +669,9 @@ def list_page(items, ctx, chrome, draft=False):
          "inLanguage": "ru", "publisher": CLINIC_LD},
         {"@type": "ItemList", "itemListElement": ld_items},
         crumbs_ld([("Главная", SITE), ("Блог", url)])]}
-    desc = ("Статьи врачей Академического Медицинского Центра о запое, лечении алкоголизма, "
+    desc = ("Статьи Академического Медицинского Центра о запое, лечении алкоголизма, "
             "кодировании, отказе от курения и экранном времени.")
-    title = "Черновики блога" if draft else "Блог врачей о лечении зависимостей | Академический Медицинский Центр"
+    title = "Черновики блога" if draft else "Блог о лечении зависимостей | Академический Медицинский Центр"
     page = [head(title, desc, url, prefix, "assets/img/og-cover.jpg", jsonld, noindex=draft)]
     page.append(relink(mark_active(top, "blog.html"), prefix))
     note = ('<div class="container"><div class="draft-note"><b>Черновики на согласовании.</b> '
@@ -669,7 +684,7 @@ def list_page(items, ctx, chrome, draft=False):
   <div class="container">
     <span class="eyebrow">Блог</span>
     <h1 class="display">Спокойно и по делу <span class="accent">о зависимости</span></h1>
-    <p class="lead">Статьи врачей центра: что происходит с организмом при запое, как устроено лечение и кодирование, как бросить курить и вернуть себе время у экрана. Статьи о лечении проверяет главный врач.</p>
+    <p class="lead">Статьи Академического Медицинского Центра: что происходит с организмом при запое, как устроено лечение и кодирование, как бросить курить и вернуть себе время у экрана.</p>
   </div>
 </section>
 
@@ -721,9 +736,7 @@ def update_sitemap(approved):
 
 def update_llms(approved):
     if approved:
-        lines = ["\n\n## Блог\n\nСтатьи пишет %s, %s. Статьи о лечении зависимостей проверяет %s, %s.\n" % (
-            PEOPLE[AUTHOR]["name"], PEOPLE[AUTHOR]["job"].lower(),
-            PEOPLE["nemchaninov"]["name"], PEOPLE["nemchaninov"]["job"].lower())]
+        lines = ["\n\n## Блог\n\nСтатьи готовит пресс-служба Академического Медицинского Центра.\n"]
         lines += ["- [%s](%sblog/%s.html): %s" % (a["title"], SITE, a["slug"], a["description"]) for a in approved]
         text = "\n".join(lines) + "\n\n"
     else:
