@@ -306,6 +306,8 @@
       lastFocus = document.activeElement;
       modal.classList.add("open");
       document.body.style.overflow = "hidden";
+      /* цель в Метрике: человек дошёл до окна с номером */
+      if (window.ym) window.ym(113325506, "reachGoal", "call_modal");
       /* полей тут больше нет, так что фокус уходит на саму кнопку звонка:
          тому, кто ходит по сайту с клавиатуры, дальше жать некуда */
       var first = modal.querySelector('a[href^="tel:"]');
@@ -517,6 +519,23 @@
         if (!navEl.contains(e.relatedTarget)) settle();
       });
     }
+  }
+
+  /* Плашка про cookie. Метрика ставит cookie, и политика об этом говорит;
+     плашка просто сообщает и прячется навсегда после «Понятно». */
+  if (load("amc-cookie-ok") !== "1") {
+    var cb = document.createElement("div");
+    cb.className = "cookie-bar";
+    cb.setAttribute("role", "region");
+    cb.setAttribute("aria-label", "Уведомление о cookie");
+    cb.innerHTML = '<p>Мы используем cookie и Яндекс.Метрику, чтобы считать посещения. ' +
+      'Имени и телефона сайт не собирает. <a href="/privacy.html">Подробнее</a></p>' +
+      '<button type="button" class="btn btn-primary">Понятно</button>';
+    cb.querySelector("button").addEventListener("click", function () {
+      store("amc-cookie-ok", "1");
+      cb.remove();
+    });
+    document.body.appendChild(cb);
   }
 
   /* footer year */
