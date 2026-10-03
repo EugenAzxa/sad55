@@ -371,7 +371,7 @@ def tag_chips(tags, prefix):
 def load_chrome():
     s = open(os.path.join(ROOT, CHROME_PAGE), encoding="utf-8").read()
     a, b = s.find('<header class="header"'), s.find("<main>")
-    c, d = s.find("</main>"), s.find('<script src="assets/js/main.js">')
+    c, d = s.find("</main>"), s.find('<script src="assets/js/main.js')
     if min(a, b, c, d) < 0 or not a < b < c < d:
         die("не разобрал шапку и подвал в %s" % CHROME_PAGE)
     top = s[a:b]
@@ -424,7 +424,7 @@ def head(title, description, canonical, prefix, og_image, jsonld, noindex=False,
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{p}assets/css/style.css">
+  <link rel="stylesheet" href="{p}assets/css/style.css?v=20261003">
   <script type="application/ld+json">
 {j}
   </script>
@@ -446,7 +446,7 @@ def head(title, description, canonical, prefix, og_image, jsonld, noindex=False,
 
 
 def foot(prefix, bottom):
-    return bottom + '\n<script src="%sassets/js/main.js"></script>\n</body>\n</html>\n' % prefix
+    return bottom + '\n<script src="%sassets/js/main.js?v=20261003"></script>\n</body>\n</html>\n' % prefix
 
 
 def crumbs_ld(items):

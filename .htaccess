@@ -15,3 +15,13 @@
   RewriteCond %{HTTP:X-Forwarded-Proto} !=https
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 </IfModule>
+
+# Стили и скрипты меняются под тем же именем. Без этого браузер сам решал,
+# сколько держать старую копию, и новая разметка встречалась со старыми
+# стилями. no-cache = хранить можно, но перед показом сверить с сервером
+# (это короткий ответ 304, если файл не менялся).
+<IfModule mod_headers.c>
+  <FilesMatch "\.(css|js|html)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
