@@ -4,7 +4,8 @@ title: Стадии алкоголизма: признаки и когда по�
 seo_title: Стадии алкоголизма и первые признаки: когда пора к наркологу, СПб
 description: Три стадии алкоголизма и их признаки, короткий тест из четырёх вопросов и чем бытовое пьянство отличается от зависимости. Когда идти к наркологу, анонимно, в Санкт-Петербурге.
 topic: Алкоголизм
-status: draft
+status: approved
+published: 2026-10-15
 reviewer: none
 related: kak-ugovorit-lechitsya, vyvod-iz-zapoya-na-domu, kodirovanie-ot-alkogolya
 old: kogda-neobhodimo-lechenie-alkogolizma, lechenie-alkogolnoj-zavisimosti-2, lechenie-zavisimosti

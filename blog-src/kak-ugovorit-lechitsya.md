@@ -4,7 +4,8 @@ title: Как уговорить близкого лечиться от алко
 seo_title: Как уговорить мужа или близкого лечиться от алкоголизма: советы нарколога, СПб
 description: Как начать разговор с пьющим близким, когда это делать и чего избегать. Почему нельзя подмешивать препараты без ведома и что закон говорит о принудительном лечении.
 topic: Близким
-status: draft
+status: approved
+published: 2026-10-15
 reviewer: none
 related: stadii-alkogolizma, vyvod-iz-zapoya-na-domu, kodirovanie-ot-alkogolya
 tags: Близким, Лечение алкоголизма

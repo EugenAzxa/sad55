@@ -8,7 +8,8 @@
 history.html при каждой сборке, так что правка меню там доезжает и до блога.
 
 Статья со status: approved попадает в blog/, в список blog.html, в sitemap.xml
-и в llms.txt. Статья со status: draft собирается в drafts/ с плашкой
+и в llms.txt. Если её дата published ещё не наступила, до этого дня она лежит
+в drafts/, а в нужный день её выкладывает autopublish.sh. Статья со status: draft собирается в drafts/ с плашкой
 «черновик» и вопросами к врачу; папка drafts на сервер не уезжает (SKIP_DIRS
 в deploy.py), это копия для чтения и согласования.
 
@@ -803,6 +804,12 @@ def main():
             if a["slug"] + ".md" != f:
                 die("%s: slug %s не совпадает с именем файла" % (f, a["slug"]))
             articles[a["slug"]] = a
+    # approved with a future date waits in drafts/ until that day; autopublish.sh
+    # rebuilds every hour, so the article goes live on its own
+    today = datetime.date.today().isoformat()
+    for a in articles.values():
+        if a["status"] == "approved" and a["published"] > today:
+            a["status"], a["scheduled"] = "draft", a["published"]
     approved = sorted([a for a in articles.values() if a["status"] == "approved"],
                       key=lambda a: a["published"], reverse=True)
     drafts = [a for a in articles.values() if a["status"] == "draft"]
@@ -816,7 +823,8 @@ def main():
     for a in drafts:
         text, words = article_page(a, draft_ctx, chrome)
         write(os.path.join(ROOT, "drafts", a["slug"] + ".html"), text)
-        report.append("drafts/%s.html  %d слов (черновик)" % (a["slug"], words))
+        report.append("drafts/%s.html  %d слов (%s)" % (
+            a["slug"], words, "выйдет " + ru_date(a["scheduled"]) if a.get("scheduled") else "черновик"))
     # stale pages of articles that went back to draft or were removed
     for folder, keep in (("blog", {a["slug"] for a in approved}), ("drafts", {a["slug"] for a in drafts})):
         d = os.path.join(ROOT, folder)

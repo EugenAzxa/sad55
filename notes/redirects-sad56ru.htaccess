@@ -8,10 +8,8 @@ RewriteRule ^articles/postalkogolnaya\-depressiya/?$ https://sad56.spb.ru/blog.h
 RewriteRule ^articles/spasite\-vashe\-zdorove\-nachnite\-lechenie\-alkogolizma\-pryamo\-sejchas/?$ https://sad56.spb.ru/blog.html [R=301,L]
 # новой статьи пока нет
 RewriteRule ^articles/lechenie\-zavisimosti\-2/?$ https://sad56.spb.ru/blog.html [R=301,L]
-# новой статьи пока нет
-RewriteRule ^articles/kogda\-neobhodimo\-lechenie\-alkogolizma/?$ https://sad56.spb.ru/blog.html [R=301,L]
-# новой статьи пока нет
-RewriteRule ^articles/lechenie\-zavisimosti/?$ https://sad56.spb.ru/blog.html [R=301,L]
+RewriteRule ^articles/kogda\-neobhodimo\-lechenie\-alkogolizma/?$ https://sad56.spb.ru/blog/stadii-alkogolizma.html [R=301,L]
+RewriteRule ^articles/lechenie\-zavisimosti/?$ https://sad56.spb.ru/blog/stadii-alkogolizma.html [R=301,L]
 # новой статьи пока нет
 RewriteRule ^articles/zhenskij\-alkogolizm\-lechenie\-alkogolnoj\-zavisimosti\-u\-zhenshhin/?$ https://sad56.spb.ru/blog.html [R=301,L]
 # новой статьи пока нет
@@ -39,8 +37,7 @@ RewriteRule ^articles/narkolog\-na\-dom/?$ https://sad56.spb.ru/blog/vyvod-iz-za
 RewriteRule ^articles/vyvedenie\-iz\-zapoya\-2/?$ https://sad56.spb.ru/blog/vyvod-iz-zapoya-na-domu.html [R=301,L]
 # новой статьи пока нет
 RewriteRule ^articles/etapy\-lecheniya\-alkogolizma/?$ https://sad56.spb.ru/blog.html [R=301,L]
-# новой статьи пока нет
-RewriteRule ^articles/lechenie\-alkogolnoj\-zavisimosti\-2/?$ https://sad56.spb.ru/blog.html [R=301,L]
+RewriteRule ^articles/lechenie\-alkogolnoj\-zavisimosti\-2/?$ https://sad56.spb.ru/blog/stadii-alkogolizma.html [R=301,L]
 # новой статьи пока нет
 RewriteRule ^articles/chistka\-krovi/?$ https://sad56.spb.ru/blog.html [R=301,L]
 RewriteRule ^articles/narkolog\-na\-dom\-svoevremennaya\-pomoshh/?$ https://sad56.spb.ru/blog/vyvod-iz-zapoya-na-domu.html [R=301,L]

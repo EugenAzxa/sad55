@@ -50,20 +50,7 @@
     },
     {
       "@type": "ItemList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "url": "https://sad56.spb.ru/blog/kak-ugovorit-lechitsya.html",
-          "name": "Как уговорить близкого лечиться от алкоголизма"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "url": "https://sad56.spb.ru/blog/stadii-alkogolizma.html",
-          "name": "Стадии алкоголизма: признаки и когда пора к врачу"
-        }
-      ]
+      "itemListElement": []
     },
     {
       "@type": "BreadcrumbList",
@@ -194,36 +181,7 @@
 <section class="section" style="padding-top:clamp(10px,3vh,30px)">
   <div class="container"><div class="draft-note"><b>Черновики на согласовании.</b> Эта страница не публикуется. Опубликованные статьи появятся в blog.html.</div></div>
   <div class="container">
-    <div class="post-tags blog-filter" role="group" aria-label="Темы"><a href="#" data-tag="" class="on">Все статьи</a><a href="#tag-lechenie-alkogolizma" data-tag="lechenie-alkogolizma">#Лечение алкоголизма</a><a href="#tag-blizkim" data-tag="blizkim">#Близким</a><a href="#tag-priznaki-zavisimosti" data-tag="priznaki-zavisimosti">#Признаки зависимости</a></div><div class="blog-grid"><a class="post-card" href="../drafts/kak-ugovorit-lechitsya.html" data-tags="blizkim lechenie-alkogolizma">
-  <span class="post-topic">Близким</span>
-  <h3>Как уговорить близкого лечиться от алкоголизма</h3>
-  <p>Как начать разговор с пьющим близким, когда это делать и чего избегать. Почему нельзя подмешивать препараты без ведома и что закон говорит о принудительном лечении.</p>
-  <span class="post-card-foot"><img src="../assets/img/author-amc.svg" alt="" width="32" height="32" loading="lazy">Пресс-служба АМЦ<i>черновик</i></span>
-</a><a class="post-card" href="../drafts/stadii-alkogolizma.html" data-tags="lechenie-alkogolizma priznaki-zavisimosti">
-  <span class="post-topic">Алкоголизм</span>
-  <h3>Стадии алкоголизма: признаки и когда пора к врачу</h3>
-  <p>Три стадии алкоголизма и их признаки, короткий тест из четырёх вопросов и чем бытовое пьянство отличается от зависимости. Когда идти к наркологу, анонимно, в Санкт-Петербурге.</p>
-  <span class="post-card-foot"><img src="../assets/img/author-amc.svg" alt="" width="32" height="32" loading="lazy">Пресс-служба АМЦ<i>черновик</i></span>
-</a></div><script>
-(function () {
-  var cards = document.querySelectorAll(".blog-grid .post-card");
-  var chips = document.querySelectorAll(".blog-filter a");
-  function apply() {
-    var tag = location.hash.indexOf("#tag-") === 0 ? location.hash.slice(5) : "";
-    cards.forEach(function (c) {
-      c.hidden = !!tag && (" " + c.getAttribute("data-tags") + " ").indexOf(" " + tag + " ") < 0;
-    });
-    chips.forEach(function (a) { a.classList.toggle("on", a.getAttribute("data-tag") === tag); });
-  }
-  chips.forEach(function (a) {
-    a.addEventListener("click", function (e) {
-      if (!a.getAttribute("data-tag")) { e.preventDefault(); history.replaceState(null, "", location.pathname); apply(); }
-    });
-  });
-  window.addEventListener("hashchange", apply);
-  apply();
-})();
-</script>
+    <p class="blog-empty">Первые статьи сейчас на проверке у врачей и скоро появятся здесь.</p>
   </div>
 </section>
 
