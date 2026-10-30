@@ -28,6 +28,12 @@
 
 Скрипт помнит sha1 каждого залитого файла в .deploy-state.json и в
 следующий раз трогает только то, что действительно поменялось.
+
+Цены и акции меняют в админке прямо на сервере (/admin/). Поэтому перед
+заливкой скрипт забирает оттуда admin/data/prices.json и блоки цен со
+страниц и вписывает их в локальные файлы (и коммитит, если в этих файлах
+не было своих правок). Иначе заливка с Mac вернула бы на сайт старые цены.
+Менять цены руками в HTML бесполезно: следующая заливка их перезапишет.
 """
 import hashlib, json, os, pty, re, select, sys, time
 
@@ -37,10 +43,11 @@ CREDS = os.path.join(HERE, '.ftp-credentials')
 
 # то же, что исключает make-zip.sh: на сервер уезжает только то,
 # что сайт реально отдаёт посетителю
-SKIP_DIRS = {'.git', '.vercel', 'brag-output', '_probe', '__pycache__', '.tmb', 'notes', '.logs', 'drafts', 'blog-src'}
+SKIP_DIRS = {'.git', '.vercel', 'brag-output', '_probe', '__pycache__', '.tmb', 'notes', '.logs', 'drafts', 'blog-src',
+             'backups'}
 SKIP_FILES = {'.gitignore', '.vercelignore', '.DS_Store', '.ftp-credentials',
               'README.md', 'CLAUDE.md', 'deploy-sweb.sh', 'make-zip.sh', 'deploy.py', 'logs.py', 'blog.py', 'autopublish.sh',
-              '.deploy-state.json'}
+              '.deploy-state.json', '.admin-password', 'set-password.py', 'attempts.json', '.lock'}
 
 PROMPT = b'sftp>'
 # по этим словам в ответе sftp понятно, что команда не прошла
@@ -78,6 +85,67 @@ def local_files():
                     h.update(chunk)
             out[rel] = h.hexdigest()
     return out
+
+
+# Что админка пишет на сервере сама (см. PAGES в admin/lib.php)
+ADMIN_DATA = 'admin/data/prices.json'
+ADMIN_PAGES = ('price-and-services.html', 'index.html', 'smoke.html')
+BLOCK = re.compile(r'(<!-- admin:([\w-]+) -->)(.*?)(<!-- /admin:\2 -->)', re.S)
+
+
+def splice(local, server):
+    """Переложить блоки admin:* из серверной копии страницы в локальную."""
+    theirs = {m.group(2): m.group(3) for m in BLOCK.finditer(server)}
+    def put(m):
+        return m.group(1) + theirs.get(m.group(2), m.group(3)) + m.group(4)
+    return BLOCK.sub(put, local)
+
+
+def git(*args):
+    import subprocess
+    return subprocess.run(('git',) + args, cwd=HERE, capture_output=True, text=True)
+
+
+def pull_admin(s):
+    """Забрать с сервера то, что поменяли в админке. Вернуть список файлов,
+    которые пришлось обновить локально."""
+    import tempfile
+    tmp = tempfile.mkdtemp(prefix='sad55-pull-')
+    got = os.path.join(tmp, 'prices.json')
+    out = s.cmd('get "%s" "%s"' % (ADMIN_DATA, got))
+    if BAD.search(out) or not os.path.exists(got):
+        return []          # админку ещё не заливали
+    mine = os.path.join(HERE, ADMIN_DATA)
+    if os.path.exists(mine) and open(mine, 'rb').read() == open(got, 'rb').read():
+        return []
+    try:
+        json.load(open(got, encoding='utf-8'))
+    except ValueError:
+        sys.exit('На сервере испорчен %s, остановился. Открой /admin/ и сохрани '
+                 'цены заново или почини файл руками.' % ADMIN_DATA)
+    news = {}
+    for page in ADMIN_PAGES:
+        dst = os.path.join(tmp, page)
+        out = s.cmd('get "%s" "%s"' % (page, dst))
+        if BAD.search(out) or not os.path.exists(dst):
+            sys.exit('Не скачалась с сервера %s, остановился, чтобы не затереть '
+                     'цены из админки.' % page)
+        news[page] = splice(open(os.path.join(HERE, page), encoding='utf-8').read(),
+                            open(dst, encoding='utf-8').read())
+    files = [ADMIN_DATA] + list(ADMIN_PAGES)
+    # свои незакоммиченные правки в этих файлах коммитить заодно нельзя
+    clean = git('status', '--porcelain', '--', *files).stdout.strip() == ''
+    open(mine, 'wb').write(open(got, 'rb').read())
+    for page, text in news.items():
+        open(os.path.join(HERE, page), 'w', encoding='utf-8').write(text)
+    print('Подтянул с сервера цены из админки: %s' % ', '.join(files))
+    if clean:
+        git('add', '--', *files)
+        r = git('commit', '-qm', 'Prices: synced from /admin/', '--', *files)
+        print('   закоммичено' if r.returncode == 0 else '   не закоммитилось: ' + r.stderr.strip())
+    else:
+        print('   в этих файлах были свои правки, закоммить сам')
+    return files
 
 
 class LoginFailed(Exception):
@@ -157,9 +225,47 @@ class Sftp(object):
             pass
 
 
+def connect():
+    c = creds()
+    # Канал до хостинга идёт через VPN и иногда рвётся прямо на входе,
+    # хотя со второй попытки всё проходит. Три захода, потом сдаёмся.
+    for attempt in range(1, 4):
+        try:
+            return c, Sftp(c['host'], c['user'], c['password'], c.get('port', '22'))
+        except LoginFailed:
+            if attempt < 3:
+                print('Не вошёл с попытки %d, пробую ещё раз...' % attempt)
+                time.sleep(3)
+    return c, None
+
+
 def main():
     dry = '--dry' in sys.argv
     force = '--all' in sys.argv
+
+    c, s = connect()
+    if s is None:
+        msg = ('Не пускает на сервер. Проверь пароль, и включён ли SSH-доступ '
+               'в панели (он гаснет сам через 24 часа).')
+        if not dry:
+            sys.exit(msg)
+        print(msg + '\nЦены из админки не сверены, список ниже может быть неполным.\n')
+    else:
+        root = c['remote'].rstrip('/')
+        # Убедиться, что папка та самая, ПРЕЖДЕ чем что-то писать. Промах здесь
+        # означает файлы сайта, рассыпанные мимо цели, или того хуже - поверх
+        # чужого сайта в соседней папке.
+        out = s.cmd('cd ' + root)
+        if BAD.search(out):
+            s.close()
+            sys.exit('На сервере нет папки %s. Проверь строку remote в '
+                     '.ftp-credentials.\n%s' % (root, out.strip()))
+        here = s.cmd('pwd').strip()
+        if 'public_html' not in here:
+            s.close()
+            sys.exit('Папка %s не похожа на корень сайта. Остановился, ничего не '
+                     'отправив.' % here)
+        pull_admin(s)
 
     now = local_files()
     was = {} if force else (json.load(open(STATE)) if os.path.exists(STATE) else {})
@@ -167,6 +273,8 @@ def main():
     gone = sorted(k for k in was if k not in now)
 
     if not changed and not gone:
+        if s:
+            s.close()
         print('Изменений нет, заливать нечего.')
         return
 
@@ -178,40 +286,12 @@ def main():
         for k in gone:
             print('   -', k)
     if dry:
+        if s:
+            s.close()
         print('\n--dry: ничего не отправлено.')
         return
 
-    c = creds()
-    root = c['remote'].rstrip('/')
-    # Канал до хостинга идёт через VPN и иногда рвётся прямо на входе,
-    # хотя со второй попытки всё проходит. Три захода, потом сдаёмся.
-    s = None
-    for attempt in range(1, 4):
-        try:
-            s = Sftp(c['host'], c['user'], c['password'], c.get('port', '22'))
-            break
-        except LoginFailed:
-            if attempt < 3:
-                print('Не вошёл с попытки %d, пробую ещё раз...' % attempt)
-                time.sleep(3)
-    if s is None:
-        sys.exit('Не пускает на сервер. Проверь пароль, и включён ли SSH-доступ '
-                 'в панели (он гаснет сам через 24 часа).')
-
-    # Убедиться, что папка та самая, ПРЕЖДЕ чем что-то писать. Промах здесь
-    # означает файлы сайта, рассыпанные мимо цели, или того хуже - поверх
-    # чужого сайта в соседней папке.
-    out = s.cmd('cd ' + root)
-    if BAD.search(out):
-        s.close()
-        sys.exit('На сервере нет папки %s. Проверь строку remote в '
-                 '.ftp-credentials.\n%s' % (root, out.strip()))
-    here = s.cmd('pwd').strip()
     print('Сервер: %s, заливаю в %s' % (c['host'], here))
-    if 'public_html' not in here:
-        s.close()
-        sys.exit('Папка %s не похожа на корень сайта. Остановился, ничего не '
-                 'отправив.' % here)
 
     made, bad = set(), []
     for i, rel in enumerate(changed, 1):

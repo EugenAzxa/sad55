@@ -1,0 +1,16 @@
+# Админка цен. Поисковикам здесь делать нечего, список файлов не показываем.
+Options -Indexes
+DirectoryIndex index.php
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow"
+</IfModule>
+# lib.php подключается из index.php, напрямую его открывать незачем
+<FilesMatch "^lib\.php$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>

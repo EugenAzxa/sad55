@@ -538,6 +538,20 @@
     document.body.appendChild(cb);
   }
 
+  /* акции с прошедшей датой «до» прячем сами: страница статическая,
+     а после истечения срока её никто не пересобирает */
+  var now = new Date();
+  var today = now.getFullYear() + "-" + ("0" + (now.getMonth() + 1)).slice(-2) + "-" + ("0" + now.getDate()).slice(-2);
+  document.querySelectorAll(".promos").forEach(function (box) {
+    var left = 0;
+    box.querySelectorAll(".promo").forEach(function (p) {
+      var until = p.getAttribute("data-until");
+      if (until && until < today) p.hidden = true;
+      else left++;
+    });
+    if (!left) box.hidden = true;
+  });
+
   /* footer year */
   var year = document.getElementById("year");
   if (year) year.textContent = new Date().getFullYear().toString();

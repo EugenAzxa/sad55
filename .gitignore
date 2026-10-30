@@ -6,3 +6,11 @@ brag-output*/
 .deploy-state.json
 .logs/
 notes/old-articles/raw/
+
+# админка цен: пароль и то, что сервер пишет сам
+.admin-password
+admin/data/config.php
+admin/data/attempts.json
+admin/data/backups/
+admin/data/.lock
+admin/data/*.tmp*
