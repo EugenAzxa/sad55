@@ -395,6 +395,9 @@
       dmSpec.textContent = (card.querySelector(".doc-spec") || {}).textContent || "";
       var full = card.querySelector(".doc-full");
       dmBody.innerHTML = full ? full.innerHTML : "";
+      /* the founder takes no bookings, so his card opens without the button */
+      var cta = docModal.querySelector(".dm-cta");
+      if (cta) cta.hidden = card.hasAttribute("data-no-cta");
 
       docReturn = card.querySelector(".doc-open");
       docModal.classList.add("open");

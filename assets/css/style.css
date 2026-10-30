@@ -1055,6 +1055,7 @@ html.a11y .nav { gap: 0; }
 .dm-fact span { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
 
 .dm-cta { margin-top: 24px; align-self: flex-start; }
+.dm-cta[hidden] { display: none; }
 
 @media (max-width: 560px) {
   .dm-content { padding: 20px 20px 24px; }

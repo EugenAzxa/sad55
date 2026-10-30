@@ -68,7 +68,19 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://sad56.spb.ru/blog/ganzha-osnovatel.html</loc>
+    <lastmod>2026-10-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://sad56.spb.ru/blog/kak-snyat-pohmele.html</loc>
+    <lastmod>2026-10-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sad56.spb.ru/blog/patsienty-soratniki.html</loc>
     <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -98,6 +110,18 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://sad56.spb.ru/blog/trezvost-i-tvorchestvo.html</loc>
+    <lastmod>2026-10-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sad56.spb.ru/blog/tri-napravleniya-psihoterapii.html</loc>
+    <lastmod>2026-10-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://sad56.spb.ru/blog/uchet-u-narkologa.html</loc>
     <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
@@ -105,6 +129,12 @@
   </url>
   <url>
     <loc>https://sad56.spb.ru/blog/vejp-snyus-iqos.html</loc>
+    <lastmod>2026-10-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sad56.spb.ru/blog/veterany-i-alkogol.html</loc>
     <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
