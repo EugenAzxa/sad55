@@ -2109,6 +2109,13 @@ html.intro-off .intro { display: none; }
   transition: transform 1.1s cubic-bezier(0.4, 0, 0.7, 1);
 }
 
+.intro-video { object-fit: cover; object-position: 42% 50%; background: #0a0807; }
+/* the clip is bright: darken the top so the white copy stays readable */
+.intro-shade {
+  position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(10, 8, 7, 0.8) 0%, rgba(10, 8, 7, 0.55) 30%, rgba(10, 8, 7, 0) 56%);
+}
+
 /* --- choreography: many small motions with long periods, so the scene feels
        alive without ever getting busy. Amplitudes stay tiny on purpose. --- */
 
@@ -2269,6 +2276,7 @@ html.intro-off .intro { display: none; }
 }
 
 .intro-sub {
+  text-shadow: 0 2px 14px rgba(10, 8, 7, 0.85);
   margin: 14px auto 0;
   max-width: 30rem;
   font-size: clamp(0.94rem, 1.5vw, 1.06rem);
@@ -2333,7 +2341,7 @@ html.intro-off .intro { display: none; }
   background: linear-gradient(90deg, var(--coral), #ffc87a);
   transform-origin: 0 50%;
   transform: scaleX(0);
-  animation: i-progress 7.2s linear forwards;
+  animation: i-progress 10s linear forwards;
 }
 @keyframes i-progress { to { transform: scaleX(1); } }
 
