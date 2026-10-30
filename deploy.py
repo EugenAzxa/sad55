@@ -44,7 +44,7 @@ CREDS = os.path.join(HERE, '.ftp-credentials')
 # то же, что исключает make-zip.sh: на сервер уезжает только то,
 # что сайт реально отдаёт посетителю
 SKIP_DIRS = {'.git', '.vercel', 'brag-output', '_probe', '__pycache__', '.tmb', 'notes', '.logs', 'drafts', 'blog-src',
-             'backups'}
+             'uslugi-src', 'backups'}
 SKIP_FILES = {'.gitignore', '.vercelignore', '.DS_Store', '.ftp-credentials',
               'README.md', 'CLAUDE.md', 'deploy-sweb.sh', 'make-zip.sh', 'deploy.py', 'logs.py', 'blog.py', 'autopublish.sh',
               '.deploy-state.json', '.admin-password', 'set-password.py', 'attempts.json', '.lock'}
@@ -146,6 +146,26 @@ def pull_admin(s):
     else:
         print('   в этих файлах были свои правки, закоммить сам')
     return files
+
+
+def rebuild_blog():
+    """Цены в статьях и услугах берутся из прайса при сборке: после свежих цен
+    из админки пересобрать, чтобы на сервер не уехали старые."""
+    import subprocess
+    out = ['blog', 'uslugi', 'blog.html', 'index.html', 'price-and-services.html', 'sitemap.xml', 'llms.txt']
+    # свои незакоммиченные правки в этих файлах коммитить заодно нельзя
+    clean = git('status', '--porcelain', '--', *out).stdout.strip() == ''
+    r = subprocess.run([sys.executable, os.path.join(HERE, 'blog.py')], cwd=HERE,
+                       capture_output=True, text=True)
+    if r.returncode != 0:
+        sys.exit('blog.py не собрался после свежих цен, остановился:\n' + (r.stderr or r.stdout))
+    if not clean:
+        print('Пересобрал статьи и услуги под новые цены, в этих файлах были свои правки, закоммить сам')
+    elif git('status', '--porcelain', '--', *out).stdout.strip():
+        git('add', '--', *out)
+        r = git('commit', '-qm', 'Blog and services: prices from /admin/', '--', *out)
+        print('Пересобрал статьи и услуги под новые цены' + ('' if r.returncode == 0 else
+              ' (не закоммитилось: %s)' % r.stderr.strip()))
 
 
 class LoginFailed(Exception):
@@ -265,7 +285,8 @@ def main():
             s.close()
             sys.exit('Папка %s не похожа на корень сайта. Остановился, ничего не '
                      'отправив.' % here)
-        pull_admin(s)
+        if pull_admin(s):
+            rebuild_blog()
 
     now = local_files()
     was = {} if force else (json.load(open(STATE)) if os.path.exists(STATE) else {})

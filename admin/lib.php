@@ -239,6 +239,68 @@ function build_pages($d) {
   return $out;
 }
 
+/* Цены в статьях, услугах и карточках услуг. blog.py ставит их между метками
+   <!--p:Группа|Услуга|Время-->...<!--/p--> и <!--pt:Группа-->...<!--/pt-->,
+   здесь они переписываются из свежего прайса. Строку, которой в прайсе больше
+   нет (переименовали или удалили), не трогаем: там остаётся старая цена. */
+
+function find_group($d, $title) {
+  foreach ($d['groups'] as $g) if ($g['title'] === $title) return $g;
+  return null;
+}
+
+function ref_price($d, $ref) {
+  $p = array_map('trim', explode('|', $ref));
+  if (count($p) < 2 || !($g = find_group($d, $p[0]))) return null;
+  foreach ($g['rows'] as $r) {
+    if ($r['name'] === $p[1] && (count($p) < 3 || $r['time'] === $p[2])) return price_text($r['price']);
+  }
+  return null;
+}
+
+// та же таблица, что price_table_html в blog.py, в одну строку
+function ref_table($g) {
+  $timed = !empty($g['time']);
+  $h = '<div class="ptable-wrap"><table class="ptable"><thead><tr><th>Услуга</th>' . ($timed ? '<th>Время</th>' : '')
+    . '<th style="text-align:right">Стоимость</th></tr></thead><tbody>';
+  $rows = $g['rows'];
+  $n = count($rows);
+  for ($i = 0; $i < $n; $i++) {
+    $r = $rows[$i];
+    $h .= '<tr>';
+    if (!$timed) {
+      $h .= '<td>' . e($r['name']) . '</td>';
+    } elseif ($i === 0 || $rows[$i - 1]['name'] !== $r['name']) {
+      $span = 1;
+      while ($i + $span < $n && $rows[$i + $span]['name'] === $r['name']) $span++;
+      $h .= '<td' . ($span > 1 ? ' rowspan="' . $span . '"' : '') . '>' . e($r['name']) . '</td>';
+    }
+    if ($timed) $h .= '<td style="white-space:nowrap">' . ($r['time'] !== '' ? e($r['time']) : '-') . '</td>';
+    $h .= '<td>' . price_text($r['price']) . '</td></tr>';
+  }
+  return $h . '</tbody></table></div>';
+}
+
+function build_refs($d, $skip) {
+  $files = array_merge(glob(SITE_ROOT . '/*.html') ?: array(), glob(SITE_ROOT . '/blog/*.html') ?: array(),
+                       glob(SITE_ROOT . '/uslugi/*.html') ?: array());
+  $out = array();
+  foreach ($files as $file) {
+    $html = isset($skip[$file]) ? $skip[$file] : @file_get_contents($file);
+    if ($html === false || strpos($html, '<!--p') === false) continue;
+    $new = preg_replace_callback('#<!--p:(.*?)-->(.*?)<!--/p-->#s', function ($m) use ($d) {
+      $v = ref_price($d, html_entity_decode($m[1], ENT_QUOTES, 'UTF-8'));
+      return '<!--p:' . $m[1] . '-->' . ($v === null ? $m[2] : $v) . '<!--/p-->';
+    }, $html);
+    $new = preg_replace_callback('#<!--pt:(.*?)-->(.*?)<!--/pt-->#s', function ($m) use ($d) {
+      $g = find_group($d, html_entity_decode($m[1], ENT_QUOTES, 'UTF-8'));
+      return '<!--pt:' . $m[1] . '-->' . ($g ? ref_table($g) : $m[2]) . '<!--/pt-->';
+    }, $new);
+    if ($new !== null && ($new !== $html || isset($skip[$file]))) $out[$file] = $new;
+  }
+  return $out;
+}
+
 /* ---------- сохранение и история ---------- */
 
 function save_all($clean) {
@@ -247,6 +309,7 @@ function save_all($clean) {
   try {
     $clean = array('updated' => date('c')) + $clean;
     $pages = build_pages($clean);
+    $pages = build_refs($clean, $pages) + $pages;
 
     if (!is_dir(BACKUP_DIR)) @mkdir(BACKUP_DIR, 0755);
     if (is_file(DATA_FILE)) @copy(DATA_FILE, BACKUP_DIR . '/prices-' . date('Ymd-His') . '.json');

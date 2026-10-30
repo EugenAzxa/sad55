@@ -2403,6 +2403,29 @@ html.intro-off .intro { display: none; }
 .callout-warn .callout-h svg { color: var(--red); }
 .callout-note .callout-h svg { color: var(--violet); }
 
+/* photo above the article, FAQ inside it */
+.post-cover { margin: 0 0 34px; border-radius: var(--r-md); overflow: hidden; background: var(--soft); aspect-ratio: 16 / 9; }
+.post-cover img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.prose .post-faq { margin-top: 1.2em; max-width: none; font-size: 1rem; line-height: 1.6; }
+.prose .faq-a-in > * + * { margin-top: 0.7em; }
+.prose .faq-a-in ul, .prose .faq-a-in ol { gap: 0.3em; }
+
+.post-card-img {
+  display: block; width: calc(100% + 52px); max-width: none; height: auto; aspect-ratio: 16 / 9; object-fit: cover;
+  margin: -26px -26px 6px; border-radius: var(--r-md) var(--r-md) 0 0; background: var(--soft);
+}
+
+/* service pages */
+.svc-bar {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 18px 28px;
+  margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--line);
+}
+.svc-price span { display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); }
+.svc-price b { display: block; font-size: clamp(1.5rem, 3vw, 2rem); color: var(--ink); white-space: nowrap; }
+.svc-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 16px; flex: 1 1 320px; }
+.svc-note { font-size: 0.86rem; color: var(--muted); max-width: 30ch; }
+.svc-card-price { font-weight: 800; color: var(--ink); font-size: 1.05rem; }
+
 .post-disclaimer { margin-top: 40px; font-size: 0.86rem; color: var(--muted); }
 
 .post-cta {

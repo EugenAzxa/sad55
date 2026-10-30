@@ -7,7 +7,9 @@ topic: Курение
 status: approved
 published: 2026-09-29
 reviewer: none
-related: telefon-pered-snom
+image: assets/img/blog/kak-brosit-kurit.jpg
+image_alt: Мужчина ломает сигарету пополам на балконе утром
+related: vejp-snyus-iqos, vred-kalyana, telefon-pered-snom
 old: narkologicheskaya-pomoshh-pri-kurenii, tabakokurenie-nikotinovaya-zavisimost
 tags: Курение, Вейп и IQOS
 ---

@@ -7,6 +7,8 @@ topic: Экранное время
 status: approved
 published: 2026-09-29
 reviewer: none
+image: assets/img/blog/telefon-pered-snom.jpg
+image_alt: Человек ночью в кровати смотрит в светящийся экран телефона
 related: kak-brosit-kurit
 tags: Экранное время, Сон
 ---

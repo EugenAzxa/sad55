@@ -25,7 +25,7 @@ fi
 
 out=$(/usr/bin/python3 blog.py 2>&1) || { log "blog.py упал: $out"; notify "Сборка блога упала, см. .logs/autopublish.log"; exit 1; }
 if [ -n "$(dirty)" ]; then
-    git add -A blog blog.html drafts sitemap.xml llms.txt notes/redirects-sad56ru.htaccess
+    git add -A blog blog.html drafts uslugi index.html price-and-services.html smoke.html sitemap.xml llms.txt notes/redirects-sad56ru.htaccess
     git commit -qm "Blog: autopublish $(date +%F)" && log "собрано и закоммичено: $(echo "$out" | tail -1)"
 fi
 

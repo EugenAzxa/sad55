@@ -29,6 +29,21 @@ history.html при каждой сборке, так что правка мен
     {{price:Группа|Услуга}}  цена из price-and-services.html (Группа|Услуга|Время
                              для строк с часами)
     {{prices:Группа}}        вся таблица группы из прайса
+    [текст](usluga:slug)     ссылка на страницу услуги
+    ::: faq                  вопросы и ответы: «### Вопрос?» и абзацы ответа; из них
+                             аккордеон и разметка FAQPage
+
+Цены попадают в HTML между метками <!--p:Группа|Услуга-->...<!--/p--> и
+<!--pt:Группа-->...<!--/pt-->: по ним админка (admin/lib.php) сама обновляет
+цены в статьях и услугах, когда администратор сохраняет прайс.
+
+Страницы услуг: uslugi-src/*.md -> uslugi/*.html. Шапка как у статьи, плюс
+lead (абзац под заголовком), price (Группа|Услуга|Время, цена «от» в шапке),
+services (слаги других услуг). Список услуг вставляется в index.html и
+price-and-services.html между <!-- uslugi:start --> и <!-- uslugi:end -->.
+
+Фото: image: assets/img/blog/slug.jpg (1600x900) и рядом slug-800.jpg для
+карточек, image_alt: описание.
 """
 import datetime
 import html
@@ -39,6 +54,7 @@ import sys
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(ROOT, "blog-src")
+SVC_SRC = os.path.join(ROOT, "uslugi-src")
 SITE = "https://sad56.spb.ru/"
 CHROME_PAGE = "history.html"
 
@@ -92,6 +108,8 @@ ICON_WARN = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 ICON_NOTE = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
              'stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/>'
              '<path d="M12 16v-4"/><path d="M12 8h.01"/></svg>')
+ICON_PLUS = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" '
+             'stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>')
 ICON_ARROW = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
               'stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>')
 
@@ -155,7 +173,20 @@ def price_lookup(prices, ref):
     die("нет строки «%s» в группе «%s»" % (" | ".join(parts[1:]), parts[0]))
 
 
+def price_ref(ref):
+    return "|".join(p.strip() for p in ref.split("|"))
+
+
+def price_inline(prices, ref):
+    """Price wrapped in the marks admin/lib.php looks for when the price list is saved."""
+    return "<!--p:%s-->%s<!--/p-->" % (esc(price_ref(ref)), esc(price_lookup(prices, ref)))
+
+
 def price_table(prices, group):
+    return "<!--pt:%s-->%s<!--/pt-->" % (esc(group), price_table_html(prices, group))
+
+
+def price_table_html(prices, group):
     rows = prices.get(group)
     if rows is None:
         die("нет группы цен «%s»" % group)
@@ -187,7 +218,7 @@ def price_table(prices, group):
 
 # ---------- sources ----------
 
-def parse_source(path):
+def parse_source(path, required=("slug", "title", "description", "topic", "status")):
     text = open(path, encoding="utf-8").read()
     m = re.match(r"---\n(.*?)\n---\n(.*)", text, re.S)
     if not m:
@@ -197,7 +228,7 @@ def parse_source(path):
         if line.strip():
             k, _, v = line.partition(":")
             meta[k.strip()] = v.strip()
-    for k in ("slug", "title", "description", "topic", "status"):
+    for k in required:
         if not meta.get(k):
             die("%s: в шапке нет %s" % (path, k))
     if meta["status"] not in ("draft", "approved"):
@@ -216,8 +247,9 @@ def parse_source(path):
 
 class Ctx:
     """What a page needs to resolve links: its depth and which slugs exist where."""
-    def __init__(self, prefix, mode, articles, prices):
+    def __init__(self, prefix, mode, articles, prices, services=None):
         self.prefix, self.mode, self.articles, self.prices = prefix, mode, articles, prices
+        self.services = services or {}
 
     def article_href(self, slug):
         a = self.articles.get(slug)
@@ -229,9 +261,19 @@ class Ctx:
             return self.prefix + "drafts/%s.html" % slug
         return None      # a published page must not link to an unpublished draft
 
+    def service_href(self, slug):
+        a = self.services.get(slug)
+        if not a:
+            die("ссылка на несуществующую услугу usluga:%s" % slug)
+        if a["status"] == "approved":
+            return self.prefix + "uslugi/%s.html" % slug
+        return None
+
     def href(self, url):
         if url.startswith("blog:"):
             return self.article_href(url[5:])
+        if url.startswith("usluga:"):
+            return self.service_href(url[7:])
         if re.match(r"^(https?:|tel:|mailto:|#)", url):
             return url
         return self.prefix + url
@@ -240,7 +282,7 @@ class Ctx:
 def inline(s, ctx):
     s = esc(s)
     # "руб." at the end of a sentence must not become "руб.."
-    s = re.sub(r"\{\{price:(.+?)\}\}(\.?)", lambda m: esc(price_lookup(ctx.prices, html.unescape(m.group(1)))) +
+    s = re.sub(r"\{\{price:(.+?)\}\}(\.?)", lambda m: price_inline(ctx.prices, html.unescape(m.group(1))) +
                ("" if price_lookup(ctx.prices, html.unescape(m.group(1))).endswith(".") else m.group(2)), s)
     s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
 
@@ -267,8 +309,8 @@ def slugify_heading(t, used):
 
 
 def render_body(src, ctx):
-    """Returns (html, toc, questions, words, short_html, short_text)."""
-    out, toc, questions, used = [], [], [], set()
+    """Returns (html, toc, questions, words, short_html, short_text, faqs)."""
+    out, toc, questions, used, faqs = [], [], [], set(), []
     short_html, short_text = "", ""
     para, lst, lst_kind = [], [], None
     block = None          # (kind, title, lines)
@@ -298,6 +340,9 @@ def render_body(src, ctx):
                 if kind == "questions":
                     questions.extend(l[2:].strip() for l in blines if l.startswith("- "))
                     continue
+                if kind == "faq":
+                    out.append(faq_html(blines, ctx, faqs, used, toc, title))
+                    continue
                 inner = render_body("\n".join(blines), ctx)[0]
                 if kind == "short":
                     short_html = ('<aside class="callout callout-short"><div class="callout-h">%s<b>Коротко</b></div>%s</aside>'
@@ -313,7 +358,7 @@ def render_body(src, ctx):
         if line.startswith(":::"):
             flush_para(); flush_list()
             kind, _, title = line[3:].strip().partition(" ")
-            if kind not in ("warn", "note", "questions", "short"):
+            if kind not in ("warn", "note", "questions", "short", "faq"):
                 die("неизвестная врезка ::: %s" % kind)
             block = (kind, title.strip(), [])
             continue
@@ -353,7 +398,41 @@ def render_body(src, ctx):
     flush_para(); flush_list()
     body = "\n".join(out)
     words = len(re.findall(r"\w+", re.sub(r"<[^>]+>", " ", body)))
-    return body, toc, questions, words, short_html, short_text
+    return body, toc, questions, words, short_html, short_text, faqs
+
+
+def faq_html(lines, ctx, faqs, used, toc, title):
+    """::: faq block: «### Вопрос» lines, each followed by its answer. Uses the
+    accordion of the home page (.faq-item, opened by main.js)."""
+    items, q, a = [], None, []
+    for line in lines + ["### "]:
+        if line.startswith("### "):
+            if q:
+                items.append((q, "\n".join(a)))
+            q, a = line[4:].strip(), []
+        elif q is not None:
+            a.append(line)
+        elif line.strip():
+            die("в ::: faq текст до первого вопроса: %s" % line)
+    if not items:
+        die("пустой ::: faq")
+    title = title or "Частые вопросы"
+    sid = slugify_heading(title, used)
+    toc.append((sid, title))
+    cards = []
+    for n, (q, a) in enumerate(items):
+        ans = render_body(a, ctx)[0]
+        faqs.append((q, " ".join(re.sub(r"<[^>]+>", " ", ans).split())))
+        cards.append("""<div class="faq-item{o}">
+  <button class="faq-q" aria-expanded="{e}">{q}<span class="plus">{plus}</span></button>
+  <div class="faq-a"><div class="faq-a-in">{a}</div></div>
+</div>""".format(o=" open" if n == 0 else "", e="true" if n == 0 else "false", q=inline(q, ctx), a=ans, plus=ICON_PLUS))
+    return '<h2 id="%s">%s</h2>\n<div class="faq post-faq">%s</div>' % (sid, inline(title, ctx), "\n".join(cards))
+
+
+def faq_ld(faqs, url):
+    return {"@type": "FAQPage", "@id": url + "#faq", "mainEntity": [
+        {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faqs]}
 
 
 def tag_slug(t):
@@ -485,6 +564,32 @@ def person_card(key, prefix, label, extra=""):
                  job=esc(p["job"]), bio=esc(p["bio"]), extra=extra)
 
 
+def small_image(path):
+    """Card-size copy of a cover photo (slug-800.jpg next to slug.jpg), if it exists."""
+    small = re.sub(r"\.jpg$", "-800.jpg", path)
+    return small if small != path and os.path.exists(os.path.join(ROOT, small)) else path
+
+
+def cover_html(a, prefix):
+    img = a.get("image")
+    if not img:
+        return ""
+    if not os.path.exists(os.path.join(ROOT, img)):
+        die("%s: нет файла фото %s" % (a["slug"], img))
+    small = small_image(img)
+    srcset = ' srcset="{p}{s} 800w, {p}{i} 1600w" sizes="(max-width: 820px) 100vw, 780px"'.format(
+        p=prefix, s=small, i=img) if small != img else ""
+    return ('<figure class="post-cover"><img src="{p}{i}"{ss} alt="{alt}" width="1600" height="900" '
+            'fetchpriority="high"></figure>').format(p=prefix, i=img, ss=srcset, alt=esc(a.get("image_alt", "")))
+
+
+def card_image(a, prefix):
+    if not a.get("image"):
+        return ""
+    return '<img class="post-card-img" src="%s%s" alt="" width="800" height="450" loading="lazy">' % (
+        prefix, small_image(a["image"]))
+
+
 def call_card():
     return """<div class="post-cta">
   <div>
@@ -498,7 +603,7 @@ def call_card():
 def article_page(a, ctx, chrome):
     top, bottom = chrome
     prefix, draft = ctx.prefix, ctx.mode == "draft"
-    body, toc, questions, words, short_html, short_text = render_body(a["body"], ctx)
+    body, toc, questions, words, short_html, short_text, faqs = render_body(a["body"], ctx)
     minutes = max(1, round(words / 180))
     url = SITE + "blog/%s.html" % a["slug"]
     image = a.get("image") or "assets/img/og-cover.jpg"
@@ -529,7 +634,10 @@ def article_page(a, ctx, chrome):
             page_ld["lastReviewed"] = updated
     bc = crumbs_ld(crumbs)
     bc["@id"] = url + "#crumbs"
-    jsonld = {"@context": "https://schema.org", "@graph": [page_ld, article_ld, bc]}
+    graph = [page_ld, article_ld, bc]
+    if faqs:
+        graph.append(faq_ld(faqs, url))
+    jsonld = {"@context": "https://schema.org", "@graph": graph}
 
     toc_html = ""
     if len(toc) >= 3:
@@ -557,8 +665,8 @@ def article_page(a, ctx, chrome):
         href = ctx.article_href(slug)
         if href:
             r = ctx.articles[slug]
-            related.append('<a class="post-card" href="%s"><span class="post-topic">%s</span><h3>%s</h3><p>%s</p></a>' % (
-                esc(href), esc(r["topic"]), esc(r["title"]), esc(r["description"])))
+            related.append('<a class="post-card" href="%s">%s<span class="post-topic">%s</span><h3>%s</h3><p>%s</p></a>' % (
+                esc(href), card_image(r, prefix), esc(r["topic"]), esc(r["title"]), esc(r["description"])))
     related_html = ""
     if related:
         related_html = """<section class="section soft-sec">
@@ -591,6 +699,7 @@ def article_page(a, ctx, chrome):
 
 <section class="section post-section">
   <div class="container post-narrow">
+    {cover}
     {draft}
     {short}
     {toc}
@@ -613,7 +722,7 @@ def article_page(a, ctx, chrome):
 """.format(p=prefix, topic=esc(a["topic"]), h1=esc(a.get("h1") or a["title"]), desc=esc(a["description"]),
            photo=author["photo"], aname=esc(author["name"]), ajob=esc(author["job"]),
            when=when, mins=minutes, mword=plural(minutes, "минута", "минуты", "минут"),
-           draft=draft_html, toc=toc_html, short=short_html, tags=tag_chips(a["tags"], prefix), body=body, cta=call_card(),
+           draft=draft_html, cover=cover_html(a, prefix), toc=toc_html, short=short_html, tags=tag_chips(a["tags"], prefix), body=body, cta=call_card(),
            author=person_card(AUTHOR, prefix, "Автор статьи",
                               '\n    <a class="person-more" href="%s%s">%s %s</a>' % (
                                   prefix, author.get("more", ("index.html#doctors",))[0],
@@ -621,6 +730,153 @@ def article_page(a, ctx, chrome):
            review=review_html, related=related_html))
     page.append(foot(prefix, relink(bottom, prefix)))
     return "".join(page), words
+
+
+def price_from(prices, ref):
+    """«от 10 000 руб.»; a row already priced «от ...» gets no second «от»."""
+    return ("" if price_lookup(prices, ref).startswith("от") else "от ") + price_inline(prices, ref)
+
+
+def service_card(a, href, prefix, ctx):
+    price = ""
+    if a.get("price"):
+        price = '<span class="svc-card-price">%s</span>' % price_from(ctx.prices, a["price"])
+    return '<a class="post-card svc-card" href="%s">%s<h3>%s</h3><p>%s</p>%s</a>' % (
+        esc(href), card_image(a, prefix), esc(a["title"]), esc(a.get("lead") or a["description"]), price)
+
+
+def service_page(a, ctx, chrome):
+    top, bottom = chrome
+    prefix = ctx.prefix
+    body, toc, questions, words, short_html, short_text, faqs = render_body(a["body"], ctx)
+    url = SITE + "uslugi/%s.html" % a["slug"]
+    image = a.get("image") or "assets/img/og-cover.jpg"
+    crumbs = [("Главная", SITE), ("Услуги и цены", SITE + "price-and-services.html"), (a["title"], url)]
+    service_ld = {"@type": "MedicalProcedure" if a.get("procedure") else "Service", "@id": url + "#service",
+                  "name": a["title"], "description": a["description"], "url": url, "image": SITE + image,
+                  "provider": CLINIC_LD,
+                  "areaServed": [{"@type": "City", "name": "Санкт-Петербург"},
+                                 {"@type": "AdministrativeArea", "name": "Ленинградская область"}]}
+    page_ld = {"@type": "MedicalWebPage", "@id": url, "url": url, "name": a["title"], "inLanguage": "ru",
+               "about": {"@id": url + "#service"}, "breadcrumb": {"@id": url + "#crumbs"}}
+    if a.get("published"):
+        page_ld["datePublished"] = a["published"]
+        page_ld["dateModified"] = a.get("updated") or a["published"]
+    bc = crumbs_ld(crumbs)
+    bc["@id"] = url + "#crumbs"
+    graph = [page_ld, service_ld, bc]
+    if faqs:
+        graph.append(faq_ld(faqs, url))
+    jsonld = {"@context": "https://schema.org", "@graph": graph}
+
+    toc_html = ""
+    if len(toc) >= 3:
+        toc_html = '<nav class="toc" aria-label="Содержание"><b>Содержание</b><ol>%s</ol></nav>' % "".join(
+            '<li><a href="#%s">%s</a></li>' % (sid, inline(t, ctx)) for sid, t in toc)
+    price_html = ""
+    if a.get("price"):
+        price_html = '<div class="svc-price"><span>Стоимость</span><b>%s</b></div>' % price_from(ctx.prices, a["price"])
+
+    others = []
+    for slug in a["services"]:
+        href = ctx.service_href(slug)
+        if href:
+            others.append(service_card(ctx.services[slug], href, prefix, ctx))
+    reads = []
+    for slug in a["related"]:
+        href = ctx.article_href(slug)
+        if href:
+            r = ctx.articles[slug]
+            reads.append('<a class="post-card" href="%s">%s<span class="post-topic">%s</span><h3>%s</h3><p>%s</p></a>' % (
+                esc(href), card_image(r, prefix), esc(r["topic"]), esc(r["title"]), esc(r["description"])))
+    more = ""
+    for title, cards in (("Другие услуги", others), ("Читать по теме", reads)):
+        if cards:
+            more += """<section class="section soft-sec">
+  <div class="container">
+    <h2 class="h2">{t}</h2>
+    <div class="blog-grid">{c}</div>
+  </div>
+</section>
+""".format(t=title, c="".join(cards))
+
+    page = [head(a.get("seo_title") or a["title"], a["description"], url, prefix, image, jsonld)]
+    page.append(relink(mark_active(top, "price-and-services.html"), prefix))
+    page.append("""<main>
+
+<section class="page-hero post-hero svc-hero">
+  <span class="emblem-float ef-a" aria-hidden="true"></span>
+  <span class="emblem-float ef-b" aria-hidden="true"></span>
+  <div class="container post-narrow">
+    <nav class="crumbs" aria-label="Навигация по разделам"><a href="{p}index.html">Главная</a><span>/</span><a href="{p}price-and-services.html">Услуги и цены</a></nav>
+    <span class="eyebrow">Услуга</span>
+    <h1 class="post-title">{h1}</h1>
+    <p class="lead">{lead}</p>
+    <div class="svc-bar">
+      {price}
+      <div class="svc-actions">
+        <a class="btn btn-primary btn-lg" href="tel:+78123144482">{icon}(812) 314-44-82</a>
+        <span class="svc-note">Круглосуточно, анонимно. Консультация и анализы в день обращения бесплатно.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section post-section">
+  <div class="container post-narrow">
+    {cover}
+    {short}
+    {toc}
+    <article class="prose">
+{body}
+    </article>
+    <p class="post-disclaimer">Имеются противопоказания. Необходима консультация специалиста.</p>
+    {cta}
+  </div>
+</section>
+
+{more}
+</main>
+""".format(p=prefix, h1=esc(a["title"]), lead=inline(a.get("lead") or a["description"], ctx), price=price_html,
+           icon=ICON_PHONE, cover=cover_html(a, prefix), short=short_html, toc=toc_html, body=body,
+           cta=call_card(), more=more))
+    page.append(foot(prefix, relink(bottom, prefix)))
+    return "".join(page), words
+
+
+def services_block(services, ctx):
+    """Cards of all services for index.html and price-and-services.html."""
+    cards = "".join(service_card(a, ctx.service_href(a["slug"]), ctx.prefix, ctx) for a in services)
+    return """
+<section class="section svc-list" id="uslugi">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Услуги</span>
+      <h2 class="h2">Подробно о каждой услуге</h2>
+      <p class="lead">Как проходит, что входит в цену, что подготовить и когда звонить в скорую.</p>
+    </div>
+    <div class="blog-grid">{c}</div>
+  </div>
+</section>
+""".format(c=cards)
+
+
+def topic_block(items, ctx):
+    """Article cards for a regular page (smoke.html: the smoking articles)."""
+    cards = "".join('<a class="post-card" href="%s">%s<span class="post-topic">%s</span><h3>%s</h3><p>%s</p></a>' % (
+        esc(ctx.article_href(a["slug"])), card_image(a, ctx.prefix), esc(a["topic"]), esc(a["title"]),
+        esc(a["description"])) for a in items)
+    return """
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Блог</span>
+      <h2 class="h2">Читать по теме</h2>
+    </div>
+    <div class="blog-grid">{c}</div>
+  </div>
+</section>
+""".format(c=cards)
 
 
 FILTER_JS = """<script>
@@ -655,12 +911,12 @@ def list_page(items, ctx, chrome, draft=False):
         href = ctx.article_href(a["slug"])
         when = ru_date(a["published"]) if a.get("published") else "черновик"
         cards.append("""<a class="post-card" href="{h}" data-tags="{tg}">
-  <span class="post-topic">{topic}</span>
+  {img}<span class="post-topic">{topic}</span>
   <h3>{t}</h3>
   <p>{d}</p>
   <span class="post-card-foot"><img src="{p}{photo}" alt="" width="32" height="32" loading="lazy">{name}<i>{when}</i></span>
 </a>""".format(h=esc(href), topic=esc(a["topic"]), t=esc(a["title"]), d=esc(a["description"]),
-               p=prefix, photo=author["photo"], name=esc(author["short"]), when=when,
+               p=prefix, photo=author["photo"], name=esc(author["short"]), when=when, img=card_image(a, prefix),
                tg=" ".join(tag_slug(t) for t in a["tags"])))
     counts = {}
     for a in items:
@@ -725,7 +981,7 @@ def replace_block(path, start, end, content):
         open(path, "w", encoding="utf-8").write(new)
 
 
-def update_sitemap(approved):
+def update_sitemap(approved, services=()):
     today = datetime.date.today().isoformat()
     urls = ["""
   <url>
@@ -742,17 +998,27 @@ def update_sitemap(approved):
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>""".format(site=SITE, slug=a["slug"], d=a.get("updated") or a["published"]))
+    for a in services:
+        urls.append("""
+  <url>
+    <loc>{site}uslugi/{slug}.html</loc>
+    <lastmod>{d}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>""".format(site=SITE, slug=a["slug"], d=a.get("updated") or a["published"]))
     replace_block(os.path.join(ROOT, "sitemap.xml"), "<!-- blog:start -->", "<!-- blog:end -->",
                   "".join(urls) + "\n  ")
 
 
-def update_llms(approved):
+def update_llms(approved, services=()):
+    lines = []
+    if services:
+        lines += ["\n\n## Услуги\n"]
+        lines += ["- [%s](%suslugi/%s.html): %s" % (a["title"], SITE, a["slug"], a["description"]) for a in services]
     if approved:
-        lines = ["\n\n## Блог\n\nСтатьи готовит пресс-служба Академического Медицинского Центра.\n"]
+        lines += ["\n\n## Блог\n\nСтатьи готовит пресс-служба Академического Медицинского Центра.\n"]
         lines += ["- [%s](%sblog/%s.html): %s" % (a["title"], SITE, a["slug"], a["description"]) for a in approved]
-        text = "\n".join(lines) + "\n\n"
-    else:
-        text = "\n\n"
+    text = "\n".join(lines) + "\n\n" if lines else "\n\n"
     replace_block(os.path.join(ROOT, "llms.txt"), "<!-- blog:start -->", "<!-- blog:end -->", text)
 
 
@@ -810,11 +1076,25 @@ def main():
     for a in articles.values():
         if a["status"] == "approved" and a["published"] > today:
             a["status"], a["scheduled"] = "draft", a["published"]
+    services = {}
+    for f in sorted(os.listdir(SVC_SRC)) if os.path.isdir(SVC_SRC) else []:
+        if f.endswith(".md"):
+            a = parse_source(os.path.join(SVC_SRC, f), ("slug", "title", "description", "status"))
+            if a["slug"] + ".md" != f:
+                die("%s: slug %s не совпадает с именем файла" % (f, a["slug"]))
+            a["services"] = [x.strip() for x in a.get("services", "").split(",") if x.strip()]
+            if a["status"] == "approved" and a["published"] > today:
+                a["status"] = "draft"
+            services[a["slug"]] = a
+    # the order of the cards on the home and price pages
+    svc_live = sorted([a for a in services.values() if a["status"] == "approved"],
+                      key=lambda a: (int(a.get("order", 99)), a["slug"]))
     approved = sorted([a for a in articles.values() if a["status"] == "approved"],
                       key=lambda a: a["published"], reverse=True)
     drafts = [a for a in articles.values() if a["status"] == "draft"]
 
-    live, draft_ctx = Ctx("../", "live", articles, prices), Ctx("../", "draft", articles, prices)
+    live = Ctx("../", "live", articles, prices, services)
+    draft_ctx = Ctx("../", "draft", articles, prices, services)
     report = []
     for a in approved:
         text, words = article_page(a, live, chrome)
@@ -833,11 +1113,27 @@ def main():
                 os.remove(os.path.join(d, f))
                 report.append("удалено %s/%s" % (folder, f))
 
-    write(os.path.join(ROOT, "blog.html"), list_page(approved, Ctx("", "live", articles, prices), chrome))
+    for a in svc_live:
+        text, words = service_page(a, live, chrome)
+        changed = write(os.path.join(ROOT, "uslugi", a["slug"] + ".html"), text)
+        report.append("uslugi/%s.html  %d слов%s" % (a["slug"], words, "  (обновлено)" if changed else ""))
+    d = os.path.join(ROOT, "uslugi")
+    for f in os.listdir(d) if os.path.isdir(d) else []:
+        if f.endswith(".html") and f[:-5] not in {a["slug"] for a in svc_live}:
+            os.remove(os.path.join(d, f))
+            report.append("удалено uslugi/%s" % f)
+    root_ctx = Ctx("", "live", articles, prices, services)
+    for page in ("index.html", "price-and-services.html"):
+        replace_block(os.path.join(ROOT, page), "<!-- uslugi:start -->", "<!-- uslugi:end -->",
+                      services_block(svc_live, root_ctx) if svc_live else "\n")
+    smoking = [a for a in approved if a["topic"] == "Курение"]
+    replace_block(os.path.join(ROOT, "smoke.html"), "<!-- smoke-blog:start -->", "<!-- smoke-blog:end -->",
+                  topic_block(smoking, root_ctx) if smoking else "\n")
+    write(os.path.join(ROOT, "blog.html"), list_page(approved, root_ctx, chrome))
     write(os.path.join(ROOT, "drafts", "index.html"),
           list_page(sorted(drafts, key=lambda a: a["slug"]), draft_ctx, chrome, draft=True))
-    update_sitemap(approved)
-    update_llms(approved)
+    update_sitemap(approved, svc_live)
+    update_llms(approved, svc_live)
     write_redirects(articles)
     print("\n".join(report))
     print("опубликовано %d, черновиков %d" % (len(approved), len(drafts)))

@@ -7,6 +7,8 @@ topic: Алкоголизм
 status: approved
 published: 2026-10-15
 reviewer: none
+image: assets/img/blog/stadii-alkogolizma.jpg
+image_alt: Мужчина один за кухонным столом поздно вечером, рядом стакан
 related: kak-ugovorit-lechitsya, vyvod-iz-zapoya-na-domu, kodirovanie-ot-alkogolya
 old: kogda-neobhodimo-lechenie-alkogolizma, lechenie-alkogolnoj-zavisimosti-2, lechenie-zavisimosti
 tags: Лечение алкоголизма, Признаки зависимости

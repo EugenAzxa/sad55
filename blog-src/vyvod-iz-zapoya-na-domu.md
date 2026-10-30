@@ -1,12 +1,15 @@
 ---
 slug: vyvod-iz-zapoya-na-domu
 title: Вывод из запоя на дому в Санкт-Петербурге: как проходит визит врача
-seo_title: Вывод из запоя на дому в СПб: выезд нарколога круглосуточно, цены
+seo_title: Как проходит вывод из запоя на дому: визит врача по шагам
 description: Как проходит вывод из запоя на дому в Санкт-Петербурге и Ленобласти: осмотр нарколога, капельница, что делать родным. Выезд круглосуточно и анонимно, цены в статье.
 topic: Запой
 status: approved
 published: 2026-09-29
+updated: 2026-10-30
 reviewer: none
+image: assets/img/blog/vyvod-iz-zapoya-na-domu.jpg
+image_alt: Врач с седыми усами беседует с пациенткой у неё дома, на столике медицинская сумка и тонометр
 related: kodirovanie-ot-alkogolya, esperal
 old: vyvedenie-iz-zapoya, vyvedenie-iz-zapoya-2, vyvedenie-iz-zapoya-vazhnoe, vyvedenie-iz-zapoya-slozhnyj-proczess, narkolog-na-dom, narkolog-na-dom-svoevremennaya-pomoshh, narkolog-na-dom-effektivnaya-pomoshh
 tags: Запой, Нарколог на дом, Капельница от запоя
@@ -86,7 +89,7 @@ tags: Запой, Нарколог на дом, Капельница от зап
 
 {{prices:Очищение от алкоголя}}
 
-В стоимость входят консультация врача, осмотр и подбор препаратов. Всё проходит анонимно. Полный список услуг на странице [цены и услуги](price-and-services.html).
+В стоимость входят консультация врача, осмотр и подбор препаратов. Всё проходит анонимно. Как вызвать врача, что входит в цену и что подготовить к его приезду, мы собрали на странице [вывод из запоя на дому](usluga:vyvod-iz-zapoya). Полный список услуг на странице [цены и услуги](price-and-services.html).
 
 ## Что дальше
 

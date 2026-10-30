@@ -7,6 +7,8 @@ topic: Близким
 status: approved
 published: 2026-10-15
 reviewer: none
+image: assets/img/blog/kak-ugovorit-lechitsya.jpg
+image_alt: Женщина держит за руку близкого человека за кухонным столом
 related: stadii-alkogolizma, vyvod-iz-zapoya-na-domu, kodirovanie-ot-alkogolya
 tags: Близким, Лечение алкоголизма
 ---
