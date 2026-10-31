@@ -19,6 +19,9 @@
   # подстановки DirectoryIndex, иначе / -> index.html -> / закрутилось бы в петлю.
   RewriteCond %{THE_REQUEST} \s/index\.html[\s?]
   RewriteRule ^index\.html$ https://sad56.spb.ru/ [L,R=301]
+  # Снятые статьи: 410 Gone, чтобы поисковики быстрее убрали их из выдачи.
+  # Центр не лечит несовершеннолетних (31.10), статья о подростках удалена.
+  RewriteRule ^blog/alkogolizm-u-podrostkov\.html$ - [G,L]
 </IfModule>
 
 # Стили и скрипты меняются под тем же именем. Без этого браузер сам решал,

@@ -32,7 +32,8 @@ RewriteRule ^articles/chistka\-krovi/?$ https://sad56.spb.ru/blog.html [R=301,L]
 RewriteRule ^articles/narkolog\-na\-dom\-svoevremennaya\-pomoshh/?$ https://sad56.spb.ru/blog/vyvod-iz-zapoya-na-domu.html [R=301,L]
 # новой статьи пока нет
 RewriteRule ^articles/chistka\-krovi\-ozdorovlenie\-organizma/?$ https://sad56.spb.ru/blog.html [R=301,L]
-RewriteRule ^articles/lechenie\-alkogolizma\-u\-podrostkov/?$ https://sad56.spb.ru/blog/alkogolizm-u-podrostkov.html [R=301,L]
+# новой статьи пока нет
+RewriteRule ^articles/lechenie\-alkogolizma\-u\-podrostkov/?$ https://sad56.spb.ru/blog.html [R=301,L]
 RewriteRule ^articles/vazhnoe\-v\-lechenii\-alkogolizma/?$ https://sad56.spb.ru/blog/etapy-lecheniya-alkogolizma.html [R=301,L]
 RewriteRule ^articles/narkologicheskoe\-otdelenie\-2/?$ https://sad56.spb.ru/uslugi/anonimnyj-narkolog.html [R=301,L]
 RewriteRule ^articles/narkolog\-na\-dom\-effektivnaya\-pomoshh/?$ https://sad56.spb.ru/blog/vyvod-iz-zapoya-na-domu.html [R=301,L]
