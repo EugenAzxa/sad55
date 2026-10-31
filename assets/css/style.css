@@ -2112,9 +2112,19 @@ html.intro-off .intro { display: none; }
 .intro-video { object-fit: cover; object-position: 50% 50%; background: #0a0807; }
 /* tall phone screens: show the whole frame (the doctors stand at the sides of
    the last shot), copy sits in the dark band above it */
+.intro-blur { display: none; }
+/* the clip ends on the two doctors waving: clear the copy and the shade off their faces */
+@keyframes i-copy-out { to { opacity: 0; transform: translateY(-14px); } }
+.intro-copy, .intro-shade { animation: i-copy-out 0.8s 8.1s ease forwards; }
 @media (max-aspect-ratio: 1/1) {
-  .intro-video { object-fit: contain; object-position: 50% 58%; }
+  .intro-video { object-fit: contain; object-position: 50% 58%; background: transparent; }
   .intro-shade { display: none; }
+  /* fill the bands above and below the clip with a blurred copy of its first frame */
+  .intro-blur {
+    display: block; position: absolute; inset: -40px;
+    background: url("../img/intro-ship-poster.jpg") center / cover no-repeat;
+    filter: blur(28px) brightness(0.45) saturate(1.2);
+  }
 }
 /* the clip is bright: darken the top so the white copy stays readable */
 .intro-shade {
