@@ -2,8 +2,7 @@
 # Положить в .htaccess старого сайта, когда sad56.ru переедет. Пока НЕ использовать.
 RewriteEngine On
 RewriteRule ^articles/?$ https://sad56.spb.ru/blog.html [R=301,L]
-# новой статьи пока нет
-RewriteRule ^articles/postalkogolnaya\-depressiya/?$ https://sad56.spb.ru/blog.html [R=301,L]
+RewriteRule ^articles/postalkogolnaya\-depressiya/?$ https://sad56.spb.ru/blog/postalkogolnaya-depressiya.html [R=301,L]
 RewriteRule ^articles/spasite\-vashe\-zdorove\-nachnite\-lechenie\-alkogolizma\-pryamo\-sejchas/?$ https://sad56.spb.ru/uslugi/kodirovanie.html [R=301,L]
 # новой статьи пока нет
 RewriteRule ^articles/lechenie\-zavisimosti\-2/?$ https://sad56.spb.ru/blog.html [R=301,L]
@@ -12,12 +11,10 @@ RewriteRule ^articles/lechenie\-zavisimosti/?$ https://sad56.spb.ru/blog/stadii-
 RewriteRule ^articles/zhenskij\-alkogolizm\-lechenie\-alkogolnoj\-zavisimosti\-u\-zhenshhin/?$ https://sad56.spb.ru/blog/zhenskij-alkogolizm.html [R=301,L]
 RewriteRule ^articles/zakodirovatsya\-ot\-alkogolya\-zhenskij\-alkogolizm/?$ https://sad56.spb.ru/blog/zhenskij-alkogolizm.html [R=301,L]
 RewriteRule ^articles/kak\-vyvesti\-iz\-zapoya/?$ https://sad56.spb.ru/uslugi/vyvod-iz-zapoya.html [R=301,L]
-# новой статьи пока нет
-RewriteRule ^articles/periody\-v\-lechenii\-alkogolnoj\-zavisimosti/?$ https://sad56.spb.ru/blog.html [R=301,L]
+RewriteRule ^articles/periody\-v\-lechenii\-alkogolnoj\-zavisimosti/?$ https://sad56.spb.ru/blog/etapy-lecheniya-alkogolizma.html [R=301,L]
 RewriteRule ^articles/vyvedenie\-iz\-zapoya\-narodnymi\-sredstvami\-opasno/?$ https://sad56.spb.ru/blog/kak-snyat-pohmele.html [R=301,L]
 RewriteRule ^articles/lechenie\-alkogolizma\-ostraya\-problema\-sovremennosti/?$ https://sad56.spb.ru/uslugi/kodirovanie.html [R=301,L]
-# новой статьи пока нет
-RewriteRule ^articles/lechenie\-alkogolizma\-pivnoj\-alkogolizm/?$ https://sad56.spb.ru/blog.html [R=301,L]
+RewriteRule ^articles/lechenie\-alkogolizma\-pivnoj\-alkogolizm/?$ https://sad56.spb.ru/blog/pivnoj-alkogolizm.html [R=301,L]
 RewriteRule ^articles/lechenie\-alkogolizma\-esperal/?$ https://sad56.spb.ru/blog/esperal.html [R=301,L]
 RewriteRule ^articles/vyvedenie\-iz\-zapoya\-slozhnyj\-proczess/?$ https://sad56.spb.ru/blog/vyvod-iz-zapoya-na-domu.html [R=301,L]
 # новой статьи пока нет
@@ -28,27 +25,22 @@ RewriteRule ^articles/narkologicheskoe\-otdelenie/?$ https://sad56.spb.ru/uslugi
 RewriteRule ^articles/zakodirovatsya\-ot\-alkogolya/?$ https://sad56.spb.ru/blog/kodirovanie-ot-alkogolya.html [R=301,L]
 RewriteRule ^articles/narkolog\-na\-dom/?$ https://sad56.spb.ru/blog/vyvod-iz-zapoya-na-domu.html [R=301,L]
 RewriteRule ^articles/vyvedenie\-iz\-zapoya\-2/?$ https://sad56.spb.ru/blog/vyvod-iz-zapoya-na-domu.html [R=301,L]
-# новой статьи пока нет
-RewriteRule ^articles/etapy\-lecheniya\-alkogolizma/?$ https://sad56.spb.ru/blog.html [R=301,L]
+RewriteRule ^articles/etapy\-lecheniya\-alkogolizma/?$ https://sad56.spb.ru/blog/etapy-lecheniya-alkogolizma.html [R=301,L]
 RewriteRule ^articles/lechenie\-alkogolnoj\-zavisimosti\-2/?$ https://sad56.spb.ru/blog/stadii-alkogolizma.html [R=301,L]
 # новой статьи пока нет
 RewriteRule ^articles/chistka\-krovi/?$ https://sad56.spb.ru/blog.html [R=301,L]
 RewriteRule ^articles/narkolog\-na\-dom\-svoevremennaya\-pomoshh/?$ https://sad56.spb.ru/blog/vyvod-iz-zapoya-na-domu.html [R=301,L]
 # новой статьи пока нет
 RewriteRule ^articles/chistka\-krovi\-ozdorovlenie\-organizma/?$ https://sad56.spb.ru/blog.html [R=301,L]
-# новой статьи пока нет
-RewriteRule ^articles/lechenie\-alkogolizma\-u\-podrostkov/?$ https://sad56.spb.ru/blog.html [R=301,L]
-# новой статьи пока нет
-RewriteRule ^articles/vazhnoe\-v\-lechenii\-alkogolizma/?$ https://sad56.spb.ru/blog.html [R=301,L]
+RewriteRule ^articles/lechenie\-alkogolizma\-u\-podrostkov/?$ https://sad56.spb.ru/blog/alkogolizm-u-podrostkov.html [R=301,L]
+RewriteRule ^articles/vazhnoe\-v\-lechenii\-alkogolizma/?$ https://sad56.spb.ru/blog/etapy-lecheniya-alkogolizma.html [R=301,L]
 RewriteRule ^articles/narkologicheskoe\-otdelenie\-2/?$ https://sad56.spb.ru/uslugi/anonimnyj-narkolog.html [R=301,L]
 RewriteRule ^articles/narkolog\-na\-dom\-effektivnaya\-pomoshh/?$ https://sad56.spb.ru/blog/vyvod-iz-zapoya-na-domu.html [R=301,L]
 # новой статьи пока нет
 RewriteRule ^articles/chistka\-krovi\-plazmaferez/?$ https://sad56.spb.ru/blog.html [R=301,L]
 RewriteRule ^articles/narkologicheskaya\-pomoshh\-pri\-kurenii/?$ https://sad56.spb.ru/blog/kak-brosit-kurit.html [R=301,L]
-# новой статьи пока нет
-RewriteRule ^articles/lechenie\-alkogolnoj\-zavisimosti\-kompleksno\-i\-effektivno/?$ https://sad56.spb.ru/blog.html [R=301,L]
-# новой статьи пока нет
-RewriteRule ^articles/lechenie\-alkogolizma\-osnovy/?$ https://sad56.spb.ru/blog.html [R=301,L]
+RewriteRule ^articles/lechenie\-alkogolnoj\-zavisimosti\-kompleksno\-i\-effektivno/?$ https://sad56.spb.ru/blog/etapy-lecheniya-alkogolizma.html [R=301,L]
+RewriteRule ^articles/lechenie\-alkogolizma\-osnovy/?$ https://sad56.spb.ru/blog/etapy-lecheniya-alkogolizma.html [R=301,L]
 RewriteRule ^articles/vyvedenie\-iz\-zapoya\-nachalo\-lecheniya/?$ https://sad56.spb.ru/uslugi/vyvod-iz-zapoya.html [R=301,L]
 RewriteRule ^articles/vyvedenie\-iz\-zapoya\-vazhnoe/?$ https://sad56.spb.ru/blog/vyvod-iz-zapoya-na-domu.html [R=301,L]
 # новой статьи пока нет
@@ -56,8 +48,7 @@ RewriteRule ^articles/chistka\-krovi\-vlok/?$ https://sad56.spb.ru/blog.html [R=
 RewriteRule ^articles/sozavisimost\-pri\-alkogolizme/?$ https://sad56.spb.ru/blog/sozavisimost.html [R=301,L]
 RewriteRule ^articles/tabakokurenie\-nikotinovaya\-zavisimost/?$ https://sad56.spb.ru/blog/kak-brosit-kurit.html [R=301,L]
 RewriteRule ^articles/lechenie\-drugih\-zavisimostej/?$ https://sad56.spb.ru/uslugi/anonimnyj-narkolog.html [R=301,L]
-# новой статьи пока нет
-RewriteRule ^articles/lechenie\-alkogolnoj\-zavisimosti/?$ https://sad56.spb.ru/blog.html [R=301,L]
+RewriteRule ^articles/lechenie\-alkogolnoj\-zavisimosti/?$ https://sad56.spb.ru/blog/etapy-lecheniya-alkogolizma.html [R=301,L]
 # новой статьи пока нет
 RewriteRule ^articles/390/?$ https://sad56.spb.ru/blog.html [R=301,L]
 RewriteRule ^articles/vyvedenie\-iz\-zapoya/?$ https://sad56.spb.ru/blog/vyvod-iz-zapoya-na-domu.html [R=301,L]

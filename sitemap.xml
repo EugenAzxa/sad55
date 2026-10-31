@@ -51,9 +51,39 @@
   <!-- blog:start -->
   <url>
     <loc>https://sad56.spb.ru/blog.html</loc>
-    <lastmod>2026-10-30</lastmod>
+    <lastmod>2026-10-31</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sad56.spb.ru/blog/alkogolizm-u-podrostkov.html</loc>
+    <lastmod>2026-10-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sad56.spb.ru/blog/etapy-lecheniya-alkogolizma.html</loc>
+    <lastmod>2026-10-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sad56.spb.ru/blog/kakoe-pivo-samoe-vrednoe.html</loc>
+    <lastmod>2026-10-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sad56.spb.ru/blog/pivnoj-alkogolizm.html</loc>
+    <lastmod>2026-10-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sad56.spb.ru/blog/postalkogolnaya-depressiya.html</loc>
+    <lastmod>2026-10-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://sad56.spb.ru/blog/alkogol-i-antibiotiki.html</loc>
@@ -159,49 +189,49 @@
   </url>
   <url>
     <loc>https://sad56.spb.ru/blog/kak-ugovorit-lechitsya.html</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://sad56.spb.ru/blog/stadii-alkogolizma.html</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://sad56.spb.ru/blog/esperal.html</loc>
-    <lastmod>2026-10-30</lastmod>
+    <lastmod>2026-10-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://sad56.spb.ru/blog/kak-brosit-kurit.html</loc>
-    <lastmod>2026-09-29</lastmod>
+    <lastmod>2026-10-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://sad56.spb.ru/blog/kodirovanie-ot-alkogolya.html</loc>
-    <lastmod>2026-10-30</lastmod>
+    <lastmod>2026-10-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://sad56.spb.ru/blog/telefon-pered-snom.html</loc>
-    <lastmod>2026-09-29</lastmod>
+    <lastmod>2026-10-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://sad56.spb.ru/blog/vyvod-iz-zapoya-na-domu.html</loc>
-    <lastmod>2026-10-30</lastmod>
+    <lastmod>2026-10-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://sad56.spb.ru/vse-temy.html</loc>
-    <lastmod>2026-10-30</lastmod>
+    <lastmod>2026-10-31</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
