@@ -25,7 +25,7 @@
   <meta name="theme-color" content="#f5553f">
   <link rel="preload" href="assets/fonts/raleway-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/raleway-cyrillic-800-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=20261105">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261106">
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -33,7 +33,7 @@
   "@id": "https://sad56.spb.ru/#clinic",
   "name": "Академический Медицинский Центр",
   "alternateName": "АМЦ",
-  "description": "Наркологическая клиника в Санкт-Петербурге с 1992 года. Лечение алкогольной зависимости, кодирование, выведение из запоя, лечение табакокурения. Анонимно. Центр принимает ежедневно с 9:00 до 15:00, выезд врача на дом круглосуточно.",
+  "description": "Наркологическая клиника в Санкт-Петербурге с 1992 года. Лечение алкогольной зависимости, кодирование, выведение из запоя, лечение табакокурения. Анонимно. Центр: ежедневно с 9:00 до 17:00. Запись и выезд врача на дом: круглосуточно.",
   "url": "https://sad56.spb.ru/",
   "logo": "https://sad56.spb.ru/assets/img/icon-512.png",
   "image": "https://sad56.spb.ru/assets/img/og-cover.jpg",
@@ -68,9 +68,22 @@
         "Sunday"
       ],
       "opens": "09:00",
-      "closes": "15:00"
+      "closes": "17:00"
     }
   ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "+7-812-314-44-82",
+    "contactType": "reservations",
+    "description": "Круглосуточная запись и выезд врача на дом",
+    "availableLanguage": "ru",
+    "hoursAvailable": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      "opens": "00:00",
+      "closes": "23:59"
+    }
+  },
   "medicalSpecialty": [
     "Psychiatric",
     "Addiction"
@@ -236,7 +249,7 @@
     <div class="intro-beat2">
       <span class="intro-eyebrow">Академический Медицинский Центр</span>
       <p class="intro-title"><span class="rise">Курс на трезвость</span></p>
-      <p class="intro-sub">Более 30 лет помогаем выйти из зависимости. Анонимно, выезд на дом круглосуточно, с 1992 года.</p>
+      <p class="intro-sub">Более 30 лет помогаем выйти из зависимости. Анонимно, с 1992 года. Запись и выезд на дом круглосуточно.</p>
     </div>
   </div>
   <button class="intro-skip" type="button" id="intro-skip">
@@ -284,7 +297,7 @@
       </button>
       <div class="header-phone">
         <a href="tel:+78123144482">(812) 314-44-82</a>
-        <span>круглосуточно, анонимно</span>
+        <span>запись круглосуточно, анонимно</span>
       </div>
       <button class="btn btn-primary" data-open-modal>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
@@ -368,7 +381,7 @@
       </div>
       <div class="hero-chips">
         <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Полная анонимность</span>
-        <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Ежедневно 9:00-15:00</span>
+        <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Ежедневно 9:00-17:00</span>
         <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 9-8 9 8"/><path d="M5 9.5V21h14V9.5"/></svg>Выезд на дом 24/7</span>
       </div>
     </div>
@@ -400,8 +413,9 @@
     <div class="stats-grid reveal">
       <div class="stat"><b data-count="1992">1992</b><span>год основания центра</span></div>
       <div class="stat"><b data-count="29" data-suffix="+">29+</b><span>врачей высшей категории</span></div>
+      <div class="stat"><b data-count="6892" data-suffix="+">6892+</b><span>человек бросили пить с нами</span></div>
       <div class="stat"><b data-count="2000" data-suffix="+">2000+</b><span>человек бросили курить с нами</span></div>
-      <div class="stat"><b>24/7</b><span>выезд врача на дом</span></div>
+      <div class="stat"><b>24/7</b><span>запись и выезд на дом</span></div>
     </div>
   </div>
 </section>
@@ -427,12 +441,12 @@
       <article class="why-card reveal d2">
         <span class="why-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42Z"/></svg></span>
         <h3>Эффективная помощь</h3>
-        <p>Наш центр гарантирует правильно подобранное и эффективное лечение зависимостей. Мы со всей ответственностью относимся к своей работе и делаем все необходимое, чтобы оказать реальную помощь пациенту.</p>
+        <p>Лечение подбираем индивидуально после осмотра врача. Мы со всей ответственностью относимся к своей работе и делаем все необходимое, чтобы оказать реальную помощь пациенту.</p>
       </article>
       <article class="why-card reveal d3">
         <span class="why-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 9-8 9 8"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg></span>
         <h3>Комфортные условия</h3>
-        <p>Центр принимает ежедневно с 9:00 до 15:00, врач выезжает на дом круглосуточно. Возможны разные формы лечения: амбулаторно и на дому.</p>
+        <p>Центр принимает ежедневно с 9:00 до 17:00, запись и выезд врача на дом круглосуточно. Возможны разные формы лечения: амбулаторно и на дому.</p>
       </article>
     </div>
   </div>
@@ -725,7 +739,7 @@
       <h2 class="h2">Подробно о каждой услуге</h2>
       <p class="lead">Как проходит, что входит в цену, что подготовить и когда звонить в скорую.</p>
     </div>
-    <div class="blog-grid"><a class="post-card svc-card" href="uslugi/vyvod-iz-zapoya.html"><img class="post-card-img" src="assets/img/uslugi/vyvod-iz-zapoya-800.jpg" alt="" width="800" height="450" loading="lazy"><h3>Вывод из запоя на дому</h3><p>Врач центра приедет домой в Санкт-Петербурге или Ленинградской области, снимет отравление и объяснит, как пережить следующие дни. Позвонить можно в любое время суток.</p><span class="svc-card-price">от <!--p:Очищение от алкоголя|Комплексное выведение из запоя на дому (многокомпонентная капельница + таблетки)|09-21 ч-->10 000 руб.<!--/p--></span></a><a class="post-card svc-card" href="uslugi/narkolog-na-dom.html"><img class="post-card-img" src="assets/img/uslugi/narkolog-na-dom-800.jpg" alt="" width="800" height="450" loading="lazy"><h3>Вызов нарколога на дом</h3><p>Нарколог центра приедет к пациенту домой в Санкт-Петербурге или Ленинградской области, осмотрит его и решит, как помочь. Вызвать врача может сам человек или его близкие, по телефону в любое время.</p><span class="svc-card-price">от <!--p:Очищение от алкоголя|Комплексное выведение из запоя на дому (многокомпонентная капельница + таблетки)|09-21 ч-->10 000 руб.<!--/p--></span></a><a class="post-card svc-card" href="uslugi/kapelnica-ot-zapoya.html"><img class="post-card-img" src="assets/img/uslugi/kapelnica-ot-zapoya-800.jpg" alt="" width="800" height="450" loading="lazy"><h3>Капельница от запоя и похмелья на дому</h3><p>Врач центра поставит капельницу на дому в Санкт-Петербурге или Ленинградской области, подобрав состав после осмотра. Вызвать его можно по телефону круглосуточно.</p><span class="svc-card-price">от <!--p:Очищение от алкоголя|Комплексное выведение из запоя на дому (многокомпонентная капельница + таблетки)|09-21 ч-->10 000 руб.<!--/p--></span></a><a class="post-card svc-card" href="uslugi/kodirovanie.html"><img class="post-card-img" src="assets/img/uslugi/kodirovanie-800.jpg" alt="" width="800" height="450" loading="lazy"><h3>Кодирование от алкоголизма: все методы</h3><p>Все методы кодирования от алкоголя в Академическом Медицинском Центре на Садовой улице: препараты и психотерапия, сроки и цены. Начать можно с бесплатной консультации врача, позвоните (812) 314-44-82, круглосуточно.</p><span class="svc-card-price">от <!--p:Препараты группы дисульфирама|Химзащита (внутривенное введение) на 3 месяца-->5 000 руб.<!--/p--></span></a><a class="post-card svc-card" href="uslugi/himzashchita.html"><img class="post-card-img" src="assets/img/uslugi/himzashchita-800.jpg" alt="" width="800" height="450" loading="lazy"><h3>Химзащита и подшивка от алкоголя</h3><p>Препараты дисульфирама в вену, под кожу или в виде геля в Академическом Медицинском Центре на Садовой улице. Сначала бесплатная консультация и анализы, позвоните (812) 314-44-82, круглосуточно и анонимно.</p><span class="svc-card-price">от <!--p:Препараты группы дисульфирама|Химзащита (внутривенное введение) на 3 месяца-->5 000 руб.<!--/p--></span></a><a class="post-card svc-card" href="uslugi/dovzhenko-i-gipnoz.html"><img class="post-card-img" src="assets/img/uslugi/dovzhenko-i-gipnoz-800.jpg" alt="" width="800" height="450" loading="lazy"><h3>Кодирование по Довженко и гипноз</h3><p>Психотерапевтические методы кодирования от алкоголя, без препаратов. Сеанс проводит врач-психотерапевт Академического Медицинского Центра на Садовой улице, позвоните (812) 314-44-82, круглосуточно и анонимно.</p><span class="svc-card-price"><!--p:Психотерапевтические методики|Кодирование по Довженко от 1 года-->от 11 900 руб.<!--/p--></span></a><a class="post-card svc-card" href="uslugi/anonimnyj-narkolog.html"><img class="post-card-img" src="assets/img/uslugi/anonimnyj-narkolog-800.jpg" alt="" width="800" height="450" loading="lazy"><h3>Анонимная консультация нарколога</h3><p>Нарколог Академического Медицинского Центра на Садовой улице проконсультирует анонимно: в центре ежедневно с 9:00 до 15:00, по телефону круглосуточно. До 31 декабря 2026 года консультация врача и анализы в день обращения бесплатны, позвоните (812) 314-44-82.</p></a><a class="post-card svc-card" href="uslugi/vyezd-narkologa.html"><img class="post-card-img" src="assets/img/uslugi/vyezd-narkologa-800.jpg" alt="" width="800" height="450" loading="lazy"><h3>Выезд нарколога по районам СПб и Ленобласти</h3><p>Врачи центра выезжают по любому адресу Санкт-Петербурга и Ленинградской области днём и ночью, без выходных. Вызвать нарколога можно одним звонком.</p><span class="svc-card-price">от <!--p:Очищение от алкоголя|Комплексное выведение из запоя на дому (многокомпонентная капельница + таблетки)|09-21 ч-->10 000 руб.<!--/p--></span></a></div>
+    <div class="blog-grid"><a class="post-card svc-card" href="uslugi/vyvod-iz-zapoya.html"><img class="post-card-img" src="assets/img/uslugi/vyvod-iz-zapoya-800.jpg" alt="" width="800" height="450" loading="lazy"><h3>Вывод из запоя на дому</h3><p>Врач центра приедет домой в Санкт-Петербурге или Ленинградской области, снимет отравление и объяснит, как пережить следующие дни. Позвонить можно в любое время суток.</p><span class="svc-card-price">от <!--p:Очищение от алкоголя|Комплексное выведение из запоя на дому (многокомпонентная капельница + таблетки)|09-21 ч-->10 000 руб.<!--/p--></span></a><a class="post-card svc-card" href="uslugi/narkolog-na-dom.html"><img class="post-card-img" src="assets/img/uslugi/narkolog-na-dom-800.jpg" alt="" width="800" height="450" loading="lazy"><h3>Вызов нарколога на дом</h3><p>Нарколог центра приедет к пациенту домой в Санкт-Петербурге или Ленинградской области, осмотрит его и решит, как помочь. Вызвать врача может сам человек или его близкие, по телефону в любое время.</p><span class="svc-card-price">от <!--p:Очищение от алкоголя|Комплексное выведение из запоя на дому (многокомпонентная капельница + таблетки)|09-21 ч-->10 000 руб.<!--/p--></span></a><a class="post-card svc-card" href="uslugi/kapelnica-ot-zapoya.html"><img class="post-card-img" src="assets/img/uslugi/kapelnica-ot-zapoya-800.jpg" alt="" width="800" height="450" loading="lazy"><h3>Капельница от запоя и похмелья на дому</h3><p>Врач центра поставит капельницу на дому в Санкт-Петербурге или Ленинградской области, подобрав состав после осмотра. Вызвать его можно по телефону круглосуточно.</p><span class="svc-card-price">от <!--p:Очищение от алкоголя|Комплексное выведение из запоя на дому (многокомпонентная капельница + таблетки)|09-21 ч-->10 000 руб.<!--/p--></span></a><a class="post-card svc-card" href="uslugi/kodirovanie.html"><img class="post-card-img" src="assets/img/uslugi/kodirovanie-800.jpg" alt="" width="800" height="450" loading="lazy"><h3>Кодирование от алкоголизма: все методы</h3><p>Все методы кодирования от алкоголя в Академическом Медицинском Центре на Садовой улице: препараты и психотерапия, сроки и цены. Начать можно с бесплатной консультации врача, позвоните (812) 314-44-82, круглосуточно.</p><span class="svc-card-price">от <!--p:Препараты группы дисульфирама|Химзащита (внутривенное введение) на 3 месяца-->5 000 руб.<!--/p--></span></a><a class="post-card svc-card" href="uslugi/himzashchita.html"><img class="post-card-img" src="assets/img/uslugi/himzashchita-800.jpg" alt="" width="800" height="450" loading="lazy"><h3>Химзащита и подшивка от алкоголя</h3><p>Препараты дисульфирама в вену, под кожу или в виде геля в Академическом Медицинском Центре на Садовой улице. Сначала бесплатная консультация и анализы, позвоните (812) 314-44-82, круглосуточно и анонимно.</p><span class="svc-card-price">от <!--p:Препараты группы дисульфирама|Химзащита (внутривенное введение) на 3 месяца-->5 000 руб.<!--/p--></span></a><a class="post-card svc-card" href="uslugi/dovzhenko-i-gipnoz.html"><img class="post-card-img" src="assets/img/uslugi/dovzhenko-i-gipnoz-800.jpg" alt="" width="800" height="450" loading="lazy"><h3>Кодирование по Довженко и гипноз</h3><p>Психотерапевтические методы кодирования от алкоголя, без препаратов. Сеанс проводит врач-психотерапевт Академического Медицинского Центра на Садовой улице, позвоните (812) 314-44-82, круглосуточно и анонимно.</p><span class="svc-card-price"><!--p:Психотерапевтические методики|Кодирование по Довженко от 1 года-->от 11 900 руб.<!--/p--></span></a><a class="post-card svc-card" href="uslugi/anonimnyj-narkolog.html"><img class="post-card-img" src="assets/img/uslugi/anonimnyj-narkolog-800.jpg" alt="" width="800" height="450" loading="lazy"><h3>Анонимная консультация нарколога</h3><p>Нарколог Академического Медицинского Центра на Садовой улице проконсультирует анонимно: в центре ежедневно с 9:00 до 17:00, запись по телефону круглосуточно. До 31 декабря 2026 года консультация врача и анализы в день обращения бесплатны, позвоните (812) 314-44-82.</p></a><a class="post-card svc-card" href="uslugi/vyezd-narkologa.html"><img class="post-card-img" src="assets/img/uslugi/vyezd-narkologa-800.jpg" alt="" width="800" height="450" loading="lazy"><h3>Выезд нарколога по районам СПб и Ленобласти</h3><p>Врачи центра выезжают по любому адресу Санкт-Петербурга и Ленинградской области днём и ночью, без выходных. Вызвать нарколога можно одним звонком.</p><span class="svc-card-price">от <!--p:Очищение от алкоголя|Комплексное выведение из запоя на дому (многокомпонентная капельница + таблетки)|09-21 ч-->10 000 руб.<!--/p--></span></a></div>
   </div>
 </section>
 <!-- uslugi:end -->
@@ -820,7 +834,7 @@
         </div>
         <div class="contact-row">
           <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
-          <div><b>Режим работы</b><span class="val">Центр: ежедневно с 9:00 до 15:00. Выезд врача на дом и звонки: круглосуточно.</span></div>
+          <div><b>Режим работы</b><span class="val">Центр: ежедневно с 9:00 до 17:00. Запись и выезд врача на дом: круглосуточно.</span></div>
         </div>
         <button class="btn btn-primary btn-lg" data-open-modal style="align-self:flex-start">Позвонить</button>
       </div>
@@ -907,7 +921,7 @@
     </button>
     <div class="modal-form">
       <h3 id="modal-title">Позвоните нам</h3>
-      <p class="sub">Врач ответит сам, круглосуточно и анонимно. Ничего заполнять не нужно, данные о себе оставлять тоже не нужно.</p>
+      <p class="sub">Звоните круглосуточно: диспетчер запишет в центр или отправит врача на дом. Анонимно, ничего заполнять и оставлять данные о себе не нужно.</p>
       <a class="btn btn-primary btn-lg call-big" href="tel:+78123144482">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
         (812) 314-44-82
@@ -915,7 +929,7 @@
       <ul class="modal-contacts">
         <li>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-          <span>Круглосуточно, без выходных</span>
+          <span>Запись и выезд врача на дом круглосуточно. Центр: ежедневно 9:00-17:00</span>
         </li>
         <li>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>

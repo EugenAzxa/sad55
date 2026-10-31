@@ -503,7 +503,7 @@ def head(title, description, canonical, prefix, og_image, jsonld, noindex=False,
   <meta name="theme-color" content="#f5553f">
   <link rel="preload" href="{p}assets/fonts/raleway-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="{p}assets/fonts/raleway-cyrillic-800-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="{p}assets/css/style.css?v=20261105">
+  <link rel="stylesheet" href="{p}assets/css/style.css?v=20261106">
   <script type="application/ld+json">
 {j}
   </script>
@@ -583,6 +583,8 @@ TAG_SERVICES = [
     ("Анонимность", ["anonimnyj-narkolog"]),
 ]
 DEFAULT_SERVICE = "anonimnyj-narkolog"
+# выездная бригада работает круглосуточно, центр на Садовой с 9:00 до 17:00
+HOME_VISIT_SERVICES = {"vyvod-iz-zapoya", "narkolog-na-dom", "kapelnica-ot-zapoya", "vyezd-narkologa"}
 # «Полезно знать» на главной и «Перед визитом» под ценами
 HOME_ARTICLES = ["stadii-alkogolizma", "kak-ugovorit-lechitsya", "kak-snyat-pohmele",
                  "podgotovka-k-kodirovaniyu", "sryv-posle-kodirovaniya", "sozavisimost"]
@@ -653,7 +655,7 @@ def call_card():
     return """<div class="post-cta">
   <div>
     <h3>Если нужна помощь сейчас</h3>
-    <p>Позвоните: врач ответит сам, круглосуточно и анонимно. Консультация и анализы в день обращения бесплатно.</p>
+    <p>Звоните круглосуточно: диспетчер запишет в центр или отправит врача на дом. Анонимно. Консультация и анализы в день обращения бесплатно.</p>
   </div>
   <a class="btn btn-primary btn-lg" href="tel:+78123144482">{icon}(812) 314-44-82</a>
 </div>""".format(icon=ICON_PHONE)
@@ -819,6 +821,10 @@ def service_page(a, ctx, chrome):
                   "provider": CLINIC_LD,
                   "areaServed": [{"@type": "City", "name": "Санкт-Петербург"},
                                  {"@type": "AdministrativeArea", "name": "Ленинградская область"}]}
+    if a["slug"] in HOME_VISIT_SERVICES:
+        service_ld["hoursAvailable"] = {"@type": "OpeningHoursSpecification", "dayOfWeek": [
+            "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+            "opens": "00:00", "closes": "23:59"}
     page_ld = {"@type": "MedicalWebPage", "@id": url, "url": url, "name": a["title"], "inLanguage": "ru",
                "about": {"@id": url + "#service"}, "breadcrumb": {"@id": url + "#crumbs"}}
     if a.get("published"):
