@@ -25,6 +25,7 @@
     python3 deploy.py           залить изменившееся
     python3 deploy.py --dry     только показать, что будет залито
     python3 deploy.py --all     залить всё заново, игнорируя слепок
+    python3 deploy.py --only a,b      залить только эти файлы, остальные изменения подождут
     python3 deploy.py --indexnow-all   отправить в IndexNow все адреса из sitemap.xml
                                        (после обычной заливки залитые .html уходят туда сами)
 
@@ -336,6 +337,14 @@ def main():
     was = {} if force else (json.load(open(STATE)) if os.path.exists(STATE) else {})
     changed = sorted(k for k, v in now.items() if was.get(k) != v)
     gone = sorted(k for k in was if k not in now)
+    only = None
+    if '--only' in sys.argv:
+        only = set(x.strip() for x in sys.argv[sys.argv.index('--only') + 1].split(',') if x.strip())
+        missing = only - set(now)
+        if missing:
+            sys.exit('Нет таких файлов: %s' % ', '.join(sorted(missing)))
+        changed = sorted(k for k in changed if k in only)
+        gone = []
 
     if not changed and not gone:
         if s:
@@ -382,6 +391,11 @@ def main():
         print('Слепок не обновляю, при следующем запуске попробует их снова.')
         sys.exit(1)
 
+    if only is not None:
+        # в слепок только залитое, остальные изменения поедут следующей заливкой
+        for k in changed:
+            was[k] = now[k]
+        now = was
     json.dump(now, open(STATE, 'w'), indent=1, sort_keys=True)
     print('\nГотово. Залито файлов: %d' % len(changed))
     indexnow(page_urls(changed))
