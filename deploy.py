@@ -25,6 +25,8 @@
     python3 deploy.py           залить изменившееся
     python3 deploy.py --dry     только показать, что будет залито
     python3 deploy.py --all     залить всё заново, игнорируя слепок
+    python3 deploy.py --indexnow-all   отправить в IndexNow все адреса из sitemap.xml
+                                       (после обычной заливки залитые .html уходят туда сами)
 
 Скрипт помнит sha1 каждого залитого файла в .deploy-state.json и в
 следующий раз трогает только то, что действительно поменялось.
@@ -148,6 +150,45 @@ def pull_admin(s):
     return files
 
 
+INDEXNOW_KEY = '5aba21da6648ee7d9161d52d6ba2bde3'   # файл <ключ>.txt лежит в корне сайта и уезжает при заливке
+SITE = 'https://sad56.spb.ru/'
+
+
+def sitemap_urls():
+    return re.findall(r'<loc>([^<]+)</loc>', open(os.path.join(HERE, 'sitemap.xml'), encoding='utf-8').read())
+
+
+def indexnow(urls):
+    """Сообщить Яндексу (и Bing через протокол IndexNow) о новых и изменённых
+    страницах. Ошибка здесь заливку не ломает: печатаем код ответа и всё."""
+    if not urls:
+        return
+    import urllib.request
+    body = json.dumps({'host': 'sad56.spb.ru', 'key': INDEXNOW_KEY,
+                       'keyLocation': SITE + INDEXNOW_KEY + '.txt', 'urlList': urls}).encode('utf-8')
+    req = urllib.request.Request('https://yandex.com/indexnow', data=body, method='POST',
+                                 headers={'Content-Type': 'application/json; charset=utf-8'})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            code = r.status
+    except Exception as e:
+        code = getattr(e, 'code', None) or str(e)
+    print('IndexNow: отправлено адресов %d, ответ %s' % (len(urls), code))
+
+
+def page_urls(files):
+    """Залитые .html как адреса из sitemap.xml; чего нет в sitemap, не шлём."""
+    known = set(sitemap_urls())
+    urls = []
+    for rel in files:
+        if not rel.endswith('.html'):
+            continue
+        u = SITE if rel == 'index.html' else SITE + rel
+        if u in known:
+            urls.append(u)
+    return urls
+
+
 def rebuild_blog():
     """Цены в статьях и услугах берутся из прайса при сборке: после свежих цен
     из админки пересобрать, чтобы на сервер не уехали старые."""
@@ -262,6 +303,9 @@ def connect():
 def main():
     dry = '--dry' in sys.argv
     force = '--all' in sys.argv
+    if '--indexnow-all' in sys.argv:
+        indexnow(sitemap_urls())
+        return
 
     c, s = connect()
     if s is None:
@@ -340,6 +384,7 @@ def main():
 
     json.dump(now, open(STATE, 'w'), indent=1, sort_keys=True)
     print('\nГотово. Залито файлов: %d' % len(changed))
+    indexnow(page_urls(changed))
 
 
 if __name__ == '__main__':

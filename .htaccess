@@ -14,6 +14,11 @@
   RewriteCond %{HTTPS} !=on
   RewriteCond %{HTTP:X-Forwarded-Proto} !=https
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  # /index.html и / это одна страница: оставляем у поисковика один адрес.
+  # Проверяем саму строку запроса браузера (THE_REQUEST), а не путь после
+  # подстановки DirectoryIndex, иначе / -> index.html -> / закрутилось бы в петлю.
+  RewriteCond %{THE_REQUEST} \s/index\.html[\s?]
+  RewriteRule ^index\.html$ https://sad56.spb.ru/ [L,R=301]
 </IfModule>
 
 # Стили и скрипты меняются под тем же именем. Без этого браузер сам решал,
@@ -23,5 +28,10 @@
 <IfModule mod_headers.c>
   <FilesMatch "\.(css|js|html)$">
     Header set Cache-Control "no-cache"
+  </FilesMatch>
+  # Картинки, видео и шрифты под одним именем не меняются (новая версия
+  # получает новое имя или ?v=), поэтому браузер может держать их 30 дней.
+  <FilesMatch "\.(jpg|jpeg|png|webp|svg|ico|mp4|woff2)$">
+    Header set Cache-Control "public, max-age=2592000"
   </FilesMatch>
 </IfModule>

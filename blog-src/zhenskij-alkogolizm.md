@@ -4,6 +4,7 @@ title: Женский алкоголизм: признаки и как помо�
 seo_title: Женский алкоголизм: признаки, причины и как помочь близкой
 description: Почему женщины пьют скрытно и почему зависимость у них развивается быстрее, по каким признакам её заметить, как поговорить без упрёков и где получить помощь анонимно.
 topic: Лечение алкоголизма
+old: zhenskij-alkogolizm-lechenie-alkogolnoj-zavisimosti-u-zhenshhin, zakodirovatsya-ot-alkogolya-zhenskij-alkogolizm
 status: approved
 published: 2026-10-30
 reviewer: none

@@ -200,6 +200,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://sad56.spb.ru/vse-temy.html</loc>
+    <lastmod>2026-10-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://sad56.spb.ru/uslugi/vyvod-iz-zapoya.html</loc>
     <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
