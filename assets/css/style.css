@@ -2109,7 +2109,13 @@ html.intro-off .intro { display: none; }
   transition: transform 1.1s cubic-bezier(0.4, 0, 0.7, 1);
 }
 
-.intro-video { object-fit: cover; object-position: 42% 50%; background: #0a0807; }
+.intro-video { object-fit: cover; object-position: 50% 50%; background: #0a0807; }
+/* tall phone screens: show the whole frame (the doctors stand at the sides of
+   the last shot), copy sits in the dark band above it */
+@media (max-aspect-ratio: 1/1) {
+  .intro-video { object-fit: contain; object-position: 50% 58%; }
+  .intro-shade { display: none; }
+}
 /* the clip is bright: darken the top so the white copy stays readable */
 .intro-shade {
   position: absolute; inset: 0; pointer-events: none;
