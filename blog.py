@@ -815,13 +815,18 @@ def service_page(a, ctx, chrome):
     body, toc, questions, words, short_html, short_text, faqs = render_body(a["body"], ctx)
     url = SITE + "uslugi/%s.html" % a["slug"]
     image = a.get("image") or "assets/img/og-cover.jpg"
-    crumbs = [("Главная", SITE), ("Услуги и цены", SITE + "price-and-services.html"), (a["title"], url)]
+    # district pages (area: ...) hang under the home-visit page, not under the price list
+    parent = (("Выезд нарколога", "uslugi/vyezd-narkologa.html") if a.get("area")
+              else ("Услуги и цены", "price-and-services.html"))
+    crumbs = [("Главная", SITE), (parent[0], SITE + parent[1]), (a["title"], url)]
+    area = ([{"@type": "AdministrativeArea", "name": a["area"],
+              "containedInPlace": {"@type": "City", "name": "Санкт-Петербург"}}] if a.get("area")
+            else [{"@type": "City", "name": "Санкт-Петербург"},
+                  {"@type": "AdministrativeArea", "name": "Ленинградская область"}])
     service_ld = {"@type": "MedicalProcedure" if a.get("procedure") else "Service", "@id": url + "#service",
                   "name": a["title"], "description": a["description"], "url": url, "image": SITE + image,
-                  "provider": CLINIC_LD,
-                  "areaServed": [{"@type": "City", "name": "Санкт-Петербург"},
-                                 {"@type": "AdministrativeArea", "name": "Ленинградская область"}]}
-    if a["slug"] in HOME_VISIT_SERVICES:
+                  "provider": CLINIC_LD, "areaServed": area}
+    if a["slug"] in HOME_VISIT_SERVICES or a.get("area"):
         service_ld["hoursAvailable"] = {"@type": "OpeningHoursSpecification", "dayOfWeek": [
             "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
             "opens": "00:00", "closes": "23:59"}
@@ -876,8 +881,8 @@ def service_page(a, ctx, chrome):
   <span class="emblem-float ef-a" aria-hidden="true"></span>
   <span class="emblem-float ef-b" aria-hidden="true"></span>
   <div class="container post-narrow">
-    <nav class="crumbs" aria-label="Навигация по разделам"><a href="/">Главная</a><span>/</span><a href="{p}price-and-services.html">Услуги и цены</a></nav>
-    <span class="eyebrow">Услуга</span>
+    <nav class="crumbs" aria-label="Навигация по разделам"><a href="/">Главная</a><span>/</span><a href="{p}{parent_href}">{parent}</a></nav>
+    <span class="eyebrow">{eyebrow}</span>
     <h1 class="post-title">{h1}</h1>
     <p class="lead">{lead}</p>
     <div class="svc-bar">
@@ -905,7 +910,9 @@ def service_page(a, ctx, chrome):
 
 {more}
 </main>
-""".format(p=prefix, h1=esc(a["title"]), lead=inline(a.get("lead") or a["description"], ctx), price=price_html,
+""".format(p=prefix, parent=esc(parent[0]), parent_href=parent[1],
+           eyebrow="Выезд на дом" if a.get("area") else "Услуга",
+           h1=esc(a["title"]), lead=inline(a.get("lead") or a["description"], ctx), price=price_html,
            icon=ICON_PHONE, cover=cover_html(a, prefix), short=short_html, toc=toc_html, body=body,
            cta=call_card(), more=more))
     page.append(foot(prefix, relink(bottom, prefix)))
@@ -951,7 +958,7 @@ def topic_block(items, ctx, title="Читать по теме", eyebrow="Бло�
 TOPIC_GROUPS = {"Запой": "Запой и похмелье", "Кодирование": "Кодирование", "Близким": "Родным и близким",
                 "Курение": "Курение и никотин", "Экранное время": "Экранное время",
                 "О центре": "Об основателе и центре"}
-GROUP_ORDER = ["Услуги", "Запой и похмелье", "Кодирование", "Алкоголизм и здоровье", "Родным и близким",
+GROUP_ORDER = ["Услуги", "Выезд по районам", "Запой и похмелье", "Кодирование", "Алкоголизм и здоровье", "Родным и близким",
                "Курение и никотин", "Экранное время", "Об основателе и центре"]
 CENTER_PAGES = [("history.html", "История центра и основатель"),
                 ("order-956n.html", "Сведения о центре по приказу Минздрава №956н")]
@@ -972,7 +979,8 @@ def all_topics_page(approved, services, ctx, chrome):
     url = SITE + "vse-temy.html"
     groups = {g: [] for g in GROUP_ORDER}
     for a in services:
-        groups["Услуги"].append((ctx.service_href(a["slug"]), a["title"], a["description"]))
+        groups["Выезд по районам" if a.get("area") else "Услуги"].append(
+            (ctx.service_href(a["slug"]), a["title"], a["description"]))
     groups["Услуги"].append(("smoke.html", SMOKE_CARD["title"], page_description("smoke.html")))
     for a in sorted(approved, key=lambda a: a["title"]):
         g = "Запой и похмелье" if "Похмелье" in a["tags"] else TOPIC_GROUPS.get(a["topic"], "Алкоголизм и здоровье")
@@ -1238,6 +1246,7 @@ def main():
     # the order of the cards on the home and price pages
     svc_live = sorted([a for a in services.values() if a["status"] == "approved"],
                       key=lambda a: (int(a.get("order", 99)), a["slug"]))
+    svc_cards = [a for a in svc_live if not a.get("area")]
     approved = sorted([a for a in articles.values() if a["status"] == "approved"],
                       key=lambda a: a["published"], reverse=True)
     drafts = [a for a in articles.values() if a["status"] == "draft"]
@@ -1274,7 +1283,7 @@ def main():
     root_ctx = Ctx("", "live", articles, prices, services)
     for page in ("index.html", "price-and-services.html"):
         replace_block(os.path.join(ROOT, page), "<!-- uslugi:start -->", "<!-- uslugi:end -->",
-                      services_block(svc_live, root_ctx) if svc_live else "\n")
+                      services_block(svc_cards, root_ctx) if svc_cards else "\n")
     home = [articles[x] for x in HOME_ARTICLES if x in articles and articles[x]["status"] == "approved"]
     replace_block(os.path.join(ROOT, "index.html"), "<!-- home-blog:start -->", "<!-- home-blog:end -->",
                   topic_block(home, root_ctx, "Полезно знать", "Блог", "section soft") if home else "\n")
