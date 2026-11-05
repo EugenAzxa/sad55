@@ -24,6 +24,16 @@
   <link rel="apple-touch-icon" href="assets/img/icon-180.png">
   <meta name="theme-color" content="#f5553f">
   <link rel="manifest" href="manifest.json">
+  <script>
+    /* запуск со значка на домашнем экране: показываем только приложение, без сайта вокруг */
+    (function () {
+      try {
+        var app = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) ||
+                  window.navigator.standalone === true || /[?&]app=1\b/.test(location.search);
+        if (app) document.documentElement.className += " is-app";
+      } catch (e) {}
+    })();
+  </script>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -147,6 +157,12 @@
   </div>
 </div>
 
+<div class="app-splash" aria-hidden="true">
+  <img src="assets/img/icon-512.png" alt="" width="512" height="512">
+  <b>Дневник трезвости</b>
+  <span>Академический Медицинский Центр</span>
+</div>
+
 <main>
 
 <section class="page-hero app-hero">
@@ -189,6 +205,7 @@
 
             <!-- ===== setup ===== -->
             <div class="ios-pane" id="setup" hidden>
+              <p class="app-only app-warn-mini"><b>Резко бросать пить при долгой зависимости опасно.</b> Сначала посоветуйтесь с врачом: <a href="tel:+78123144482">(812) 314-44-82</a>, круглосуточно.</p>
               <h2 class="ios-h1">От чего отказываемся?</h2>
               <p class="ios-sub">Можно выбрать одно или сразу несколько. Укажите день начала, всё можно изменить позже.</p>
 
@@ -226,6 +243,10 @@
               </div>
 
               <button class="btn btn-primary ios-btn" id="s-start" type="button">Начать отсчёт</button>
+              <button class="inst-inline" type="button" data-open-inst hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M12 7v7"/><path d="m9 11 3 3 3-3"/></svg>
+                <span><b>Установить на телефон</b><small>Значок на экране, напоминания каждое утро</small></span>
+              </button>
             </div>
 
             <!-- ===== tab: today ===== -->
@@ -239,6 +260,10 @@
                 <ul class="save-list" id="save-list"></ul>
                 <button class="ios-link" type="button" id="edit-setup">Изменить данные</button>
               </div>
+              <button class="inst-inline" type="button" data-open-inst hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M12 7v7"/><path d="m9 11 3 3 3-3"/></svg>
+                <span><b>Установить на телефон</b><small>Значок на экране, напоминания каждое утро</small></span>
+              </button>
               <div class="ios-card notif-card" id="notif-card">
                 <div class="notif-head">
                   <span class="notif-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
@@ -502,7 +527,7 @@
 
         <p class="install-note">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-          Открыли ссылку из Telegram, WhatsApp или ВКонтакте? Сначала нажмите в их меню «Открыть в браузере»: внутри мессенджера установить приложение нельзя. Записи дневника хранятся только в вашем телефоне и никуда не отправляются.
+          Открыли ссылку из ВКонтакте или MAX? Сначала нажмите в их меню «Открыть в браузере»: внутри приложения соцсети установить дневник нельзя. Записи дневника хранятся только в вашем телефоне и никуда не отправляются.
         </p>
       </div>
 
@@ -513,6 +538,31 @@
 </main>
 
 <!-- ===== urge helper ===== -->
+<button class="inst-bar" type="button" id="inst-bar" hidden>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M12 7v7"/><path d="m9 11 3 3 3-3"/></svg>
+  <span><b>Установить на телефон</b><small>Бесплатно, как обычное приложение</small></span>
+</button>
+
+<div class="modal inst-modal" id="inst-modal" role="dialog" aria-modal="true" aria-labelledby="inst-m-title">
+  <div class="modal-backdrop" data-close-inst></div>
+  <div class="modal-card inst-m-card">
+    <button class="modal-close" type="button" data-close-inst aria-label="Закрыть">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+    <h3 id="inst-m-title">Как установить дневник</h3>
+    <p class="sub" id="inst-m-sub">Займёт минуту. Значок центра появится на экране телефона, дневник будет открываться без браузера и присылать напоминания.</p>
+    <div class="inst-m-qr" id="inst-m-qr" hidden>
+      <img src="assets/img/qr-app-sad56.png" alt="QR-код со ссылкой на дневник" width="660" height="660">
+      <span>Наведите камеру телефона на код, откроется дневник. Потом следуйте шагам ниже.</span>
+    </div>
+    <div class="inst-tabs" role="tablist" aria-label="Ваш телефон">
+      <button type="button" role="tab" class="inst-tab" data-minst="iphone">iPhone</button>
+      <button type="button" role="tab" class="inst-tab" data-minst="android">Android</button>
+    </div>
+    <div id="inst-m-steps"></div>
+  </div>
+</div>
+
 <div class="modal panic-modal" id="panic" role="dialog" aria-modal="true" aria-labelledby="panic-title">
   <div class="modal-backdrop" data-close-panic></div>
   <div class="modal-card panic-card">

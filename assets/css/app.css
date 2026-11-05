@@ -788,3 +788,109 @@
 .notif-head h3 { margin-bottom: 2px; }
 .notif-head p { font-size: 0.85rem; font-weight: 700; color: var(--ink-soft); }
 .notif-card .ios-hint { margin-top: 12px; }
+
+/* ---------- кнопка «Установить на телефон» ---------- */
+
+.inst-bar {
+  position: fixed; z-index: 89;
+  left: calc(16px + var(--safe-left));
+  right: calc(18px + 58px + 12px + var(--safe-right));
+  bottom: calc(18px + var(--safe-bottom));
+  max-width: 420px; min-height: 58px;
+  display: flex; align-items: center; gap: 12px;
+  padding: 8px 18px 8px 14px; border-radius: 999px;
+  background: var(--ink); color: #fff; text-align: left;
+  box-shadow: 0 14px 34px -12px rgba(16, 16, 16, 0.55);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  animation: inst-bar-in 0.5s 0.6s cubic-bezier(0.22, 0.8, 0.3, 1) both;
+}
+.inst-bar[hidden] { display: none; }
+.inst-bar.is-away { transform: translateY(140%); opacity: 0; pointer-events: none; }
+.inst-bar svg { width: 30px; height: 30px; flex: none; padding: 5px; border-radius: 50%; background: var(--coral); }
+.inst-bar b { display: block; font-size: 0.95rem; font-weight: 800; line-height: 1.2; }
+.inst-bar small { display: block; font-size: 0.75rem; opacity: 0.75; line-height: 1.3; }
+@keyframes inst-bar-in { from { transform: translateY(140%); opacity: 0; } to { transform: none; opacity: 1; } }
+
+.inst-inline {
+  width: 100%; margin-top: 12px; min-height: 56px;
+  display: flex; align-items: center; gap: 12px; text-align: left;
+  padding: 10px 16px; border-radius: 16px;
+  background: #fff; border: 1.5px dashed rgba(245, 85, 63, 0.5); color: var(--ink);
+}
+.inst-inline[hidden] { display: none; }
+.inst-inline svg { width: 30px; height: 30px; flex: none; padding: 5px; border-radius: 50%; background: var(--coral); color: #fff; }
+.inst-inline b { display: block; font-size: 0.92rem; font-weight: 800; }
+.inst-inline small { display: block; font-size: 0.76rem; color: var(--muted); }
+#tab-today .inst-inline { margin: 0 0 12px; }
+
+.inst-m-card { width: min(520px, 100%); max-height: calc(100vh - 32px); overflow-y: auto; }
+.inst-m-card h3 { padding-right: 44px; }
+.inst-m-card .inst-tabs { margin-top: 0; }
+.inst-m-card .install-list { margin-top: 18px; }
+.inst-m-qr { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; padding: 12px; border-radius: 14px; background: var(--soft); }
+.inst-m-qr[hidden] { display: none; }
+.inst-m-qr img { width: 110px; height: 110px; flex: none; border-radius: 10px; background: #fff; }
+.inst-m-qr span { font-size: 0.88rem; color: var(--ink-soft); line-height: 1.45; }
+
+@media (prefers-reduced-motion: reduce) {
+  .inst-bar { animation: none; transition: none; }
+}
+
+/* ---------- режим приложения: запуск со значка на домашнем экране ----------
+   Класс is-app ставит скрипт в <head> app.html. Сайт вокруг прячем, дневник
+   растягиваем на весь экран, учитываем вырез и полоску жестов iPhone. */
+
+.app-only, .app-splash { display: none; }
+
+html.is-app, html.is-app body { height: 100%; overflow: hidden; background: var(--soft); }
+html.is-app .header, html.is-app .a11y-bar, html.is-app .mobile-menu, html.is-app .page-hero,
+html.is-app .phone-side, html.is-app .install-sec, html.is-app .footer, html.is-app .call-fab,
+html.is-app .inst-bar, html.is-app .inst-inline, html.is-app .ios-status, html.is-app .phone-island { display: none !important; }
+html.is-app .app-only { display: block; }
+
+html.is-app .app-section { padding: 0; }
+html.is-app .phone-stage, html.is-app .phone-wrap { display: block; padding: 0; margin: 0; max-width: none; }
+html.is-app .phone { position: static; width: auto; height: auto; padding: 0; border-radius: 0; background: none; box-shadow: none; }
+html.is-app .phone::before, html.is-app .phone::after { display: none; }
+html.is-app .phone-screen {
+  position: fixed; inset: 0; z-index: 50;
+  height: auto; border: 0; border-radius: 0;
+  display: flex; flex-direction: column;
+}
+html.is-app .ios-scroll {
+  flex: 1; overflow-y: auto; max-height: none;
+  padding: calc(env(safe-area-inset-top, 0px) + 14px) max(18px, env(safe-area-inset-right, 0px)) 24px max(18px, env(safe-area-inset-left, 0px));
+}
+html.is-app .ios-tabs {
+  position: static; flex: none;
+  padding: 8px max(6px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 8px) max(6px, env(safe-area-inset-left, 0px));
+}
+html.is-app .ios-tabs button { font-size: 0.66rem; }
+html.is-app .celebrate { position: fixed; z-index: 2000; }
+html.is-app .cookie-bar { bottom: calc(env(safe-area-inset-bottom, 0px) + 76px); }
+
+.app-warn-mini {
+  margin: 4px 0 6px; padding: 12px 14px; border-radius: 14px;
+  background: #fff4f2; border: 1px solid rgba(226, 0, 22, 0.18);
+  font-size: 0.82rem; line-height: 1.45; color: var(--ink-soft);
+}
+.app-warn-mini b { color: var(--ink); }
+.app-warn-mini a { color: var(--coral-deep); font-weight: 700; white-space: nowrap; }
+
+/* заставка при запуске */
+html.is-app .app-splash {
+  position: fixed; inset: 0; z-index: 3000;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  background: #fff; text-align: center; pointer-events: none;
+  animation: splash-out 0.45s 0.9s ease forwards;
+}
+.app-splash img { width: 112px; height: 112px; animation: splash-pop 0.7s cubic-bezier(0.22, 1.3, 0.4, 1) both; }
+.app-splash b { font-size: 1.35rem; font-weight: 800; color: var(--ink); animation: cheer-in 0.5s 0.15s both; }
+.app-splash span { font-size: 0.82rem; color: var(--muted); animation: cheer-in 0.5s 0.25s both; }
+@keyframes splash-pop { from { transform: scale(0.6); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes splash-out { to { opacity: 0; visibility: hidden; } }
+
+@media (prefers-reduced-motion: reduce) {
+  html.is-app .app-splash { animation: splash-out 0.01s 0.3s forwards; }
+  .app-splash img, .app-splash b, .app-splash span { animation: none; }
+}

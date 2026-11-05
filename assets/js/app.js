@@ -895,6 +895,75 @@
     });
   }
 
+  /* Кнопка «Установить на телефон»: внизу экрана и внутри дневника. В Chrome
+     ставит приложение сразу, иначе открывает окно с шагами для этого телефона.
+     С домашнего экрана (уже установлено) кнопок нет. */
+  var platform = /Android/i.test(navigator.userAgent) ? "android" : "iphone";
+  var onPhone = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  var instModal = el("inst-modal"), instBar = el("inst-bar");
+
+  var showModalSteps = function (name) {
+    var box = el("inst-m-steps"), src = document.querySelector('[data-inst-pane="' + name + '"]');
+    if (!box || !src) return;
+    var copy = src.cloneNode(true);
+    copy.hidden = false;
+    copy.removeAttribute("data-inst-pane");
+    box.innerHTML = "";
+    box.appendChild(copy);
+    instModal.querySelectorAll("[data-minst]").forEach(function (t) {
+      var on = t.getAttribute("data-minst") === name;
+      t.classList.toggle("on", on);
+      t.setAttribute("aria-selected", on ? "true" : "false");
+    });
+  };
+  var openInstall = function () {
+    beacon("Установить на телефон", "дневник:кнопка установки");
+    if (installEvt) {
+      installEvt.prompt();
+      installEvt.userChoice.then(function () { installEvt = null; });
+      return;
+    }
+    if (!instModal) return;
+    el("inst-m-qr").hidden = onPhone;
+    showModalSteps(platform);
+    instModal.classList.add("open");
+    document.body.style.overflow = "hidden";
+    instModal.querySelector(".modal-close").focus();
+  };
+  var closeInstall = function () {
+    if (!instModal) return;
+    instModal.classList.remove("open");
+    document.body.style.overflow = "";
+  };
+  if (instModal) {
+    instModal.querySelectorAll("[data-close-inst]").forEach(function (b) { b.addEventListener("click", closeInstall); });
+    instModal.querySelectorAll("[data-minst]").forEach(function (t) {
+      t.addEventListener("click", function () { showModalSteps(t.getAttribute("data-minst")); });
+    });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && instModal.classList.contains("open")) closeInstall(); });
+  }
+  if (!standalone()) {
+    document.querySelectorAll("[data-open-inst]").forEach(function (b) { b.hidden = false; b.addEventListener("click", openInstall); });
+    if (instBar) {
+      instBar.hidden = false;
+      instBar.addEventListener("click", openInstall);
+      /* пока на экране плашка про cookie, кнопка стоит над ней */
+      var liftBar = function () {
+        var cb = document.querySelector(".cookie-bar");
+        instBar.style.bottom = cb ? "calc(" + (cb.offsetHeight + 28) + "px + var(--safe-bottom))" : "";
+      };
+      setTimeout(liftBar, 50);
+      if ("MutationObserver" in window) new MutationObserver(liftBar).observe(document.body, { childList: true });
+      /* нижнее меню дневника на телефоне закреплено внизу: пока оно на экране, кнопку прячем */
+      var appTabs = el("ios-tabs");
+      if (appTabs && "IntersectionObserver" in window) {
+        new IntersectionObserver(function (es) {
+          instBar.classList.toggle("is-away", es[0].isIntersecting && window.innerWidth <= 460);
+        }).observe(appTabs);
+      }
+    }
+  }
+
   /* инструкция: сразу открыть вкладку под телефон человека */
   var instTabs = document.querySelectorAll("[data-inst]");
   var showInst = function (name) {
@@ -907,7 +976,7 @@
   };
   if (instTabs.length) {
     instTabs.forEach(function (t) { t.addEventListener("click", function () { showInst(t.getAttribute("data-inst")); }); });
-    showInst(/Android/i.test(navigator.userAgent) ? "android" : "iphone");
+    showInst(platform);
   }
 
   /* ---------- вкладки ---------- */
