@@ -178,9 +178,46 @@ textarea.grow { resize: none; overflow: hidden; min-height: 42px; padding-block:
 .h-item:hover { border-color: var(--coral); background: rgba(245, 85, 63, .05); }
 .fatal { margin: 40px auto; max-width: 520px; padding: 0 16px; font-weight: 600; }
 
+/* ---------- клики ---------- */
+.c-title { font-size: 1.25rem; margin-bottom: 6px; }
+.seg { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: #fff; border: 1px solid var(--line); align-self: flex-start; }
+.seg-btn { padding: 9px 16px; min-height: 40px; border-radius: 999px; font-weight: 700; color: var(--muted); }
+.seg-btn:hover { color: var(--ink); }
+.seg-btn.on { background: var(--ink); color: #fff; }
+.clicks-body { display: flex; flex-direction: column; gap: 16px; color: var(--muted); }
+.kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.kpi { display: flex; flex-direction: column; gap: 4px; }
+.kpi b { font-size: 2rem; font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; line-height: 1.1; }
+.kpi span { font-weight: 700; color: var(--ink); }
+.kpi small { color: var(--muted); font-size: .82rem; }
+.kpi:first-child b { color: var(--coral-deep); }
+.c-card h2 { font-size: 1.05rem; margin-bottom: 12px; color: var(--ink); }
+.c-scroll { overflow-x: auto; }
+.c-table { width: 100%; border-collapse: collapse; font-size: .92rem; color: var(--ink); }
+.c-table th { text-align: left; font-size: .75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding: 0 10px 8px; font-weight: 700; }
+.c-table td { padding: 10px; border-top: 1px solid var(--line); vertical-align: top; }
+.c-table td b { display: block; font-weight: 700; }
+.c-to { display: block; color: var(--muted); font-size: .82rem; margin-top: 2px; word-break: break-word; }
+.c-n { color: var(--muted); width: 28px; font-variant-numeric: tabular-nums; }
+.c-where { color: var(--muted); font-size: .85rem; min-width: 140px; }
+.c-where-m { display: none; color: var(--muted); font-size: .82rem; margin-top: 4px; }
+.c-count { position: relative; display: flex; align-items: center; gap: 8px; min-width: 120px; }
+.c-count b { font-variant-numeric: tabular-nums; min-width: 34px; text-align: right; order: 2; }
+.c-bar { display: block; height: 8px; border-radius: 99px; background: linear-gradient(90deg, var(--coral), var(--coral-deep)); order: 1; flex: none; max-width: calc(100% - 44px); }
+.c-pages { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.c-pages li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(120px, 40%); gap: 12px; align-items: center; }
+.c-pages a { color: var(--ink); font-weight: 600; overflow-wrap: anywhere; }
+.c-pages a:hover { color: var(--coral-deep); }
+.empty b { display: block; color: var(--ink); margin-bottom: 4px; }
+
 /* ---------- телефон ---------- */
 @media (max-width: 860px) {
-  .cards-ed { grid-template-columns: 1fr; }
+  .cards-ed, .kpis { grid-template-columns: 1fr; }
+  .c-where, .c-table th:nth-child(3) { display: none; }
+  .c-where-m { display: block; }
+  .c-n { display: none; }
+  .c-table th:first-child { display: none; }
+  .c-count { min-width: 90px; }
   .top-title { display: none; }
 }
 @media (max-width: 640px) {

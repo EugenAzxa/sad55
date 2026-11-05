@@ -525,7 +525,7 @@ def head(title, description, canonical, prefix, og_image, jsonld, noindex=False,
   <meta name="theme-color" content="#f5553f">
   <link rel="preload" href="{p}assets/fonts/raleway-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="{p}assets/fonts/raleway-cyrillic-800-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="{p}assets/css/style.css?v=20261108">
+  <link rel="stylesheet" href="{p}assets/css/style.css?v=20261109">
   <script type="application/ld+json">
 {j}
   </script>
@@ -547,7 +547,7 @@ def head(title, description, canonical, prefix, og_image, jsonld, noindex=False,
 
 
 def foot(prefix, bottom):
-    return bottom + '\n<script src="%sassets/js/main.js?v=20261101"></script>\n</body>\n</html>\n' % prefix
+    return bottom + '\n<script src="%sassets/js/main.js?v=20261105"></script>\n</body>\n</html>\n' % prefix
 
 
 def crumbs_ld(items):

@@ -343,3 +343,60 @@ function read_backup($id) {
   if (!is_array($d)) throw new InvalidArgumentException('Нет такой версии');
   return $d;
 }
+
+/* ---------- клики (пишет track.php) ---------- */
+
+define('CLICKS_DIR', DATA_DIR . '/clicks');
+
+/* Сводка за последние $days дней: самые нажимаемые кнопки и ссылки,
+   звонки и страницы, где нажимают больше всего. */
+function clicks_report($days) {
+  $days = in_array((int)$days, array(7, 30, 90), true) ? (int)$days : 30;
+  $from = date('Y-m-d', strtotime('-' . ($days - 1) . ' days'));
+  $months = array();
+  for ($t = strtotime($from); date('Y-m', $t) <= date('Y-m'); $t = strtotime('first day of next month', $t)) {
+    $months[date('Y-m', $t)] = true;
+  }
+  $items = array();
+  $pages = array();
+  $titles = array();
+  $first = null;
+  $total = 0; $tel = 0; $modal = 0;
+  foreach (array_keys($months) as $m) {
+    $d = json_decode((string)@file_get_contents(CLICKS_DIR . '/' . $m . '.json'), true);
+    if (!is_array($d)) continue;
+    foreach ($d as $it) {
+      $n = 0;
+      foreach ((array)($it['d'] ?? array()) as $day => $c) {
+        if ($first === null || $day < $first) $first = $day;
+        if ($day >= $from) $n += (int)$c;
+      }
+      if (!$n) continue;
+      $l = (string)($it['l'] ?? ''); $h = (string)($it['h'] ?? ''); $p = (string)($it['p'] ?? '');
+      $key = $l . "\t" . $h;
+      if (!isset($items[$key])) $items[$key] = array('l' => $l, 'h' => $h, 'n' => 0, 'p' => array());
+      $items[$key]['n'] += $n;
+      $items[$key]['p'][$p] = ($items[$key]['p'][$p] ?? 0) + $n;
+      $pages[$p] = ($pages[$p] ?? 0) + $n;
+      if (!empty($it['t'])) $titles[$p] = (string)$it['t'];
+      $total += $n;
+      if (stripos($h, 'tel:') === 0) $tel += $n;
+      if (mb_strpos($h, 'окно') === 0) $modal += $n;
+    }
+  }
+  foreach ($items as &$it) {
+    arsort($it['p']);
+    $it['pages'] = count($it['p']);
+    $it['p'] = array_slice($it['p'], 0, 3, true);
+  }
+  unset($it);
+  usort($items, function ($a, $b) { return $b['n'] - $a['n']; });
+  arsort($pages);
+  return array(
+    'days' => $days, 'from' => $from, 'since' => $first,
+    'total' => $total, 'tel' => $tel, 'modal' => $modal,
+    'items' => array_slice($items, 0, 100),
+    'pages' => array_slice($pages, 0, 10, true),
+    'titles' => $titles,
+  );
+}

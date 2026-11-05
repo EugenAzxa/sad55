@@ -158,7 +158,7 @@
       ])
     ]));
 
-    var tabs = [["prices", "Прайс-лист"], ["promos", "Акции"], ["cards", "Главная и курение"]];
+    var tabs = [["prices", "Прайс-лист"], ["promos", "Акции"], ["cards", "Главная и курение"], ["clicks", "Клики"]];
     app.appendChild(el("nav", { class: "tabs", role: "tablist" }, tabs.map(function (t) {
       return el("button", {
         type: "button", role: "tab", class: "tab" + (tab === t[0] ? " on" : ""), "aria-selected": tab === t[0] ? "true" : "false",
@@ -169,10 +169,12 @@
     var main = el("main", { class: "wrap" });
     if (tab === "prices") renderPrices(main);
     else if (tab === "promos") renderPromos(main);
+    else if (tab === "clicks") renderClicks(main);
     else renderCards(main);
     app.appendChild(main);
 
     bar = el("div", { class: "savebar" });
+    if (tab === "clicks" && !dirty) bar.hidden = true;
     app.appendChild(bar);
     renderBar();
     fitAll();
@@ -410,6 +412,105 @@
       toast(e.message || "Нет связи с сервером. Изменения не потеряны, попробуйте ещё раз.", true);
       renderBar();
     });
+  }
+
+  /* ---------- клики ---------- */
+
+  var clickDays = 30;
+  try { clickDays = parseInt(sessionStorage.getItem("amc-admin-days"), 10) || 30; } catch (e) {}
+
+  function plural(n, one, few, many) {
+    var m10 = n % 10, m100 = n % 100;
+    if (m10 === 1 && m100 !== 11) return one;
+    if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few;
+    return many;
+  }
+
+  // «/blog/esperal.html» -> «blog/esperal», «/» -> «главная»
+  function pageName(p) {
+    if (!p || p === "/" || p === "/index.html") return "главная";
+    return p.replace(/^\//, "").replace(/\.html$/, "");
+  }
+
+  function targetName(h) {
+    if (!h) return "";
+    if (/^tel:/i.test(h)) return "звонок " + h.slice(4);
+    return pageName(h);
+  }
+
+  var pageTitles = {};
+  function pageLabel(p) { return pageTitles[p] || pageName(p); }
+
+  function renderClicks(main) {
+    var body = el("div", { class: "clicks-body", text: "Загружаю..." });
+    main.appendChild(el("div", { class: "intro" }, [
+      el("h2", { class: "c-title", text: "На что нажимают посетители" }),
+      el("p", { class: "muted", text: "Считаем нажатия на кнопки и ссылки сайта: где нажали, на что и куда это ведёт. Кто нажал, не сохраняется: ни IP, ни cookie. Подробную карту кликов и записи визитов смотрите в Яндекс Метрике." })
+    ]));
+    main.appendChild(el("div", { class: "seg", role: "group", "aria-label": "Период" }, [7, 30, 90].map(function (d) {
+      return el("button", { type: "button", class: "seg-btn" + (clickDays === d ? " on" : ""), "aria-pressed": clickDays === d ? "true" : "false",
+        text: d + " дней", onclick: function () { clickDays = d; try { sessionStorage.setItem("amc-admin-days", d); } catch (e) {} render(); } });
+    })));
+    main.appendChild(body);
+
+    fetch("?a=clicks&days=" + clickDays, { credentials: "same-origin" }).then(function (r) { return r.json(); }).then(function (res) {
+      if (res.error) throw new Error(res.error);
+      body.innerHTML = "";
+      pageTitles = res.titles || {};
+      if (!res.total) {
+        body.appendChild(el("div", { class: "card empty" }, [
+          el("b", { text: "Пока нажатий нет" }),
+          el("p", { class: "muted", text: res.since ? "За выбранный период никто ничего не нажимал. Выберите период побольше." : "Счётчик только что включён. Первые цифры появятся, когда посетители начнут нажимать на кнопки и ссылки, обычно в течение дня." })
+        ]));
+        return;
+      }
+      body.appendChild(el("div", { class: "kpis" }, [
+        kpi(res.total, plural(res.total, "нажатие", "нажатия", "нажатий"), "всего за " + res.days + " дней"),
+        kpi(res.tel, "на номер телефона", "звонок с телефона в один тап"),
+        kpi(res.modal, "открыли окно «Позвоните нам»", "кнопки «Позвонить», «Узнать подробнее» и похожие")
+      ]));
+
+      var max = res.items.length ? res.items[0].n : 1;
+      var rows = res.items.map(function (it, i) {
+        var where = Object.keys(it.p).map(pageLabel).join("; ") + (it.pages > 3 ? " и ещё " + (it.pages - 3) : "");
+        return el("tr", {}, [
+          el("td", { class: "c-n", text: String(i + 1) }),
+          el("td", {}, [
+            el("b", { text: it.l || "(без текста)" }),
+            it.h ? el("span", { class: "c-to", text: "ведёт: " + targetName(it.h) }) : null,
+            el("span", { class: "c-where-m", text: "где: " + where })
+          ]),
+          el("td", { class: "c-where", text: where }),
+          el("td", {}, [el("div", { class: "c-count" }, [
+            el("span", { class: "c-bar", style: "width:" + Math.max(4, Math.round(it.n / max * 100)) + "%" }),
+            el("b", { text: String(it.n) })
+          ])])
+        ]);
+      });
+      body.appendChild(el("div", { class: "card c-card" }, [
+        el("h2", { text: "Самые нажимаемые кнопки и ссылки" }),
+        el("div", { class: "c-scroll" }, [el("table", { class: "c-table" }, [
+          el("thead", {}, [el("tr", {}, [el("th", { text: "#" }), el("th", { text: "Что нажали" }), el("th", { text: "Где" }), el("th", { text: "Нажатий" })])]),
+          el("tbody", {}, rows)
+        ])])
+      ]));
+
+      var pmax = 1; Object.keys(res.pages).forEach(function (p) { pmax = Math.max(pmax, res.pages[p]); });
+      body.appendChild(el("div", { class: "card c-card" }, [
+        el("h2", { text: "Страницы, где нажимают больше всего" }),
+        el("ul", { class: "c-pages" }, Object.keys(res.pages).map(function (p) {
+          return el("li", {}, [
+            el("a", { href: ".." + (p === "/" ? "/" : p), target: "_blank", rel: "noopener", text: pageLabel(p) }),
+            el("span", { class: "c-count" }, [el("span", { class: "c-bar", style: "width:" + Math.max(4, Math.round(res.pages[p] / pmax * 100)) + "%" }), el("b", { text: String(res.pages[p]) })])
+          ]);
+        }))
+      ]));
+      if (res.since) body.appendChild(el("p", { class: "hint", text: "Счётчик работает с " + new Date(res.since + "T12:00:00").toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" }) + "." }));
+    }).catch(function (e) { body.textContent = e.message || "Не загрузилось. Обновите страницу."; });
+  }
+
+  function kpi(n, label, note) {
+    return el("div", { class: "card kpi" }, [el("b", { text: String(n) }), el("span", { text: label }), el("small", { text: note })]);
   }
 
   function openHistory() {

@@ -110,6 +110,7 @@ if ($action !== '') {
       $in = json_decode((string)file_get_contents('php://input'), true);
       json_out(array('ok' => true, 'data' => save_all(validate($in))));
     }
+    if ($action === 'clicks') json_out(clicks_report($_GET['days'] ?? 30));
     if ($action === 'history') json_out(array('items' => list_backups()));
     if ($action === 'backup') json_out(array('data' => read_backup($_GET['id'] ?? '')));
     json_out(array('error' => 'Неизвестная команда'), 404);

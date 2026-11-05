@@ -561,4 +561,28 @@
   /* footer year */
   var year = document.getElementById("year");
   if (year) year.textContent = new Date().getFullYear().toString();
+
+  /* click counter for the «Клики» tab in /admin/: only the page and its title, the button
+     text and where it leads. No IP, cookies or anything about the visitor. */
+  if (navigator.sendBeacon && location.pathname.indexOf("/admin/") !== 0) {
+    document.addEventListener("click", function (e) {
+      var t = e.target.closest ? e.target.closest("a[href], button") : null;
+      if (!t) return;
+      var label = (t.getAttribute("data-track") || t.getAttribute("aria-label") || t.textContent || "")
+        .replace(/\s+/g, " ").trim().slice(0, 80);
+      var to = "";
+      if (t.tagName === "A") {
+        var raw = t.getAttribute("href") || "";
+        if (/^(tel|mailto|sms):/i.test(raw)) to = raw.replace(/\s+/g, "");
+        else if (t.host === location.host) to = t.pathname + (t.hash || "");
+        else to = t.host;
+      } else if (t.hasAttribute("data-open-modal")) {
+        to = "окно «Позвоните нам»";
+      }
+      if (!label && !to) return;
+      try {
+        navigator.sendBeacon("/admin/track.php", JSON.stringify({ p: location.pathname, t: document.title.split(" | ")[0].slice(0, 90), l: label, h: to.slice(0, 160) }));
+      } catch (err) { /* statistics are optional */ }
+    }, true);
+  }
 })();
