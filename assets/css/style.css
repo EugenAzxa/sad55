@@ -1829,6 +1829,11 @@ html.a11y .nav { gap: 0; }
 .hist-founder-text p { font-size: 0.98rem; line-height: 1.75; color: var(--ink-soft); margin-bottom: 14px; }
 
 .hist-stats { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 26px; }
+.hist-founder-text .hist-founder-more { margin: 20px 0 0; }
+.hist-founder-more .btn { gap: 10px; }
+.hist-founder-more .btn svg { width: 18px; height: 18px; }
+.doc-bio-link { margin-top: 14px; }
+.doc-bio-link a { color: var(--coral-deep); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
 .hist-stats > div { flex: 1 1 130px; padding: 16px 18px; border-radius: var(--r-sm); background: #fff; border: 1px solid var(--line); }
 .hist-stats b { display: block; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
 .hist-stats span { font-size: 0.8rem; color: var(--muted); font-weight: 600; }

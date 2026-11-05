@@ -525,7 +525,7 @@ def head(title, description, canonical, prefix, og_image, jsonld, noindex=False,
   <meta name="theme-color" content="#f5553f">
   <link rel="preload" href="{p}assets/fonts/raleway-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="{p}assets/fonts/raleway-cyrillic-800-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="{p}assets/css/style.css?v=20261107">
+  <link rel="stylesheet" href="{p}assets/css/style.css?v=20261108">
   <script type="application/ld+json">
 {j}
   </script>
@@ -569,6 +569,33 @@ CLINIC_LD = {"@type": "MedicalClinic", "@id": SITE + "#clinic",
              "name": "Академический Медицинский Центр", "url": SITE,
              "logo": {"@type": "ImageObject", "url": SITE + "assets/img/icon-512.png"},
              "telephone": "+7-812-314-44-82"}
+
+
+# Статья-профиль человека (поле about: в шапке): страница становится ProfilePage
+# с разметкой Person, чтобы поиск понимал, что это страница о нём.
+# Только подтверждённые факты; степени и регалии дописать, когда клиника их даст.
+PROFILES = {
+    "ganzha": {
+        "@type": "Person",
+        "name": "Ганжа Олег Владимирович",
+        "alternateName": "Олег Владимирович Ганжа",
+        "givenName": "Олег", "additionalName": "Владимирович", "familyName": "Ганжа",
+        "jobTitle": "Основатель центра, психиатр-нарколог, психотерапевт",
+        "description": "Основатель Академического Медицинского Центра (1992), военный врач, "
+                       "выпускник Военно-медицинской академии им. С. М. Кирова, ведущий "
+                       "психиатр-нарколог и психотерапевт, более 30 лет клинической практики.",
+        "image": SITE + "assets/img/ganzha-portrait.jpg",
+        "alumniOf": {"@type": "CollegeOrUniversity",
+                     "name": "Военно-медицинская академия им. С. М. Кирова"},
+        "hasOccupation": [{"@type": "Occupation", "name": "Психиатр-нарколог"},
+                          {"@type": "Occupation", "name": "Психотерапевт"}],
+        "knowsAbout": ["Лечение алкоголизма", "Психиатрия-наркология", "Психотерапия",
+                       "Тревожные и депрессивные расстройства при зависимости"],
+        "worksFor": {"@id": SITE + "#clinic"},
+        "subjectOf": {"@type": "VideoObject", "name": "Олег Владимирович о работе центра",
+                      "url": "https://www.youtube.com/watch?v=mxokNaq6GHM"},
+    },
+}
 
 
 def person_card(key, prefix, label, extra=""):
@@ -718,6 +745,14 @@ def article_page(a, ctx, chrome):
     bc = crumbs_ld(crumbs)
     bc["@id"] = url + "#crumbs"
     graph = [page_ld, article_ld, bc]
+    if a.get("about"):
+        if a["about"] not in PROFILES:
+            die("%s: about: %s, такого профиля нет в PROFILES" % (a["slug"], a["about"]))
+        person = dict(PROFILES[a["about"]], **{"@id": url + "#person", "url": url})
+        page_ld["@type"] = "ProfilePage"
+        page_ld["mainEntity"] = {"@id": url + "#person"}
+        article_ld["about"] = {"@id": url + "#person"}
+        graph.insert(1, person)
     if faqs:
         graph.append(faq_ld(faqs, url))
     jsonld = {"@context": "https://schema.org", "@graph": graph}

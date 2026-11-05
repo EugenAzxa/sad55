@@ -11,6 +11,7 @@ image: assets/img/blog/ganzha-osnovatel.jpg
 image_alt: Олег Владимирович Ганжа в белом халате и медицинской шапочке в своём кабинете
 related: patsienty-soratniki, veterany-i-alkogol, tri-napravleniya-psihoterapii
 tags: О центре, Основатель центра
+about: ganzha
 ---
 ::: short
 - Олег Владимирович Ганжа основал Академический Медицинский Центр в 1992 году. Центр вырос из отделения неврозов Военно-медицинской академии им. С. М. Кирова.
