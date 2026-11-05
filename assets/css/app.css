@@ -356,6 +356,7 @@
 
 .les-author { display: flex; align-items: center; gap: 14px; margin: 16px 0 22px; padding: 14px; border-radius: var(--r-sm); background: var(--soft); }
 .les-author img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; object-position: top; flex: none; }
+.les-author small { display: block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--coral-deep); }
 .les-author b { display: block; font-size: 0.95rem; }
 .les-author span { font-size: 0.82rem; color: var(--muted); }
 

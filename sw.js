@@ -4,7 +4,7 @@
    (an empty web push from admin/push.php, the text is built here from the
    diary kept on the phone), and opening the diary without a connection. */
 
-var VERSION = "amc-v4";
+var VERSION = "amc-v5";
 /* копия записей дневника для напоминаний: app.js кладёт её сюда при каждом
    сохранении, потому что service worker не видит localStorage */
 var STATE_CACHE = "amc-state";
@@ -15,7 +15,7 @@ var SHELL = [
   "./assets/css/app.css",
   "./assets/js/main.js",
   "./assets/js/app.js",
-  "./assets/img/doctor-ganzha.jpg",
+  "./assets/img/author-nemchaninov.jpg",
   "./assets/img/icon-192.png",
   "./assets/img/icon-512.png",
   "./favicon.svg",
