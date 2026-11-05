@@ -2453,6 +2453,16 @@ html.intro-off .intro { display: none; }
 .callout-warn { background: #fff4f2; border-color: rgba(226, 0, 22, 0.18); }
 .callout-warn .callout-h svg { color: var(--red); }
 .callout-note .callout-h svg { color: var(--violet); }
+.callout-route .callout-h svg { color: var(--coral); }
+.prose .route-line { list-style: none; padding-left: 0; gap: 0; margin-top: 1em; }
+.route-line li { position: relative; padding: 0 0 14px 30px; line-height: 1.4; font-size: 0.98rem; }
+.route-line li::before { content: ""; position: absolute; left: 6px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: #fff; border: 3px solid var(--coral); box-sizing: border-box; }
+.route-line li::after { content: ""; position: absolute; left: 10.5px; top: 16px; bottom: -4px; width: 3px; background: var(--coral); opacity: 0.35; }
+.route-line li.route-end { padding-bottom: 0; color: var(--ink); font-weight: 700; }
+.route-line li.route-end::before { left: 2px; top: 0; width: 20px; height: 20px; background: var(--coral); border-color: var(--coral); box-shadow: 0 0 0 4px rgba(245, 85, 63, 0.18); }
+.route-line li.route-end::after { display: none; }
+.prose .route-btn { margin-top: 1.2em; text-decoration: none; color: var(--ink); gap: 10px; }
+.route-btn svg { width: 20px; height: 20px; color: var(--coral); }
 
 /* photo above the article, FAQ inside it */
 .post-cover { margin: 0 0 34px; border-radius: var(--r-md); overflow: hidden; background: var(--soft); aspect-ratio: 16 / 9; }

@@ -32,6 +32,8 @@ history.html при каждой сборке, так что правка мен
     [текст](usluga:slug)     ссылка на страницу услуги
     ::: faq                  вопросы и ответы: «### Вопрос?» и абзацы ответа; из них
                              аккордеон и разметка FAQPage
+    ::: route Заголовок      схема проезда: строки «- Остановка» сверху вниз (последняя
+                             это центр), строка «map: ссылка» даёт кнопку на Яндекс Карты
 
 Цены попадают в HTML между метками <!--p:Группа|Услуга-->...<!--/p--> и
 <!--pt:Группа-->...<!--/pt-->: по ним админка (admin/lib.php) сама обновляет
@@ -108,6 +110,9 @@ ICON_WARN = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 ICON_NOTE = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
              'stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/>'
              '<path d="M12 16v-4"/><path d="M12 8h.01"/></svg>')
+ICON_ROUTE = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
+              'stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="3"/>'
+              '<path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg>')
 ICON_PLUS = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" '
              'stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>')
 ICON_ARROW = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
@@ -343,6 +348,9 @@ def render_body(src, ctx):
                 if kind == "faq":
                     out.append(faq_html(blines, ctx, faqs, used, toc, title))
                     continue
+                if kind == "route":
+                    out.append(route_html(blines, ctx, title))
+                    continue
                 inner = render_body("\n".join(blines), ctx)[0]
                 if kind == "short":
                     short_html = ('<aside class="callout callout-short"><div class="callout-h">%s<b>Коротко</b></div>%s</aside>'
@@ -358,7 +366,7 @@ def render_body(src, ctx):
         if line.startswith(":::"):
             flush_para(); flush_list()
             kind, _, title = line[3:].strip().partition(" ")
-            if kind not in ("warn", "note", "questions", "short", "faq"):
+            if kind not in ("warn", "note", "questions", "short", "faq", "route"):
                 die("неизвестная врезка ::: %s" % kind)
             block = (kind, title.strip(), [])
             continue
@@ -399,6 +407,20 @@ def render_body(src, ctx):
     body = "\n".join(out)
     words = len(re.findall(r"\w+", re.sub(r"<[^>]+>", " ", body)))
     return body, toc, questions, words, short_html, short_text, faqs
+
+
+def route_html(lines, ctx, title):
+    """::: route block: a vertical line of stops, the last one is the centre."""
+    stops = [l[2:].strip() for l in lines if l.startswith("- ")]
+    maps = [l[4:].strip() for l in lines if l.startswith("map:")]
+    if len(stops) < 2:
+        die("в ::: route меньше двух остановок")
+    items = "".join('<li%s>%s</li>' % (' class="route-end"' if n == len(stops) - 1 else "", inline(t, ctx))
+                    for n, t in enumerate(stops))
+    btn = ('<a class="btn btn-ghost route-btn" href="%s" target="_blank" rel="noopener">%s'
+           'Построить маршрут в Яндекс Картах</a>' % (html.escape(maps[0]), ICON_ROUTE)) if maps else ""
+    head = '<div class="callout-h">%s<b>%s</b></div>' % (ICON_ROUTE, inline(title, ctx)) if title else ""
+    return '<aside class="callout callout-route">%s<ol class="route-line">%s</ol>%s</aside>' % (head, items, btn)
 
 
 def faq_html(lines, ctx, faqs, used, toc, title):
@@ -503,7 +525,7 @@ def head(title, description, canonical, prefix, og_image, jsonld, noindex=False,
   <meta name="theme-color" content="#f5553f">
   <link rel="preload" href="{p}assets/fonts/raleway-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="{p}assets/fonts/raleway-cyrillic-800-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="{p}assets/css/style.css?v=20261106">
+  <link rel="stylesheet" href="{p}assets/css/style.css?v=20261107">
   <script type="application/ld+json">
 {j}
   </script>
