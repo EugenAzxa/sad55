@@ -14,3 +14,7 @@ admin/data/attempts.json
 admin/data/backups/
 admin/data/.lock
 admin/data/*.tmp*
+
+# веб-пуш дневника: ключи и подписки
+admin/data/push-key.php
+admin/data/push/

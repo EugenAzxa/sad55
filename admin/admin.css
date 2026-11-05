@@ -191,6 +191,7 @@ textarea.grow { resize: none; overflow: hidden; min-height: 42px; padding-block:
 .kpi span { font-weight: 700; color: var(--ink); }
 .kpi small { color: var(--muted); font-size: .82rem; }
 .kpi:first-child b { color: var(--coral-deep); }
+.c-card .kpis .kpi { box-shadow: none; background: var(--soft); border-color: transparent; }
 .c-card h2 { font-size: 1.05rem; margin-bottom: 12px; color: var(--ink); }
 .c-scroll { overflow-x: auto; }
 .c-table { width: 100%; border-collapse: collapse; font-size: .92rem; color: var(--ink); }

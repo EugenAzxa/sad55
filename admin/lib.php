@@ -362,6 +362,7 @@ function clicks_report($days) {
   $titles = array();
   $first = null;
   $total = 0; $tel = 0; $modal = 0;
+  $app = array('install' => 0, 'launch' => 0, 'push' => 0);
   foreach (array_keys($months) as $m) {
     $d = json_decode((string)@file_get_contents(CLICKS_DIR . '/' . $m . '.json'), true);
     if (!is_array($d)) continue;
@@ -382,6 +383,9 @@ function clicks_report($days) {
       $total += $n;
       if (stripos($h, 'tel:') === 0) $tel += $n;
       if (mb_strpos($h, 'окно') === 0) $modal += $n;
+      if ($h === 'дневник:установка') $app['install'] += $n;
+      if ($h === 'дневник:запуск') $app['launch'] += $n;
+      if ($h === 'дневник:напоминания') $app['push'] += $n;
     }
   }
   foreach ($items as &$it) {
@@ -398,5 +402,13 @@ function clicks_report($days) {
     'items' => array_slice($items, 0, 100),
     'pages' => array_slice($pages, 0, 10, true),
     'titles' => $titles,
+    'app' => $app,
+    'subs' => push_subs_count(),
   );
+}
+
+/* сколько телефонов сейчас подписано на напоминания дневника (пишет push.php) */
+function push_subs_count() {
+  $d = json_decode((string)@file_get_contents(DATA_DIR . '/push/subs.json'), true);
+  return is_array($d) ? count($d) : 0;
 }

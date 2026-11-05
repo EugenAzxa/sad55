@@ -435,6 +435,7 @@
   function targetName(h) {
     if (!h) return "";
     if (/^tel:/i.test(h)) return "звонок " + h.slice(4);
+    if (/^дневник:/.test(h)) return "событие дневника";
     return pageName(h);
   }
 
@@ -457,13 +458,22 @@
       if (res.error) throw new Error(res.error);
       body.innerHTML = "";
       pageTitles = res.titles || {};
-      if (!res.total) {
+      if (!res.total && !res.subs) {
         body.appendChild(el("div", { class: "card empty" }, [
           el("b", { text: "Пока нажатий нет" }),
           el("p", { class: "muted", text: res.since ? "За выбранный период никто ничего не нажимал. Выберите период побольше." : "Счётчик только что включён. Первые цифры появятся, когда посетители начнут нажимать на кнопки и ссылки, обычно в течение дня." })
         ]));
         return;
       }
+      var app = res.app || {};
+      body.appendChild(el("div", { class: "card c-card" }, [
+        el("h2", { text: "Дневник трезвости" }),
+        el("div", { class: "kpis" }, [
+          kpi(app.install || 0, "установили на телефон", "за " + res.days + " дней"),
+          kpi(app.launch || 0, "раз открыли с домашнего экрана", "не больше раза в день с одного телефона"),
+          kpi(res.subs || 0, "получают напоминания", "подписаны сейчас, за всё время")
+        ])
+      ]));
       body.appendChild(el("div", { class: "kpis" }, [
         kpi(res.total, plural(res.total, "нажатие", "нажатия", "нажатий"), "всего за " + res.days + " дней"),
         kpi(res.tel, "на номер телефона", "звонок с телефона в один тап"),

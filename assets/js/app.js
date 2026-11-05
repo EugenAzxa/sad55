@@ -1,4 +1,4 @@
-/* АМЦ - дневник трезвости (демо). Всё хранится в localStorage этого браузера. */
+/* АМЦ - дневник трезвости. Всё хранится в localStorage этого браузера. */
 (function () {
   "use strict";
 
@@ -59,6 +59,19 @@
   };
   var save = function () {
     try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+    mirrorState();
+  };
+
+  /* копия для ежедневного напоминания: service worker не видит localStorage,
+     а текст «6 дней без алкоголя» он собирает сам, на телефоне */
+  var mirrorState = function () {
+    if (!("caches" in window)) return;
+    try {
+      caches.open("amc-state").then(function (c) {
+        return state ? c.put("/__amc_state", new Response(JSON.stringify(state), { headers: { "Content-Type": "application/json" } }))
+                     : c.delete("/__amc_state");
+      }).catch(function () {});
+    } catch (e) {}
   };
 
   /* ---------- даты ---------- */
@@ -146,10 +159,133 @@
         '<div class="cnt-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + k.icon + '</svg>' + k.title + '</div>' +
         '<div class="cnt-days"><b>' + d + '</b><span>' + plural(d, "день", "дня", "дней") + ' подряд</span></div>' +
         '<div class="cnt-sub">Всего чистых дней: ' + total + '</div>' +
-        (nx ? '<div class="cnt-bar"><i style="width:' + nx.pct.toFixed(1) + '%"></i></div>' +
+        (nx ? '<div class="cnt-bar"><i data-w="' + nx.pct.toFixed(1) + '"></i></div>' +
               '<div class="cnt-next">Следующая отметка: ' + nx.label + '</div>' : '');
+      card.querySelector(".cnt-days b").setAttribute("data-n", d);
       box.appendChild(card);
     });
+    animateCounters(box);
+  };
+
+  /* ---------- анимация ---------- */
+
+  var calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var counted = false;   // цифры «набегают» один раз за открытие, дальше просто ставятся
+
+  var animateCounters = function (box) {
+    var nums = box.querySelectorAll(".cnt-days b"), bars = box.querySelectorAll(".cnt-bar i");
+    var setBars = function () { bars.forEach(function (b) { b.style.width = b.getAttribute("data-w") + "%"; }); };
+    if (calm || counted) {
+      nums.forEach(function (b) { b.textContent = b.getAttribute("data-n"); });
+      setBars();
+      return;
+    }
+    counted = true;
+    var t0 = null, dur = 1100;
+    nums.forEach(function (b) { b.textContent = "0"; });
+    var step = function (t) {
+      if (t0 === null) t0 = t;
+      var p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+      nums.forEach(function (b) { b.textContent = Math.round(+b.getAttribute("data-n") * e); });
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+    /* полоски растут вслед за цифрами */
+    requestAnimationFrame(function () { requestAnimationFrame(setBars); });
+  };
+
+  /* ---------- слова поддержки на сегодня ---------- */
+
+  var CHEER = [
+    [1,   ["Первый день самый важный. Вы уже начали.", "Сегодня вы выбрали себя. Это главное."]],
+    [2,   ["Первые дни самые трудные. Держитесь, дальше будет легче.", "Тяга приходит волной и уходит. Вы сильнее её."]],
+    [4,   ["Организм уже говорит спасибо. Держитесь!", "Вы прошли самое тяжёлое начало. Так держать."]],
+    [7,   ["Больше недели! Вы справляетесь.", "Неделя позади. Каждый день теперь даётся чуть проще."]],
+    [14,  ["Две недели. Это уже привычка, а не попытка.", "Вы держитесь больше двух недель. Гордитесь собой."]],
+    [30,  ["Больше месяца! Это большой путь.", "Месяц трезвости. Близкие это видят."]],
+    [90,  ["Три месяца. Вы живёте по-новому.", "Больше трёх месяцев. Это ваша новая норма."]],
+    [365, ["Больше года. Вы это сделали.", "Год и больше. Помогите тому, кто только начинает."]]
+  ];
+
+  var renderCheer = function () {
+    var box = el("cheer");
+    if (!box) return;
+    var parts = [], top = 0;
+    Object.keys(KINDS).forEach(function (kind) {
+      if (!state[kind] || !state[kind].on) return;
+      var d = streak(kind);
+      top = Math.max(top, d);
+      parts.push(d + " " + plural(d, "день", "дня", "дней") + " " + (kind === "alcohol" ? "без алкоголя" : "без сигарет"));
+    });
+    if (!parts.length) { box.hidden = true; return; }
+    var pool = CHEER[0][1];
+    CHEER.forEach(function (c) { if (top >= c[0]) pool = c[1]; });
+    var now = new Date();
+    var line = pool[(now.getDate() + now.getMonth()) % pool.length];
+    if (now.getDay() === 5 && now.getHours() >= 15) line = "Сегодня пятница, самый частый день срыва. Вечер дома того стоит.";
+    else if (now.getDay() === 6 && now.getHours() >= 12) line = "Выходной не повод. Ваши дни подряд дороже одного вечера.";
+    box.innerHTML = '<b>Уже ' + parts.join(" и ") + '.</b><span>' + line + '</span>';
+    box.hidden = false;
+  };
+
+  /* ---------- праздник при новой отметке ---------- */
+
+  var confetti = function (canvas) {
+    if (calm || !canvas.getContext) return;
+    var ctx = canvas.getContext("2d"), r = canvas.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+    canvas.width = r.width * dpr; canvas.height = r.height * dpr; ctx.scale(dpr, dpr);
+    var colors = ["#f5553f", "#671cfd", "#ffc94d", "#22c55e", "#ffffff"], bits = [];
+    for (var i = 0; i < 110; i++) {
+      bits.push({ x: r.width / 2, y: r.height * 0.42, vx: (Math.random() - 0.5) * 9, vy: -Math.random() * 9 - 3,
+                  s: 5 + Math.random() * 6, a: Math.random() * 6, va: (Math.random() - 0.5) * 0.3, c: colors[i % colors.length] });
+    }
+    var t0 = performance.now();
+    var frame = function (t) {
+      var live = t - t0 < 2600;
+      ctx.clearRect(0, 0, r.width, r.height);
+      bits.forEach(function (b) {
+        b.vy += 0.22; b.vx *= 0.99; b.x += b.vx; b.y += b.vy; b.a += b.va;
+        ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(b.a);
+        ctx.globalAlpha = Math.max(0, 1 - (t - t0) / 2600);
+        ctx.fillStyle = b.c; ctx.fillRect(-b.s / 2, -b.s / 4, b.s, b.s / 2); ctx.restore();
+      });
+      if (live) requestAnimationFrame(frame); else ctx.clearRect(0, 0, r.width, r.height);
+    };
+    requestAnimationFrame(frame);
+  };
+
+  /* Пройденные отметки празднуем один раз. Если человек начал вести дневник
+     задним числом, празднуем только самую большую, остальные молча отмечаем. */
+  var checkCelebrate = function () {
+    var box = el("celebrate");
+    if (!box || !state) return;
+    state.party = state.party || {};
+    var show = null;
+    Object.keys(KINDS).forEach(function (kind) {
+      if (!state[kind] || !state[kind].on) return;
+      var d = streak(kind), best = null;
+      MILESTONES[kind].forEach(function (m) {
+        if (d >= m[0] && m[0] >= 1) {
+          var key = kind + ":" + m[0];
+          if (!state.party[key]) { state.party[key] = true; best = { kind: kind, m: m, d: d }; }
+        }
+      });
+      if (best && (!show || best.m[0] > show.m[0])) show = best;
+    });
+    save();
+    if (!show) return;
+    el("cel-kind").textContent = KINDS[show.kind].title;
+    el("cel-title").textContent = show.m[1].charAt(0).toUpperCase() + show.m[1].slice(1) + "!";
+    el("cel-text").textContent = show.m[2] + (show.d > show.m[0] ? " Сейчас уже " + show.d + " " + plural(show.d, "день", "дня", "дней") + " подряд." : "");
+    box.hidden = false;
+    requestAnimationFrame(function () { box.classList.add("open"); confetti(el("cel-canvas")); });
+    el("cel-ok").focus();
+  };
+
+  var closeCelebrate = function () {
+    var box = el("celebrate");
+    box.classList.remove("open");
+    setTimeout(function () { box.hidden = true; }, 250);
   };
 
   var calMonth = null;
@@ -301,12 +437,14 @@
   };
 
   var renderAll = function () {
+    renderCheer();
     renderCounters();
     renderScreen();
     renderCalendar();
     renderSavings();
     renderMilestones();
     renderLessons();
+    checkCelebrate();
   };
 
   /* ---------- настройка ---------- */
@@ -472,11 +610,52 @@
            (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   };
 
+  /* Ежедневное напоминание с сервера (admin/push.php). На сервер уходит только
+     адрес доставки, который выдал браузер; что и сколько дней, он не знает. */
+  var VAPID = "BIPAjZvyadzzWIZgmw7FbYDLaZfNDHw6hAIHIwQH0DBDpuxZYDBtoogS1xaNihlznQKaMibBSHlI8lAXgkWMeMU";
+  var pushSupported = function () { return notifSupported() && "PushManager" in window; };
+  var b64ToBytes = function (s) {
+    var raw = atob((s + "===".slice((s.length + 3) % 4)).replace(/-/g, "+").replace(/_/g, "/"));
+    var out = new Uint8Array(raw.length);
+    for (var i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+    return out;
+  };
+  var pushPost = function (what, sub) {
+    return fetch("/admin/push.php?a=" + what, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ endpoint: sub.endpoint }), keepalive: true
+    }).catch(function () {});
+  };
+  /* подписаться (или подтвердить подписку) и сообщить серверу адрес */
+  var pushOn = function () {
+    if (!swReg || !pushSupported() || Notification.permission !== "granted") return Promise.resolve(null);
+    return swReg.pushManager.getSubscription().then(function (sub) {
+      return sub || swReg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToBytes(VAPID) });
+    }).then(function (sub) {
+      if (!sub) return null;
+      pushPost("sub", sub);
+      try { if (!localStorage.getItem("amc-push")) { localStorage.setItem("amc-push", "1"); beacon("Включил напоминания", "дневник:напоминания"); } } catch (e) {}
+      return sub;
+    }).catch(function () { return null; });
+  };
+  var pushOff = function () {
+    if (!swReg || !pushSupported()) return Promise.resolve();
+    return swReg.pushManager.getSubscription().then(function (sub) {
+      if (!sub) return;
+      pushPost("unsub", sub);
+      return sub.unsubscribe();
+    }).catch(function () {}).then(function () {
+      try { localStorage.setItem("amc-push-off", "1"); localStorage.removeItem("amc-push"); } catch (e) {}
+    });
+  };
+  var pushIsOff = function () { try { return localStorage.getItem("amc-push-off") === "1"; } catch (e) { return false; } };
+
   var notifCard = el("notif-card");
   var notifState = el("notif-state");
   var notifBtn = el("notif-enable");
   var notifTest = el("notif-test");
   var notifNote = el("notif-note");
+  var notifOff = el("notif-off");
 
   var paintNotifUi = function () {
     if (!notifCard) return;
@@ -501,11 +680,20 @@
     }
 
     var perm = Notification.permission;
-    if (perm === "granted") {
+    if (perm === "granted" && pushIsOff()) {
+      notifState.textContent = "Выключены";
+      notifBtn.hidden = false;
+      notifTest.hidden = true;
+      if (notifOff) notifOff.hidden = true;
+      notifNote.textContent = "Каждый вечер короткое сообщение: сколько дней вы держитесь и пара слов поддержки.";
+    } else if (perm === "granted") {
       notifState.textContent = "Включены";
       notifBtn.hidden = true;
       notifTest.hidden = false;
-      notifNote.textContent = "Раз в день при открытии дневник покажет короткое сообщение поддержки, а в пятницу и субботу отдельное, и отметит пройденные этапы. Пока приложение закрыто, напоминания не приходят: для этого нужен сервер.";
+      if (notifOff) notifOff.hidden = !pushSupported();
+      notifNote.textContent = pushSupported()
+        ? "Каждый вечер придёт короткое сообщение: сколько дней вы держитесь и пара слов поддержки, в пятницу и субботу отдельные. Даже если дневник закрыт. Что именно вы отмечаете, знает только ваш телефон."
+        : "Раз в день при открытии дневник покажет короткое сообщение поддержки и отметит пройденные этапы.";
     } else if (perm === "denied") {
       notifState.textContent = "Запрещены";
       notifBtn.hidden = true;
@@ -515,7 +703,7 @@
       notifState.textContent = "Выключены";
       notifBtn.hidden = false;
       notifTest.hidden = true;
-      notifNote.textContent = "Короткое сообщение раз в день, отдельные слова на пятницу и субботу и отметки о пройденных этапах. Всё считается на вашем телефоне.";
+      notifNote.textContent = "Каждый вечер короткое сообщение: сколько дней вы держитесь и пара слов поддержки, в пятницу и субботу отдельные. Всё считается на вашем телефоне.";
     }
   };
 
@@ -612,7 +800,9 @@
     });
     if (fired) return;
 
-    /* иначе одно поддерживающее сообщение, не чаще раза в день */
+    /* иначе одно поддерживающее сообщение, не чаще раза в день.
+       Если включены вечерние напоминания с сервера, их хватает. */
+    if (pushSupported() && !pushIsOff()) return;
     var day = iso(today());
     if (state.seen["note:" + day]) return;
     state.seen["note:" + day] = true;
@@ -631,13 +821,18 @@
     if (notifBtn) {
       notifBtn.addEventListener("click", function () {
         /* разрешение запрашивается только по нажатию, иначе браузеры его игнорируют */
+        try { localStorage.removeItem("amc-push-off"); } catch (e) {}
         Notification.requestPermission().then(function (p) {
           paintNotifUi();
           if (p === "granted") {
-            notify("Напоминания включены", "Дневник будет отмечать ваши этапы.", "hello");
+            pushOn();
+            notify("Напоминания включены", "Каждый вечер дневник напомнит, сколько дней вы держитесь.", "hello");
           }
         });
       });
+    }
+    if (notifOff) {
+      notifOff.addEventListener("click", function () { pushOff().then(paintNotifUi); });
     }
     if (notifTest) {
       notifTest.addEventListener("click", function () {
@@ -653,9 +848,66 @@
       navigator.serviceWorker.register("sw.js").then(function (reg) {
         swReg = reg;
         paintNotifUi();
+        if (!pushIsOff()) pushOn();
+        mirrorState();
         setTimeout(checkReminders, 1200);
       }).catch(function () {});
     });
+  }
+
+  /* ---------- установка и учёт ----------
+     Во вкладку «Клики» админки уходят три события, без данных о человеке:
+     установка, запуск с домашнего экрана (не чаще раза в день с телефона)
+     и включение напоминаний. */
+
+  var beacon = function (label, to) {
+    if (!navigator.sendBeacon) return;
+    try { navigator.sendBeacon("/admin/track.php", JSON.stringify({ p: "/app.html", t: "Дневник трезвости", l: label, h: to })); } catch (e) {}
+  };
+  var once = function (key) {
+    try { if (localStorage.getItem(key)) return false; localStorage.setItem(key, "1"); return true; } catch (e) { return false; }
+  };
+
+  if (standalone()) {
+    if (once("amc-installed")) beacon("Установил дневник", "дневник:установка");
+    if (once("amc-launch-" + iso(today()))) beacon("Открыл дневник с домашнего экрана", "дневник:запуск");
+  }
+  window.addEventListener("appinstalled", function () {
+    if (once("amc-installed")) beacon("Установил дневник", "дневник:установка");
+    var b = el("install-btn");
+    if (b) b.hidden = true;
+  });
+
+  /* Chrome и браузеры на его основе умеют ставить приложение одной кнопкой */
+  var installEvt = null;
+  window.addEventListener("beforeinstallprompt", function (e) {
+    e.preventDefault();
+    installEvt = e;
+    var b = el("install-btn");
+    if (b) b.hidden = false;
+  });
+  var installBtn = el("install-btn");
+  if (installBtn) {
+    installBtn.addEventListener("click", function () {
+      if (!installEvt) return;
+      installEvt.prompt();
+      installEvt.userChoice.then(function () { installEvt = null; installBtn.hidden = true; });
+    });
+  }
+
+  /* инструкция: сразу открыть вкладку под телефон человека */
+  var instTabs = document.querySelectorAll("[data-inst]");
+  var showInst = function (name) {
+    instTabs.forEach(function (t) {
+      var on = t.getAttribute("data-inst") === name;
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      t.classList.toggle("on", on);
+    });
+    document.querySelectorAll("[data-inst-pane]").forEach(function (p) { p.hidden = p.getAttribute("data-inst-pane") !== name; });
+  };
+  if (instTabs.length) {
+    instTabs.forEach(function (t) { t.addEventListener("click", function () { showInst(t.getAttribute("data-inst")); }); });
+    showInst(/Android/i.test(navigator.userAgent) ? "android" : "iphone");
   }
 
   /* ---------- вкладки ---------- */
@@ -782,18 +1034,24 @@
     renderCalendar();
   });
 
+  el("cel-ok").addEventListener("click", closeCelebrate);
+  el("celebrate").addEventListener("click", function (e) { if (e.target === el("celebrate")) closeCelebrate(); });
+
   el("panic-open").addEventListener("click", openPanic);
   panic.querySelectorAll("[data-close-panic]").forEach(function (b) {
     b.addEventListener("click", closePanic);
   });
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && panic.classList.contains("open")) closePanic();
+    if (e.key === "Escape" && !el("celebrate").hidden) closeCelebrate();
   });
 
   el("app-reset").addEventListener("click", function () {
     if (!window.confirm("Удалить все записи дневника? Действие нельзя отменить.")) return;
     try { localStorage.removeItem(KEY); } catch (e) {}
     state = null;
+    mirrorState();
+    pushOff();
     showSetup();
     updateLessonMarks();
   });
