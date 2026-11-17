@@ -1,0 +1,29 @@
+<!-- Анимация логотипа (снята 17.11 по просьбе пользователя). CSS и JS остались в style.css и main.js.
+     Вернуть: 1) скрипт ниже в <head> index.html; 2) разметку #intro сразу после <noscript> Метрики. -->
+
+<script>
+  (function () {
+    var replay = /[?&]intro(=|&|$)/.test(location.search);
+    var skip = false;
+    try { skip = !replay && sessionStorage.getItem("amc-intro") === "1"; } catch (e) {}
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) skip = true;
+    document.documentElement.className += skip ? " intro-off" : " intro-lock";
+    if (!skip) setTimeout(function () {
+      document.documentElement.classList.remove("intro-lock");
+    }, 5000);
+  })();
+</script>
+
+<div class="intro" id="intro" role="dialog" aria-label="Заставка сайта">
+  <div class="intro-logo" aria-hidden="true">
+    <span class="il-glow"></span>
+    <img class="il-mark" src="assets/logo.svg" alt="" width="314" height="72">
+    <img class="il-name" src="assets/logo.svg" alt="" width="314" height="72">
+  </div>
+  <p class="il-line">Серьёзное лечение алкогольных проблем и табакокурения</p>
+  <p class="il-sub">Анонимно, с 1992 года</p>
+  <button class="intro-skip" type="button" id="intro-skip">
+    Пропустить
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg>
+  </button>
+</div>

@@ -329,7 +329,7 @@
     });
   }
 
-  /* welcome intro: the ship to sobriety (Higgsfield clip) */
+  /* welcome intro: animated logo */
   var intro = document.getElementById("intro");
   if (intro && !document.documentElement.classList.contains("intro-off")) {
     var introTimer = null;
@@ -354,10 +354,8 @@
     document.addEventListener("keydown", onIntroKey);
     intro.addEventListener("wheel", endIntro, { passive: true });
     intro.addEventListener("touchmove", endIntro, { passive: true });
-    /* the ship clip runs 10 s; close with it, or on time if it never starts */
-    var introVideo = document.getElementById("intro-video");
-    if (introVideo) introVideo.addEventListener("ended", endIntro);
-    introTimer = setTimeout(endIntro, 10200);
+    /* the logo intro runs about 3.5 s, then lets the page in */
+    introTimer = setTimeout(endIntro, 3600);
   }
 
   /* doctor detail modal */
