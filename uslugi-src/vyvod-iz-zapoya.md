@@ -10,7 +10,7 @@ old: kak-vyvesti-iz-zapoya, vyvedenie-iz-zapoya-nachalo-lecheniya
 status: approved
 published: 2026-10-30
 image: assets/img/uslugi/vyvod-iz-zapoya-m.jpg
-image_alt: Врач считает пульс пациенту, который сидит на диване под пледом
+image_alt: Врач беседует с пациентом, который сидит на диване под пледом
 services: narkolog-na-dom, kapelnica-ot-zapoya, vyezd-narkologa, kodirovanie
 related: vyvod-iz-zapoya-na-domu, kodirovanie-ot-alkogolya, kak-ugovorit-lechitsya
 ---
