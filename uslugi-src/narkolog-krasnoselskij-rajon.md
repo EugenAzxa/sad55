@@ -9,7 +9,7 @@ area: Красносельский район
 order: 23
 status: approved
 published: 2026-11-03
-image: assets/img/uslugi/narkolog-krasnoselskij-rajon.jpg
+image: assets/img/uslugi/narkolog-krasnoselskij-rajon-m.jpg
 image_alt: Мужчина встречает врача с медицинской сумкой у калитки частного дома на окраине города, сумерки
 services: narkolog-na-dom, vyvod-iz-zapoya, kapelnica-ot-zapoya, vyezd-narkologa
 related: vyvod-iz-zapoya-na-domu, belaya-goryachka, kak-snyat-pohmele

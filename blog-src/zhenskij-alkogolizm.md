@@ -8,7 +8,7 @@ old: zhenskij-alkogolizm-lechenie-alkogolnoj-zavisimosti-u-zhenshhin, zakodirova
 status: approved
 published: 2026-10-30
 reviewer: none
-image: assets/img/blog/zhenskij-alkogolizm.jpg
+image: assets/img/blog/zhenskij-alkogolizm-m.jpg
 image_alt: Женщина разговаривает с врачом на консультации
 related: stadii-alkogolizma, kak-ugovorit-lechitsya, kodirovanie-ot-alkogolya
 tags: Лечение алкоголизма, Признаки зависимости, Близким

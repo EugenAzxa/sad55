@@ -7,7 +7,7 @@ topic: Кодирование
 status: approved
 published: 2026-10-30
 reviewer: none
-image: assets/img/blog/sryv-posle-kodirovaniya.jpg
+image: assets/img/blog/sryv-posle-kodirovaniya-m.jpg
 image_alt: Психотерапевт спокойно беседует с пациентом в кабинете
 related: vypil-posle-kodirovaniya, kodirovanie-ot-alkogolya, sozavisimost
 tags: Кодирование, Лечение алкоголизма

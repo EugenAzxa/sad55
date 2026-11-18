@@ -9,8 +9,8 @@ area: Центральный район
 order: 21
 status: approved
 published: 2026-11-03
-image: assets/img/uslugi/narkolog-centralnyj-rajon.jpg
-image_alt: Женщина-врач с медицинской сумкой спускается по ступеням старого петербургского дома с чугунными перилами
+image: assets/img/uslugi/narkolog-centralnyj-rajon-m.jpg
+image_alt: Врач с медицинской сумкой спускается по ступеням старого петербургского дома с чугунными перилами
 services: narkolog-na-dom, vyvod-iz-zapoya, anonimnyj-narkolog, vyezd-narkologa
 related: vyvod-iz-zapoya-na-domu, uchet-u-narkologa, sozavisimost
 ---

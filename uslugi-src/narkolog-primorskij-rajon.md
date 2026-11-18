@@ -9,7 +9,7 @@ area: Приморский район
 order: 24
 status: approved
 published: 2026-11-03
-image: assets/img/uslugi/narkolog-primorskij-rajon.jpg
+image: assets/img/uslugi/narkolog-primorskij-rajon-m.jpg
 image_alt: Врач с медицинской сумкой проходит через светлый холл нового жилого дома вечером
 services: narkolog-na-dom, kapelnica-ot-zapoya, anonimnyj-narkolog, vyezd-narkologa
 related: uchet-u-narkologa, kak-ugovorit-lechitsya, postalkogolnaya-depressiya
