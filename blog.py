@@ -187,6 +187,36 @@ def price_inline(prices, ref):
     return "<!--p:%s-->%s<!--/p-->" % (esc(price_ref(ref)), esc(price_lookup(prices, ref)))
 
 
+# shown wherever prices appear (user, 18.11.2026); kept outside the <!--pt--> marks so /admin/ never wipes it
+PRICE_PROMISE = "Стоимость услуг не будет выше той, которую озвучили вам по телефону."
+PRICE_PROMISE_HTML = '<p class="price-promise">%s</p>' % PRICE_PROMISE
+
+
+def add_price_promise(body):
+    """Once per page body: after the first price table, else after the block holding the first inline price."""
+    i = body.find("<!--/pt-->")
+    if i >= 0:
+        j = i + len("<!--/pt-->")
+        return body[:j] + PRICE_PROMISE_HTML + body[j:]
+    i = body.find("<!--/p-->")
+    if i < 0:
+        return body
+    ends = [(body.find(t, i), t) for t in ("</p>", "</li>", "</td>")]
+    ends = [(k, t) for k, t in ends if k >= 0]
+    if not ends:
+        return body
+    k, t = min(ends)
+    if t == "</li>":
+        k2 = min(x for x in (body.find("</ul>", k), body.find("</ol>", k)) if x >= 0)
+        j = k2 + 5
+    elif t == "</td>":
+        j = body.find("</table>", k)
+        j = body.find("</div>", j) + 6 if body.find("</div>", j) >= 0 else j + 8
+    else:
+        j = k + 4
+    return body[:j] + PRICE_PROMISE_HTML + body[j:]
+
+
 def price_table(prices, group):
     return "<!--pt:%s-->%s<!--/pt-->" % (esc(group), price_table_html(prices, group))
 
@@ -525,7 +555,7 @@ def head(title, description, canonical, prefix, og_image, jsonld, noindex=False,
   <meta name="theme-color" content="#f5553f">
   <link rel="preload" href="{p}assets/fonts/raleway-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="{p}assets/fonts/raleway-cyrillic-800-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="{p}assets/css/style.css?v=20261119">
+  <link rel="stylesheet" href="{p}assets/css/style.css?v=20261121">
   <script type="application/ld+json">
 {j}
   </script>
@@ -670,8 +700,9 @@ def help_block(a, ctx):
   <div class="container">
     <h2 class="h2">Чем мы можем помочь</h2>
     <div class="blog-grid">{c}</div>
+    {promise}
   </div>
-</section>""".format(c="".join(cards))
+</section>""".format(c="".join(cards), promise=PRICE_PROMISE_HTML if any("svc-card-price" in c for c in cards) else "")
 
 
 def small_image(path):
@@ -714,6 +745,7 @@ def article_page(a, ctx, chrome):
     top, bottom = chrome
     prefix, draft = ctx.prefix, ctx.mode == "draft"
     body, toc, questions, words, short_html, short_text, faqs = render_body(a["body"], ctx)
+    body = add_price_promise(body)
     minutes = max(1, round(words / 180))
     url = SITE + "blog/%s.html" % a["slug"]
     image = a.get("image") or "assets/img/og-cover.jpg"
@@ -871,6 +903,7 @@ def service_page(a, ctx, chrome):
     top, bottom = chrome
     prefix = ctx.prefix
     body, toc, questions, words, short_html, short_text, faqs = render_body(a["body"], ctx)
+    body = add_price_promise(body)
     url = SITE + "uslugi/%s.html" % a["slug"]
     image = a.get("image") or "assets/img/og-cover.jpg"
     # district pages (area: ...) hang under the home-visit page, not under the price list
@@ -907,7 +940,8 @@ def service_page(a, ctx, chrome):
     price_html = ""
     if a.get("price"):
         note = ('<small class="svc-price-note">%s</small>' % esc(a["price_note"])) if a.get("price_note") else ""
-        price_html = '<div class="svc-price"><span>Стоимость</span><b>%s</b>%s</div>' % (price_from(ctx.prices, a["price"]), note)
+        price_html = '<div class="svc-price"><span>Стоимость</span><b>%s</b>%s<small class="svc-price-note">%s</small></div>' % (
+            price_from(ctx.prices, a["price"]), note, PRICE_PROMISE)
 
     others = []
     for slug in a["services"]:
@@ -928,9 +962,11 @@ def service_page(a, ctx, chrome):
   <div class="container">
     <h2 class="h2">{t}</h2>
     <div class="blog-grid">{c}</div>
+    {promise}
   </div>
 </section>
-""".format(t=title, c="".join(cards))
+""".format(t=title, c="".join(cards),
+           promise=PRICE_PROMISE_HTML if "svc-card-price" in "".join(cards) and PRICE_PROMISE not in body + price_html else "")
 
     page = [head(a.get("seo_title") or a["title"], a["description"], url, prefix, image, jsonld)]
     page.append(relink(mark_active(top, "price-and-services.html"), prefix))
@@ -990,9 +1026,10 @@ def services_block(services, ctx):
       <p class="lead">Как проходит, что входит в цену, что подготовить и когда звонить в скорую.</p>
     </div>
     <div class="blog-grid">{c}</div>
+    {promise}
   </div>
 </section>
-""".format(c=cards)
+""".format(c=cards, promise=PRICE_PROMISE_HTML if "svc-card-price" in cards else "")
 
 
 def topic_block(items, ctx, title="Читать по теме", eyebrow="Блог", cls="section"):
