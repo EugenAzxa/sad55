@@ -2343,6 +2343,8 @@ html.intro-off .intro { display: none; }
 .svc-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 16px; flex: 1 1 320px; }
 .svc-note { font-size: 0.86rem; color: var(--muted); max-width: 30ch; }
 .svc-card-price { font-weight: 800; color: var(--ink); font-size: 1.05rem; }
+/* what the price covers, right under it so it is read together with the number */
+.svc-price-note { display: block; margin-top: 4px; font-size: 0.86rem; font-weight: 600; line-height: 1.4; color: var(--ink); opacity: 0.8; max-width: 34ch; }
 
 .post-disclaimer { margin-top: 40px; font-size: 0.86rem; color: var(--muted); }
 

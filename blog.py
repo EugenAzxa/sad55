@@ -525,7 +525,7 @@ def head(title, description, canonical, prefix, og_image, jsonld, noindex=False,
   <meta name="theme-color" content="#f5553f">
   <link rel="preload" href="{p}assets/fonts/raleway-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="{p}assets/fonts/raleway-cyrillic-800-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="{p}assets/css/style.css?v=20261109">
+  <link rel="stylesheet" href="{p}assets/css/style.css?v=20261119">
   <script type="application/ld+json">
 {j}
   </script>
@@ -861,7 +861,8 @@ def price_from(prices, ref):
 def service_card(a, href, prefix, ctx):
     price = ""
     if a.get("price"):
-        price = '<span class="svc-card-price">%s</span>' % price_from(ctx.prices, a["price"])
+        note = ('<small class="svc-price-note">%s</small>' % esc(a["price_note"])) if a.get("price_note") else ""
+        price = '<span class="svc-card-price">%s%s</span>' % (price_from(ctx.prices, a["price"]), note)
     return '<a class="post-card svc-card" href="%s">%s<h3>%s</h3><p>%s</p>%s</a>' % (
         esc(href), card_image(a, prefix), esc(a["title"]), esc(a.get("card") or a.get("lead") or a["description"]), price)
 
@@ -905,7 +906,8 @@ def service_page(a, ctx, chrome):
             '<li><a href="#%s">%s</a></li>' % (sid, inline(t, ctx)) for sid, t in toc)
     price_html = ""
     if a.get("price"):
-        price_html = '<div class="svc-price"><span>Стоимость</span><b>%s</b></div>' % price_from(ctx.prices, a["price"])
+        note = ('<small class="svc-price-note">%s</small>' % esc(a["price_note"])) if a.get("price_note") else ""
+        price_html = '<div class="svc-price"><span>Стоимость</span><b>%s</b>%s</div>' % (price_from(ctx.prices, a["price"]), note)
 
     others = []
     for slug in a["services"]:
