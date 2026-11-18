@@ -246,6 +246,20 @@
 
   /* stat counters */
   var counters = document.querySelectorAll("[data-count]");
+  // counters that grow every day: data-count is the value on data-since (YYYY-MM-DD, Moscow), plus data-per-day each day after
+  var fmtCount = function (n) {
+    return n >= 10000 ? n.toLocaleString("ru-RU").replace(/\s/g, "\u00a0") : String(n);
+  };
+  counters.forEach(function (el) {
+    var since = el.getAttribute("data-since"), perDay = parseInt(el.getAttribute("data-per-day") || "0", 10);
+    if (!since || !perDay) return;
+    var p = since.split("-");
+    var start = Date.UTC(+p[0], +p[1] - 1, +p[2]) - 3 * 3600 * 1000;   // midnight in Moscow (UTC+3)
+    var days = Math.max(0, Math.floor((Date.now() - start) / 86400000));
+    var value = parseInt(el.getAttribute("data-count"), 10) + days * perDay;
+    el.setAttribute("data-count", String(value));
+    el.textContent = fmtCount(value) + (el.getAttribute("data-suffix") || "");
+  });
   var animateCount = function (el) {
     var target = parseInt(el.getAttribute("data-count"), 10);
     var suffix = el.getAttribute("data-suffix") || "";
@@ -257,7 +271,7 @@
       var eased = 1 - Math.pow(1 - p, 3);
       var n = Math.round(target * eased);
       // 40000 -> "40 000" (non-breaking space); years like 1992 stay as they are
-      el.textContent = (target >= 10000 ? n.toLocaleString("ru-RU").replace(/\s/g, "\u00a0") : String(n)) + suffix;
+      el.textContent = (target >= 10000 ? fmtCount(n) : String(n)) + suffix;
       if (p < 1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
