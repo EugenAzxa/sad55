@@ -632,7 +632,7 @@ TAG_SERVICES = [
     ("Анонимность", ["anonimnyj-narkolog"]),
 ]
 DEFAULT_SERVICE = "anonimnyj-narkolog"
-# выездная бригада работает круглосуточно, центр на Садовой с 9:00 до 15:00
+# выездная бригада работает круглосуточно, центр на Садовой ежедневно по предварительной записи
 HOME_VISIT_SERVICES = {"vyvod-iz-zapoya", "narkolog-na-dom", "kapelnica-ot-zapoya", "vyezd-narkologa"}
 # «Полезно знать» на главной и «Перед визитом» под ценами
 HOME_ARTICLES = ["stadii-alkogolizma", "kak-ugovorit-lechitsya", "kak-snyat-pohmele",
