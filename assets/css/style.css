@@ -774,6 +774,7 @@ html.a11y .nav { gap: 0; }
 
 .stat b {
   display: block;
+  white-space: nowrap;
   font-size: clamp(1.9rem, 3.6vw, 3rem);
   font-weight: 800;
   letter-spacing: -0.02em;

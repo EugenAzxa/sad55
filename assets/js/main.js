@@ -255,7 +255,9 @@
       if (!start) start = ts;
       var p = Math.min((ts - start) / dur, 1);
       var eased = 1 - Math.pow(1 - p, 3);
-      el.textContent = Math.round(target * eased).toString() + suffix;
+      var n = Math.round(target * eased);
+      // 40000 -> "40 000" (non-breaking space); years like 1992 stay as they are
+      el.textContent = (target >= 10000 ? n.toLocaleString("ru-RU").replace(/\s/g, "\u00a0") : String(n)) + suffix;
       if (p < 1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
