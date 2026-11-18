@@ -8,7 +8,7 @@ price: Очищение от алкоголя|Комплексное вывед�
 order: 8
 status: approved
 published: 2026-10-30
-image: assets/img/uslugi/vyezd-narkologa.jpg
+image: assets/img/uslugi/vyezd-narkologa-m.jpg
 image_alt: Врач с медицинской сумкой идёт вечером по петербургскому двору
 services: narkolog-na-dom, vyvod-iz-zapoya, kapelnica-ot-zapoya
 related: vyvod-iz-zapoya-na-domu, kak-ugovorit-lechitsya, stadii-alkogolizma

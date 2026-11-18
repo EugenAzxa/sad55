@@ -632,7 +632,7 @@ TAG_SERVICES = [
     ("Анонимность", ["anonimnyj-narkolog"]),
 ]
 DEFAULT_SERVICE = "anonimnyj-narkolog"
-# выездная бригада работает круглосуточно, центр на Садовой с 9:00 до 17:00
+# выездная бригада работает круглосуточно, центр на Садовой с 9:00 до 15:00
 HOME_VISIT_SERVICES = {"vyvod-iz-zapoya", "narkolog-na-dom", "kapelnica-ot-zapoya", "vyezd-narkologa"}
 # «Полезно знать» на главной и «Перед визитом» под ценами
 HOME_ARTICLES = ["stadii-alkogolizma", "kak-ugovorit-lechitsya", "kak-snyat-pohmele",
@@ -863,7 +863,7 @@ def service_card(a, href, prefix, ctx):
     if a.get("price"):
         price = '<span class="svc-card-price">%s</span>' % price_from(ctx.prices, a["price"])
     return '<a class="post-card svc-card" href="%s">%s<h3>%s</h3><p>%s</p>%s</a>' % (
-        esc(href), card_image(a, prefix), esc(a["title"]), esc(a.get("lead") or a["description"]), price)
+        esc(href), card_image(a, prefix), esc(a["title"]), esc(a.get("card") or a.get("lead") or a["description"]), price)
 
 
 def service_page(a, ctx, chrome):

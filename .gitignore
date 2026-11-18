@@ -18,3 +18,5 @@ admin/data/*.tmp*
 # веб-пуш дневника: ключи и подписки
 admin/data/push-key.php
 admin/data/push/
+
+__pycache__/

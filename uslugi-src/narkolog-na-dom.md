@@ -8,7 +8,7 @@ price: Очищение от алкоголя|Комплексное вывед�
 order: 2
 status: approved
 published: 2026-10-30
-image: assets/img/uslugi/narkolog-na-dom.jpg
+image: assets/img/uslugi/narkolog-na-dom-m.jpg
 image_alt: Врач с медицинской сумкой вечером в прихожей квартиры, его встречает женщина
 services: vyvod-iz-zapoya, kapelnica-ot-zapoya, vyezd-narkologa, anonimnyj-narkolog
 related: kak-ugovorit-lechitsya, vyvod-iz-zapoya-na-domu, stadii-alkogolizma

@@ -9,7 +9,7 @@ area: Фрунзенский район
 order: 22
 status: approved
 published: 2026-11-03
-image: assets/img/uslugi/narkolog-kupchino.jpg
+image: assets/img/uslugi/narkolog-kupchino-m.jpg
 image_alt: Врач с медицинской сумкой звонит в домофон у подъезда девятиэтажного панельного дома осенью
 services: narkolog-na-dom, kapelnica-ot-zapoya, vyvod-iz-zapoya, vyezd-narkologa
 related: kak-ugovorit-lechitsya, stadii-alkogolizma, vyvod-iz-zapoya-na-domu
@@ -73,7 +73,7 @@ related: kak-ugovorit-lechitsya, stadii-alkogolizma, vyvod-iz-zapoya-na-domu
 ## Почему Академический Медицинский Центр
 
 - Работаем с 1992 года. Врачи центра выпускники Военно-медицинской академии им. С. М. Кирова.
-- Центр на Садовой: ежедневно с 9:00 до 17:00. Запись и выезд врача на дом: круглосуточно.
+- Центр на Садовой: ежедневно с 9:00 до 15:00. Запись и выезд врача на дом: круглосуточно.
 - Анонимно.
 - Лицензия № 78-01-002677 от 06.04.2012, выдана Комитетом по здравоохранению Санкт-Петербурга.
 

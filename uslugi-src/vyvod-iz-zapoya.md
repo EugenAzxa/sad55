@@ -9,7 +9,7 @@ order: 1
 old: kak-vyvesti-iz-zapoya, vyvedenie-iz-zapoya-nachalo-lecheniya
 status: approved
 published: 2026-10-30
-image: assets/img/uslugi/vyvod-iz-zapoya.jpg
+image: assets/img/uslugi/vyvod-iz-zapoya-m.jpg
 image_alt: Врач считает пульс пациенту, который сидит на диване под пледом
 services: narkolog-na-dom, kapelnica-ot-zapoya, vyezd-narkologa, kodirovanie
 related: vyvod-iz-zapoya-na-domu, kodirovanie-ot-alkogolya, kak-ugovorit-lechitsya
@@ -75,7 +75,7 @@ related: vyvod-iz-zapoya-na-domu, kodirovanie-ot-alkogolya, kak-ugovorit-lechits
 
 ## Дома или в центре
 
-Если человек держится на ногах и согласен приехать, вывод из запоя можно пройти амбулаторно в центре: ул. Садовая, д. 56 / Вознесенский пр., д. 45, ежедневно с 9:00 до 17:00. Если ехать он не может или не хочет, врач приедет сам. Центр работает амбулаторно и с выездом на дом. Когда помощь в больнице нужна прямо сейчас, врач вызывает скорую.
+Если человек держится на ногах и согласен приехать, вывод из запоя можно пройти амбулаторно в центре: ул. Садовая, д. 56 / Вознесенский пр., д. 45, ежедневно с 9:00 до 15:00. Если ехать он не может или не хочет, врач приедет сам. Центр работает амбулаторно и с выездом на дом. Когда помощь в больнице нужна прямо сейчас, врач вызывает скорую.
 
 Подробнее о том, почему дома лучше не пытаться обойтись своими силами и как помочь близкому, мы писали в статье [вывод из запоя на дому: как проходит визит врача](blog:vyvod-iz-zapoya-na-domu).
 
