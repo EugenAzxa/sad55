@@ -8,7 +8,7 @@ status: approved
 published: 2026-09-29
 updated: 2026-10-31
 reviewer: none
-image: assets/img/blog/vyvod-iz-zapoya-na-domu.jpg
+image: assets/img/blog/vyvod-iz-zapoya-na-domu-m.jpg
 image_alt: Врач с седыми усами беседует с пациенткой у неё дома, на столике медицинская сумка
 related: kodirovanie-ot-alkogolya, esperal
 old: vyvedenie-iz-zapoya, vyvedenie-iz-zapoya-2, vyvedenie-iz-zapoya-vazhnoe, vyvedenie-iz-zapoya-slozhnyj-proczess, narkolog-na-dom, narkolog-na-dom-svoevremennaya-pomoshh, narkolog-na-dom-effektivnaya-pomoshh

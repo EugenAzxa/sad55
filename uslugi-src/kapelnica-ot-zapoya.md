@@ -9,7 +9,7 @@ price: Очищение от алкоголя|Комплексное вывед�
 order: 3
 status: approved
 published: 2026-10-30
-image: assets/img/uslugi/kapelnica-ot-zapoya.jpg
+image: assets/img/uslugi/kapelnica-ot-zapoya-m.jpg
 image_alt: Врач настраивает капельницу пациенту на диване в квартире
 services: vyvod-iz-zapoya, narkolog-na-dom, vyezd-narkologa
 related: vyvod-iz-zapoya-na-domu, kodirovanie-ot-alkogolya, stadii-alkogolizma
