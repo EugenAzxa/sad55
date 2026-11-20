@@ -46,10 +46,10 @@ CREDS = os.path.join(HERE, '.ftp-credentials')
 
 # то же, что исключает make-zip.sh: на сервер уезжает только то,
 # что сайт реально отдаёт посетителю
-SKIP_DIRS = {'.git', '.vercel', 'brag-output', '_probe', '__pycache__', '.tmb', 'notes', '.logs', 'drafts', 'blog-src',
+SKIP_DIRS = {'.git', '.github', '.claude', '.vercel', 'brag-output', '_probe', '__pycache__', '.tmb', 'notes', '.logs', 'drafts', 'blog-src',
              'uslugi-src', 'backups', 'clicks'}
 SKIP_FILES = {'.gitignore', '.vercelignore', '.DS_Store', '.ftp-credentials',
-              'README.md', 'CLAUDE.md', 'deploy-sweb.sh', 'make-zip.sh', 'deploy.py', 'logs.py', 'blog.py', 'autopublish.sh',
+              'README.md', 'CLAUDE.md', 'deploy-sweb.sh', 'make-zip.sh', 'deploy.py', 'logs.py', 'blog.py', 'indexnow.py', 'autopublish.sh',
               '.deploy-state.json', '.admin-password', 'set-password.py', 'attempts.json', '.lock'}
 
 PROMPT = b'sftp>'
@@ -160,21 +160,9 @@ def sitemap_urls():
 
 
 def indexnow(urls):
-    """Сообщить Яндексу (и Bing через протокол IndexNow) о новых и изменённых
-    страницах. Ошибка здесь заливку не ломает: печатаем код ответа и всё."""
-    if not urls:
-        return
-    import urllib.request
-    body = json.dumps({'host': 'sad56.spb.ru', 'key': INDEXNOW_KEY,
-                       'keyLocation': SITE + INDEXNOW_KEY + '.txt', 'urlList': urls}).encode('utf-8')
-    req = urllib.request.Request('https://yandex.com/indexnow', data=body, method='POST',
-                                 headers={'Content-Type': 'application/json; charset=utf-8'})
-    try:
-        with urllib.request.urlopen(req, timeout=30) as r:
-            code = r.status
-    except Exception as e:
-        code = getattr(e, 'code', None) or str(e)
-    print('IndexNow: отправлено адресов %d, ответ %s' % (len(urls), code))
+    """Сообщить Яндексу и Bing о новых и изменённых страницах (см. indexnow.py)."""
+    import indexnow as inx
+    inx.send(urls)
 
 
 def page_urls(files):

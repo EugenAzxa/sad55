@@ -10,7 +10,7 @@ zip -rq "$OUT" . \
      '.vercel/*' '.vercel' \
      '.gitignore' '.vercelignore' \
      'brag-output/*' '_probe/*' 'notes/*' 'drafts/*' 'blog-src/*' 'uslugi-src/*' 'CLAUDE.md' \
-     'README.md' 'deploy-sweb.sh' 'make-zip.sh' 'deploy.py' 'logs.py' 'blog.py' '.deploy-state.json' '.logs/*' '.ftp-credentials' \
+     'README.md' 'deploy-sweb.sh' 'make-zip.sh' 'deploy.py' 'logs.py' 'blog.py' 'indexnow.py' '.github/*' '.claude/*' 'drafts/*' '.deploy-state.json' '.logs/*' '.ftp-credentials' \
      '.admin-password' 'admin/set-password.py' 'admin/data/backups/*' 'admin/data/attempts.json' \
      '.DS_Store' '*/.DS_Store'
 echo "$OUT"

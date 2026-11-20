@@ -1,0 +1,20 @@
+# Раз в день сообщает Яндексу и Bing о страницах, у которых в живом
+# sitemap.xml свежая дата lastmod. Так новые и изменённые статьи попадают
+# в поисковики сами, даже если сайт залили вручную через файловый менеджер.
+name: IndexNow
+on:
+  schedule:
+    - cron: '0 7 * * *'     # 10:00 по Москве
+  workflow_dispatch:
+    inputs:
+      days:
+        description: 'За сколько дней брать изменения'
+        default: '3'
+permissions:
+  contents: read
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 indexnow.py --days "${{ github.event.inputs.days || '2' }}"

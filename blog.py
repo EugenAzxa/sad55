@@ -49,9 +49,11 @@ price-and-services.html между <!-- uslugi:start --> и <!-- uslugi:end -->.
 """
 import datetime
 import html
+import html.parser
 import json
 import os
 import re
+import subprocess
 import sys
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -540,6 +542,7 @@ def head(title, description, canonical, prefix, og_image, jsonld, noindex=False,
   <link rel="icon" href="{p}favicon.svg" type="image/svg+xml">
   <link rel="icon" href="{p}favicon.ico" sizes="32x32">
   <link rel="canonical" href="{c}">
+  <link rel="alternate" type="application/rss+xml" title="Блог АМЦ" href="{site}rss.xml">
   <meta property="og:type" content="{ot}">
   <meta property="og:site_name" content="Академический Медицинский Центр">
   <meta property="og:locale" content="ru_RU">
@@ -573,7 +576,7 @@ def head(title, description, canonical, prefix, og_image, jsonld, noindex=False,
 <body>
 <noscript><div><img src="https://mc.yandex.ru/watch/113325506" style="position:absolute; left:-9999px;" alt="" width="1" height="1"></div></noscript>
 """.format(t=esc(title), d=esc(description), robots=robots, p=prefix, c=canonical, ot=og_type,
-           img=img, j=json.dumps(jsonld, ensure_ascii=False, indent=2))
+           img=img, site=SITE, j=json.dumps(jsonld, ensure_ascii=False, indent=2))
 
 
 def foot(prefix, bottom):
@@ -1272,6 +1275,159 @@ def update_llms(approved, services=()):
     replace_block(os.path.join(ROOT, "llms.txt"), "<!-- blog:start -->", "<!-- blog:end -->", text)
 
 
+# ---------- honest lastmod, full text for AI, RSS ----------
+
+TODAY = datetime.date.today().isoformat()
+
+
+def file_date(rel):
+    """Дата последнего изменения файла по git; если файл изменён и не закоммичен, сегодня."""
+    try:
+        if subprocess.run(["git", "status", "--porcelain", "--", rel], cwd=ROOT,
+                          capture_output=True, text=True).stdout.strip():
+            return TODAY
+        return subprocess.run(["git", "log", "-1", "--format=%cs", "--", rel], cwd=ROOT,
+                              capture_output=True, text=True).stdout.strip() or TODAY
+    except OSError:
+        return ""
+
+
+def refresh_lastmod():
+    """lastmod в sitemap.xml = самая поздняя из дат: указанной и реального изменения файла.
+    Google верит lastmod, только если он честный; иначе не перечитывает обновлённые страницы."""
+    path = os.path.join(ROOT, "sitemap.xml")
+    s = open(path, encoding="utf-8").read()
+
+    def fix(m):
+        loc, old = m.group(1), m.group(2)
+        rel = loc[len(SITE):] or "index.html"
+        if not os.path.exists(os.path.join(ROOT, rel)):
+            return m.group(0)
+        return m.group(0).replace(old, max(old, file_date(rel)))
+    new = re.sub(r"<loc>([^<]+)</loc>\s*<lastmod>([^<]+)</lastmod>", fix, s)
+    if new != s:
+        open(path, "w", encoding="utf-8").write(new)
+
+
+class _Text(html.parser.HTMLParser):
+    """Текст статьи из готовой страницы: цены уже подставлены, разметка снята."""
+    SKIP = {"script", "style", "svg", "nav", "button", "noscript", "template"}
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.out, self.on = [], False
+        self.skip_tag, self.depth = None, 0     # пропускаем элемент целиком, считая вложенность
+
+    def handle_starttag(self, tag, attrs):
+        a = dict(attrs)
+        if tag == "main":
+            self.on = True
+        if not self.on:
+            return
+        if self.skip_tag:
+            if tag == self.skip_tag:
+                self.depth += 1
+            return
+        if tag in self.SKIP or "breadcrumb" in (a.get("class") or ""):
+            self.skip_tag, self.depth = tag, 1
+        elif tag in ("h1", "h2", "h3"):
+            self.out.append("\n\n" + "#" * (int(tag[1]) + 1) + " ")
+        elif tag == "li":
+            self.out.append("\n- ")
+        elif tag in ("p", "div", "aside", "table", "tr", "section", "details", "summary", "br"):
+            self.out.append("\n")
+        elif tag in ("td", "th"):
+            self.out.append(" | ")
+        elif tag in ("span", "small", "b", "strong", "em", "a"):
+            self.out.append(" ")
+
+    def handle_endtag(self, tag):
+        if not self.on:
+            return
+        if self.skip_tag:
+            if tag == self.skip_tag:
+                self.depth -= 1
+                if not self.depth:
+                    self.skip_tag = None
+            return
+        if tag == "article":
+            self.on = False
+
+    def handle_data(self, d):
+        if self.on and not self.skip_tag:
+            self.out.append(re.sub(r"\s+", " ", d))
+
+    def text(self):
+        t = re.sub(r" {2,}", " ", "".join(self.out))
+        t = re.sub(r" ([.,:;!?»)])", r"\1", t)
+        t = re.sub(r"[ \t]+\n", "\n", t)
+        t = re.sub(r"\n[ \t]+", "\n", t)
+        return re.sub(r"\n{3,}", "\n\n", t).strip()
+
+
+def page_text(rel):
+    p = _Text()
+    p.feed(open(os.path.join(ROOT, rel), encoding="utf-8").read())
+    return p.text()
+
+
+def write_llms_full(approved, services=()):
+    """llms-full.txt: всё, что ИИ-ассистенту нужно знать о центре, одним файлом."""
+    base = open(os.path.join(ROOT, "llms.txt"), encoding="utf-8").read()
+    head_part = "\n".join(l for l in base.split("<!-- blog:start -->")[0].rstrip().split("\n")
+                          if "llms-full.txt" not in l)
+    tail_part = base.split("<!-- blog:end -->")[1].strip()
+    parts = [head_part.replace("# Академический Медицинский Центр (АМЦ)",
+                               "# Академический Медицинский Центр (АМЦ): полный текст сайта", 1),
+             "", "Краткая версия со списком страниц: %sllms.txt" % SITE, "", tail_part]
+    for title, folder, items in (("Услуги", "uslugi", services), ("Статьи блога", "blog", approved)):
+        parts += ["", "", "# " + title]
+        for a in items:
+            rel = "%s/%s.html" % (folder, a["slug"])
+            parts += ["", "", "---", "", "Адрес: %s%s" % (SITE, rel),
+                      "Обновлено: %s" % max(a.get("updated") or a["published"], file_date(rel)),
+                      "", page_text(rel)]
+    write(os.path.join(ROOT, "llms-full.txt"), "\n".join(parts).rstrip() + "\n")
+
+
+def rfc822(iso):
+    d = datetime.date.fromisoformat(iso)
+    days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    return "%s, %02d %s %d 09:00:00 +0300" % (days[d.weekday()], d.day, months[d.month - 1], d.year)
+
+
+def write_rss(approved):
+    """rss.xml: лента новых статей. Её можно добавить в Search Console и Вебмастер как sitemap."""
+    items = sorted(approved, key=lambda a: (a["published"], a["slug"]), reverse=True)
+    rows = []
+    for a in items:
+        url = "%sblog/%s.html" % (SITE, a["slug"])
+        rows.append("""    <item>
+      <title>{t}</title>
+      <link>{u}</link>
+      <guid isPermaLink="true">{u}</guid>
+      <pubDate>{d}</pubDate>
+      <category>{c}</category>
+      <description>{s}</description>
+    </item>""".format(t=esc(a["title"]), u=url, d=rfc822(a["published"]), c=esc(a["topic"]),
+                      s=esc(a["description"])))
+    last = rfc822(max([a.get("updated") or a["published"] for a in items] or [TODAY]))
+    write(os.path.join(ROOT, "rss.xml"), """<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Блог Академического Медицинского Центра</title>
+    <link>{site}blog.html</link>
+    <atom:link href="{site}rss.xml" rel="self" type="application/rss+xml"/>
+    <description>Статьи о лечении алкогольной и никотиновой зависимости: наркологическая клиника в Санкт-Петербурге с 1992 года.</description>
+    <language>ru</language>
+    <lastBuildDate>{last}</lastBuildDate>
+{rows}
+  </channel>
+</rss>
+""".format(site=SITE, last=last, rows="\n".join(rows)))
+
+
 # ---------- 301 map for the old sad56.ru ----------
 
 def write_redirects(articles, services=None):
@@ -1395,6 +1551,9 @@ def main():
           list_page(sorted(drafts, key=lambda a: a["slug"]), draft_ctx, chrome, draft=True))
     update_sitemap(approved, svc_live)
     update_llms(approved, svc_live)
+    write_llms_full(approved, svc_live)
+    write_rss(approved)
+    refresh_lastmod()
     write_redirects(articles, services)
     print("\n".join(report))
     print("опубликовано %d, черновиков %d" % (len(approved), len(drafts)))
